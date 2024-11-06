@@ -1,8 +1,10 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { SaveItemUseCase, UpdateItemUseCase } from "@core/item/usecases/mod.ts";
 import { ItemService } from "@core/item/mod.ts";
-import { UnauthorizedError } from "@shared/types/errors/auth.error.ts";
-import { ItemNotFoundError } from "@shared/types/errors/mod.ts";
+import {
+  UnauthorizedError,
+  ItemNotFoundError,
+} from "@shared/types/errors/mod.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
 import { errorHandler, pinoLogger } from "@api/middleware/mod.ts";
 import {

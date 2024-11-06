@@ -1,5 +1,5 @@
 import * as Bull from "bullmq";
-import { QueueHandler, QueueService } from "@core/queue/queue.service.ts";
+import { QueueHandler, QueueService } from "@core/queue/mod.ts";
 
 export interface BullQueueConfig {
   redis: {

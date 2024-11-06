@@ -1,5 +1,8 @@
-import { NotFoundError } from "./common.error.ts";
-import { BaseError, OperationError } from "./mod.ts";
+import {
+  NotFoundError,
+  OperationError,
+} from "@shared/types/errors/common.error.ts";
+import { BaseError } from "@shared/types/errors/base.error.ts";
 
 export class CollectionNotFoundError extends NotFoundError {
   constructor(collectionId: string) {

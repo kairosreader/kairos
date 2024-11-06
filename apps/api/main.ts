@@ -1,9 +1,11 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import { ItemRoutes } from "@api/item/item.route.ts";
-import { configureContainer } from "@infra/di/container.config.ts";
-import { TOKENS } from "@infra/di/tokens.ts";
-import { TsyringeContainer } from "@infra/di/tsyringe/container.ts";
+import {
+  TsyringeContainer,
+  configureContainer,
+  TOKENS,
+} from "@infra/di/mod.ts";
 
 const container = new TsyringeContainer();
 // Configure container

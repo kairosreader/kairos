@@ -1,5 +1,5 @@
-import { DuplicateArticleError } from "./article.error.ts";
-import { NotFoundError } from "./common.error.ts";
+import { DuplicateArticleError } from "@shared/types/errors/article.error.ts";
+import { NotFoundError } from "@shared/types/errors/common.error.ts";
 
 export class TagNotFoundError extends NotFoundError {
   constructor(tagId: string) {

@@ -1,5 +1,7 @@
-import { NotFoundError } from "./common.error.ts";
-import { DuplicateError } from "./mod.ts";
+import {
+  NotFoundError,
+  DuplicateError,
+} from "@shared/types/errors/common.error.ts";
 
 export class ArticleNotFoundError extends NotFoundError {
   constructor(articleId: string) {

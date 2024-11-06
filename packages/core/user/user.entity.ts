@@ -1,4 +1,4 @@
-import { HighlightColor } from "@shared/types/common.ts";
+import { HighlightColor } from "@shared/constants/mod.ts";
 
 export interface User {
   id: string;

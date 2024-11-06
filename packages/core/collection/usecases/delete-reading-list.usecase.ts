@@ -1,4 +1,4 @@
-import { DeleteCollectionParams } from "@shared/types/params/collection.params.ts";
+import { DeleteCollectionParams } from "@shared/types/params/mod.ts";
 import { CollectionService } from "@core/collection/collection.service.ts";
 
 export class DeleteReadingListUseCase {

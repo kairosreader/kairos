@@ -1,10 +1,6 @@
-import { BaseItemHandler } from "@core/queue/handlers/item.handler.ts";
-import { ItemService } from "@core/item/item.service.ts";
-import type {
-  EmailContent,
-  ItemContent,
-} from "@shared/types/common/item.types.ts";
-import { Item } from "@core/item/mod.ts";
+import { BaseItemHandler } from "@core/queue/mod.ts";
+import { Item, ItemService } from "@core/item/mod.ts";
+import type { EmailContent, ItemContent } from "@shared/types/common/mod.ts";
 
 export class EmailProcessingHandler extends BaseItemHandler {
   constructor(itemService: ItemService<ItemContent>) {

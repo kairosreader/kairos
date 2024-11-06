@@ -1,5 +1,5 @@
 import { type Highlight } from "@core/highlight/highlight.entity.ts";
-import { CreateHighlightParams } from "@shared/types/params/highlight.params.ts";
+import { CreateHighlightParams } from "@shared/types/params/mod.ts";
 import { HighlightService } from "@core/highlight/highlight.service.ts";
 
 export class CreateHighlightUseCase {

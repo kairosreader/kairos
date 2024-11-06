@@ -1,5 +1,5 @@
-import { TagService } from "../tag.service.ts";
-import { BulkTagParams } from "@shared/types/params/tag.params.ts";
+import { TagService } from "@core/tag/tag.service.ts";
+import { BulkTagParams } from "@shared/types/params/mod.ts";
 
 export class BulkTagUseCase {
   constructor(private tagService: TagService) {}

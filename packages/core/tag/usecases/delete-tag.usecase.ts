@@ -1,4 +1,4 @@
-import { DeleteTagParams } from "@shared/types/params/tag.params.ts";
+import { DeleteTagParams } from "@shared/types/params/mod.ts";
 import { TagService } from "@core/tag/tag.service.ts";
 
 export class DeleteTagUseCase {

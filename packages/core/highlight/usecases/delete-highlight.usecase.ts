@@ -1,5 +1,5 @@
 import type { HighlightService } from "@core/highlight/highlight.service.ts";
-import { DeleteHighlightParams } from "@shared/types/params/highlight.params.ts";
+import { DeleteHighlightParams } from "@shared/types/params/mod.ts";
 
 export class DeleteHighlightUseCase {
   constructor(private highlightService: HighlightService) {}

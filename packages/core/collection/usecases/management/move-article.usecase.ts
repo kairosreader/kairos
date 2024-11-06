@@ -1,5 +1,5 @@
 import { ItemManagementService } from "@core/collection/item-management.service.ts";
-import { MoveItemParams } from "@shared/types/params/collection.params.ts";
+import { MoveItemParams } from "@shared/types/params/mod.ts";
 
 export class MoveArticleUseCase {
   constructor(private itemManagementService: ItemManagementService) {}

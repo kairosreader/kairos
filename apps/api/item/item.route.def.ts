@@ -6,8 +6,8 @@ import {
   ItemParamsSchema,
   ItemResponseSchema,
   UpdateItemRequestSchema,
-} from "./item.schema.ts";
-import { errorResponses } from "../common/error.schema.ts";
+} from "@api/item/item.schema.ts";
+import { errorResponses } from "@api/common/error.schema.ts";
 
 export const createItemRoute = createRoute({
   method: "post",

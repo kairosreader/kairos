@@ -11,8 +11,8 @@ import {
   CreateTagParams,
   FindTagByNameParams,
   TagItemParams,
-} from "@shared/types/params/tag.params.ts";
-import { ItemService } from "@core/item/mod.ts";
+} from "@shared/types/params/mod.ts";
+import { ItemService } from "@core/item/item.service.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
 import { generateId } from "@shared/utils/mod.ts";
 import { UserScopedService } from "@core/common/base.service.ts";

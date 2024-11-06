@@ -1,7 +1,8 @@
-import { QueueHandler } from "../queue.service.ts";
-import { Item, ItemService } from "@core/item/mod.ts";
-import { ITEM_STATUS } from "@shared/constants/item.constants.ts";
-import type { ItemContent } from "@shared/types/common/item.types.ts";
+import { QueueHandler } from "@core/queue/queue.service.ts";
+import { Item } from "@core/item/item.entity.ts";
+import { ItemService } from "@core/item/item.service.ts";
+import { ITEM_STATUS } from "@shared/constants/mod.ts";
+import type { ItemContent } from "@shared/types/common/mod.ts";
 
 export interface ItemProcessPayload {
   itemId: string;
@@ -9,7 +10,8 @@ export interface ItemProcessPayload {
 }
 
 export abstract class BaseItemHandler
-  implements QueueHandler<ItemProcessPayload> {
+  implements QueueHandler<ItemProcessPayload>
+{
   constructor(protected itemService: ItemService<ItemContent>) {}
 
   async handle(payload: ItemProcessPayload): Promise<void> {

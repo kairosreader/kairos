@@ -1,4 +1,4 @@
-import { BaseEntity, UserScoped } from "@shared/types/common/mod.ts";
+import { BaseEntity, UserScoped } from "@shared/types/common/entity.types.ts";
 import type {
   ITEM_TYPE,
   ItemStatus,

@@ -1,10 +1,10 @@
 import { z } from "@hono/zod-openapi";
-import { ITEM_STATUS, ITEM_TYPE } from "@shared/constants/item.constants.ts";
+import { ITEM_STATUS, ITEM_TYPE } from "@shared/constants/mod.ts";
 import {
   dateSchema,
   timestampSchema,
   urlSchema,
-} from "../common/common.schema.ts";
+} from "@api/common/common.schema.ts";
 
 const ArticleContentSchema = z.object({
   url: urlSchema.openapi({ example: "https://example.com/article" }),

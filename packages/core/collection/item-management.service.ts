@@ -2,14 +2,14 @@ import {
   BaseError,
   BulkOperationError,
   CollectionOperationError,
-} from "../../shared/types/errors/mod.ts";
+} from "@shared/types/errors/mod.ts";
 import { CollectionService } from "@core/collection/collection.service.ts";
-import { SpecialCollectionService } from "@core/collection/special-collection.service.ts.ts";
+import { SpecialCollectionService } from "@core/collection/special-collection.service.ts";
 import {
   ArchiveItemParams,
   MoveItemParams,
-} from "@shared/types/params/collection.params.ts";
-import { BulkArchiveItemsParams } from "@shared/types/params/collection.params.ts";
+  BulkArchiveItemsParams,
+} from "@shared/types/params/mod.ts";
 
 export class ItemManagementService {
   constructor(
@@ -49,7 +49,7 @@ export class ItemManagementService {
                   itemType: itemInfo.itemType,
                 },
                 collectionId: c.id,
-              })
+              }),
             ),
         );
       }
@@ -76,8 +76,8 @@ export class ItemManagementService {
   async archiveItem(params: ArchiveItemParams): Promise<void> {
     const { itemInfo, userId } = params;
 
-    const { archive } = await this.specialCollectionsService
-      .ensureSpecialCollections(userId);
+    const { archive } =
+      await this.specialCollectionsService.ensureSpecialCollections(userId);
 
     await this.moveItem({
       itemInfo: {
@@ -106,11 +106,9 @@ export class ItemManagementService {
           } else {
             errors.push(
               new CollectionOperationError(
-                `Unknown error archiving article ${itemInfo.itemId}: ${
-                  String(
-                    error,
-                  )
-                }`,
+                `Unknown error archiving article ${itemInfo.itemId}: ${String(
+                  error,
+                )}`,
               ),
             );
           }

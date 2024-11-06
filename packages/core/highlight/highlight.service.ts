@@ -1,12 +1,13 @@
 import type { HighlightRepository } from "@core/highlight/highlight.repository.ts";
 import { HighlightNotFoundError } from "@shared/types/errors/mod.ts";
-import { generateId, HIGHLIGHT_COLOR } from "@shared/mod.ts";
 import { type Highlight } from "@core/highlight/highlight.entity.ts";
 import {
   CreateHighlightParams,
   UpdateHighlightParams,
-} from "@shared/types/params/highlight.params.ts";
+} from "@shared/types/params/mod.ts";
 import { UserScopedService } from "@core/common/base.service.ts";
+import { generateId } from "@shared/utils/mod.ts";
+import { HIGHLIGHT_COLOR } from "@shared/constants/mod.ts";
 
 export class HighlightService extends UserScopedService<Highlight> {
   protected override resourceName: string;

@@ -11,7 +11,7 @@ import {
 } from "@shared/types/params/mod.ts";
 import { UserScopedService } from "@core/common/base.service.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
-import { ItemService } from "@core/item/mod.ts";
+import { ItemService } from "@core/item/item.service.ts";
 
 export class CollectionService extends UserScopedService<Collection> {
   protected override resourceName: string;

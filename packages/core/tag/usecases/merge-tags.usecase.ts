@@ -2,7 +2,7 @@ import {
   TagNotFoundError,
   UnauthorizedError,
 } from "@shared/types/errors/mod.ts";
-import { MergeTagsParams } from "@shared/types/params/tag.params.ts";
+import { MergeTagsParams } from "@shared/types/params/mod.ts";
 import { TagService } from "@core/tag/tag.service.ts";
 import { ItemService } from "@core/item/item.service.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
@@ -45,7 +45,7 @@ export class MergeTagsUseCase {
     // Get all items with source tag
     const items = await this.itemService.findByUser(params.userId);
     const itemsWithSourceTag = items.filter((item) =>
-      item.tags.includes(sourceTag.name)
+      item.tags.includes(sourceTag.name),
     );
 
     // Replace source tag with target tag

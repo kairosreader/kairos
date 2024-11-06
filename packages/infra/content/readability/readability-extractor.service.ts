@@ -3,7 +3,7 @@ import { JSDOM } from "jsdom";
 import {
   ContentExtractorService,
   ExtractedContent,
-} from "@core/content/content-extractor.service.ts";
+} from "@core/content/mod.ts";
 import { OperationError } from "@shared/types/errors/mod.ts";
 
 export class ReadabilityExtractorService implements ContentExtractorService {

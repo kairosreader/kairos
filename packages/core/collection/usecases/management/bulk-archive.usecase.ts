@@ -1,5 +1,5 @@
 import { ItemManagementService } from "@core/collection/item-management.service.ts";
-import { BulkArchiveItemsParams } from "@shared/types/params/collection.params.ts";
+import { BulkArchiveItemsParams } from "@shared/types/params/mod.ts";
 
 export class BulkArchiveUseCase {
   constructor(private itemManagementService: ItemManagementService) {}

@@ -1,6 +1,7 @@
-import { Item, ItemService } from "@core/item/mod.ts";
-import { QueueService } from "@core/queue/mod.ts";
 import { SaveItemParams } from "@shared/types/params/mod.ts";
+import { QueueService } from "@core/queue/queue.service.ts";
+import { ItemService } from "@core/item/item.service.ts";
+import { Item } from "@core/item/item.entity.ts";
 import { ITEM_STATUS, ITEM_TYPE, ItemType } from "@shared/constants/mod.ts";
 import {
   isArticleContent,

@@ -1,6 +1,6 @@
 import type { Collection } from "@core/collection/collection.entity.ts";
 import { UserScopedRepository } from "@core/common/base.repository.ts";
-import { Item } from "@core/item/mod.ts";
+import { Item } from "@core/item/item.entity.ts";
 import {
   AddToCollectionParams,
   RemoveFromCollectionParams,
