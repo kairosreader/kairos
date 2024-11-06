@@ -38,11 +38,11 @@ Kairos is built as a modern monorepo using Deno, featuring:
 
 ### Backend
 
-- **API Server**: RESTful API built with **(TBD)** framework
+- **API Server**: RESTful API built with Hono
 - **Content Processor**: Async article processing worker
 - **Database**: PostgreSQL for reliable data storage
 - **Caching**: **(TBD)** for performance optimization
-- **Message Queue**: **(TBD)** for reliable content processing
+- **Message Queue**: BullMQ for reliable content processing
 
 ### Frontend
 
@@ -55,18 +55,17 @@ Kairos is built as a modern monorepo using Deno, featuring:
 - Containerized with Docker
 - Easy deployment with Docker Compose
 - Scalable microservices architecture
-- Built-in monitoring and error tracking **(TBD)**`
 
 ## 🔧 Technical Stack
 
 ### Backend
 
 - **Runtime**: Deno
-- **API Framework**: **(TBD)**
+- **API Framework**: Hono
 - **Database**: PostgreSQL
 - **Cache**: **(TBD)**
-- **Queue**: **(TBD)**
-- **Content Processing**: Custom extraction engine **(TBD)**
+- **Queue**: BullMQ
+- **Content Processing**: Mozilla Readability
 
 ### Frontend
 
@@ -90,8 +89,6 @@ Kairos is built as a modern monorepo using Deno, featuring:
 - Docker and Docker Compose
 - Node.js 18+ (for mobile development)
 - PostgreSQL 15
-- Dragonfly 1.24.0 **(TBD)**
-- BullMQ 5.25.0 **(TBD)**
 
 ### Quick Start
 
@@ -141,29 +138,6 @@ Kairos is open source and welcomes contributions. Here's how you can help:
    - Improve README
    - Add code comments
    - Create usage examples
-
-## 📈 Roadmap
-
-### Phase 1 (Current)
-
-- Basic article saving and reading
-- Content extraction
-- Web and mobile clients
-- Basic offline support
-
-### Phase 2
-
-- Advanced highlighting
-- Social sharing
-- API integrations
-- Enhanced mobile features
-
-### Phase 3
-
-- Machine learning recommendations
-- Advanced analytics
-- Browser extensions
-- Community features
 
 ## 📄 License
 
