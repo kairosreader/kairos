@@ -92,7 +92,7 @@ export class TagService extends UserScopedService<Tag> {
     );
 
     if (errors.length > 0) {
-      throw new BulkOperationError(`Failed to tag some articles`, errors);
+      throw new BulkOperationError(`Failed to tag some items`, errors);
     }
   }
 }

@@ -1,7 +1,7 @@
 import { TagService } from "@core/tag/tag.service.ts";
 import { TagItemParams } from "@shared/types/params/mod.ts";
 
-export class TagArticleUseCase {
+export class TagItemUseCase {
   constructor(private tagService: TagService) {}
 
   async execute(params: TagItemParams): Promise<void> {

@@ -11,7 +11,7 @@ export class UpdateItemUseCase {
   ): Promise<Item<ItemContent>> {
     const item = await this.itemService.tryFindById(params.id);
 
-    // Update article
+    // Update item
     const updatedItem: Item<ItemContent> = {
       ...item,
       ...params.updates,

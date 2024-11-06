@@ -8,7 +8,7 @@ export class BulkTagUseCase {
     // Get or create all tags
     const tags = await this.tagService.getOrCreateMany(params);
 
-    // Bulk add tags to articles
+    // Bulk add tags to items
     await this.tagService.bulkAddToItem({
       itemIds: params.itemIds,
       userId: params.userId,

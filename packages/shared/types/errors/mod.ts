@@ -1,4 +1,3 @@
-export * from "./article.error.ts";
 export * from "./auth.error.ts";
 export * from "./base.error.ts";
 export * from "./collection.error.ts";

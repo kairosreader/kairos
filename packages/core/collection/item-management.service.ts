@@ -20,12 +20,12 @@ export class ItemManagementService {
   async moveItem(params: MoveItemParams): Promise<void> {
     const { itemInfo, toCollectionId, removeFromOtherCollections } = params;
 
-    // Get the collections the article is currently in
+    // Get the collections the item is currently in
     const currentCollections = await this.collectionService.findByitem(
       itemInfo.itemId,
     );
 
-    // If article is already in the target collection and we're not removing from others, we're done
+    // If item is already in the target collection and we're not removing from others, we're done
     if (
       currentCollections.some((c) => c.id === toCollectionId) &&
       !removeFromOtherCollections
@@ -33,7 +33,7 @@ export class ItemManagementService {
       return;
     }
 
-    // Move the article to the target collection
+    // Move the item to the target collection
     try {
       const operations = [];
 
@@ -68,7 +68,7 @@ export class ItemManagementService {
       }
     } catch (error) {
       throw new CollectionOperationError(
-        `Failed to move article: ${String(error)}`,
+        `Failed to move item: ${String(error)}`,
       );
     }
   }
@@ -106,7 +106,7 @@ export class ItemManagementService {
           } else {
             errors.push(
               new CollectionOperationError(
-                `Unknown error archiving article ${itemInfo.itemId}: ${String(
+                `Unknown error archiving item ${itemInfo.itemId}: ${String(
                   error,
                 )}`,
               ),
@@ -117,7 +117,7 @@ export class ItemManagementService {
     );
 
     if (errors.length > 0) {
-      throw new BulkOperationError(`Failed to archive some articles`, errors);
+      throw new BulkOperationError(`Failed to archive some items`, errors);
     }
   }
 }

@@ -43,9 +43,9 @@ export class CollectionService extends UserScopedService<Collection> {
 
   async addItem(params: AddToCollectionParams): Promise<void> {
     const { collectionId, itemInfo } = params;
-    // Check if article exists
-    const article = await this.itemRepo.findById(itemInfo.itemId);
-    if (!article) {
+    // Check if item exists
+    const item = await this.itemRepo.findById(itemInfo.itemId);
+    if (!item) {
       throw new ItemNotFoundError(itemInfo.itemId);
     }
 
