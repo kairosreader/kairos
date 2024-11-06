@@ -1,0 +1,148 @@
+import { BaseEntity, UserScoped } from "@shared/types/common/mod.ts";
+import {
+  BaseRepository,
+  NonUserScopedRepository,
+  UserScopedRepository,
+} from "@core/common/base.repository.ts";
+import {
+  BaseError,
+  BulkOperationError,
+  NotFoundError,
+  OperationError,
+} from "@shared/types/errors/mod.ts";
+import { UnauthorizedError } from "@shared/types/mod.ts";
+import { UserScopedParams } from "@shared/types/params/mod.ts";
+
+export abstract class BaseService<T extends BaseEntity> {
+  protected abstract resourceName: string;
+
+  constructor(protected repository: BaseRepository<T>) {}
+
+  findById(id: string): Promise<T | null> {
+    return this.repository.findById(id);
+  }
+
+  async tryFindById(id: string): Promise<T> {
+    const resource = await this.repository.findById(id);
+    if (!resource) {
+      throw new NotFoundError(this.resourceName, id);
+    }
+    return resource;
+  }
+
+  save(entity: T): Promise<T> {
+    return this.repository.save(entity);
+  }
+}
+
+export abstract class NonUserScopedService<
+  T extends BaseEntity,
+> extends BaseService<T> {
+  constructor(protected override repository: NonUserScopedRepository<T>) {
+    super(repository);
+  }
+
+  async update(id: string, updates: Partial<T>): Promise<T> {
+    // Check if resource exists
+    const resource = await this.tryFindById(id);
+    if (!resource) {
+      throw new NotFoundError(this.resourceName, id);
+    }
+    return this.repository.update(id, updates);
+  }
+
+  async delete(id: string): Promise<void> {
+    // Check if resource exists
+    const resource = await this.tryFindById(id);
+    if (!resource) {
+      throw new NotFoundError(this.resourceName, id);
+    }
+    await this.repository.delete(id);
+  }
+
+  async bulkDelete(ids: string[]): Promise<void> {
+    const errors: BaseError[] = [];
+
+    await Promise.all(
+      ids.map(async (id) => {
+        try {
+          await this.delete(id);
+        } catch (error) {
+          if (error instanceof BaseError) {
+            errors.push(error);
+          } else {
+            errors.push(new OperationError(`Unknown error`, error));
+          }
+        }
+      }),
+    );
+
+    if (errors.length > 0) {
+      throw new BulkOperationError(`Failed to delete some resources`, errors);
+    }
+  }
+}
+
+export abstract class UserScopedService<
+  T extends BaseEntity & UserScoped,
+> extends BaseService<T> {
+  constructor(protected override repository: UserScopedRepository<T>) {
+    super(repository);
+  }
+
+  findByUser(userId: string): Promise<T[]> {
+    return this.repository.findByUser(userId);
+  }
+
+  async verifyOwnership(params: UserScopedParams): Promise<T> {
+    const resource = await this.tryFindById(params.id);
+    if (resource.userId !== params.userId) {
+      throw new UnauthorizedError();
+    }
+    return resource;
+  }
+
+  async update(params: UserScopedParams, updates: Partial<T>): Promise<T> {
+    // Check if resource exists
+    const resource = await this.tryFindById(params.id);
+    if (!resource) {
+      throw new NotFoundError(this.resourceName, params.id);
+    }
+    // Verify ownership
+    await this.verifyOwnership(params);
+    return this.repository.update(params.id, updates);
+  }
+
+  async delete(params: UserScopedParams): Promise<void> {
+    // Check if resource exists
+    const resource = await this.tryFindById(params.id);
+    if (!resource) {
+      throw new NotFoundError(this.resourceName, params.id);
+    }
+    // Verify ownership
+    await this.verifyOwnership(params);
+    await this.repository.delete(params);
+  }
+
+  async bulkDelete(params: UserScopedParams[]): Promise<void> {
+    const errors: BaseError[] = [];
+
+    await Promise.all(
+      params.map(async (param) => {
+        try {
+          await this.delete(param);
+        } catch (error) {
+          if (error instanceof BaseError) {
+            errors.push(error);
+          } else {
+            errors.push(new OperationError(`Unknown error`, error));
+          }
+        }
+      }),
+    );
+
+    if (errors.length > 0) {
+      throw new BulkOperationError(`Failed to delete some resources`, errors);
+    }
+  }
+}
