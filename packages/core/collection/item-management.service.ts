@@ -6,9 +6,9 @@ import {
 import { CollectionService } from "@core/collection/collection.service.ts";
 import { SpecialCollectionService } from "@core/collection/special-collection.service.ts";
 import {
-  ArchiveItemParams,
-  MoveItemParams,
-  BulkArchiveItemsParams,
+  BulkItemArchiveOperation,
+  ItemArchiveOperation,
+  MoveItemOperation,
 } from "@shared/types/params/mod.ts";
 
 export class ItemManagementService {
@@ -17,7 +17,7 @@ export class ItemManagementService {
     private specialCollectionsService: SpecialCollectionService,
   ) {}
 
-  async moveItem(params: MoveItemParams): Promise<void> {
+  async moveItem(params: MoveItemOperation): Promise<void> {
     const { itemInfo, toCollectionId, removeFromOtherCollections } = params;
 
     // Get the collections the item is currently in
@@ -44,11 +44,9 @@ export class ItemManagementService {
             .filter((c) => c.id !== toCollectionId)
             .map((c) =>
               this.collectionService.removeItem({
-                itemInfo: {
-                  itemId: itemInfo.itemId,
-                  itemType: itemInfo.itemType,
-                },
-                collectionId: c.id,
+                id: c.id,
+                userId: c.userId,
+                itemInfo: itemInfo,
               }),
             ),
         );
@@ -58,11 +56,9 @@ export class ItemManagementService {
       if (!currentCollections.some((c) => c.id === params.toCollectionId)) {
         operations.push(
           this.collectionService.addItem({
-            itemInfo: {
-              itemId: itemInfo.itemId,
-              itemType: itemInfo.itemType,
-            },
-            collectionId: params.toCollectionId,
+            id: params.toCollectionId,
+            userId: params.userId,
+            itemInfo: itemInfo,
           }),
         );
       }
@@ -73,23 +69,23 @@ export class ItemManagementService {
     }
   }
 
-  async archiveItem(params: ArchiveItemParams): Promise<void> {
+  async archiveItem(params: ItemArchiveOperation): Promise<void> {
     const { itemInfo, userId } = params;
 
+    // Get the archive collection
     const { archive } =
       await this.specialCollectionsService.ensureSpecialCollections(userId);
 
+    // Move the item to the archive collection
     await this.moveItem({
-      itemInfo: {
-        itemId: itemInfo.itemId,
-        itemType: itemInfo.itemType,
-      },
+      userId,
+      itemInfo: itemInfo,
       toCollectionId: archive.id,
       removeFromOtherCollections: true,
     });
   }
 
-  async bulkArchiveitems(params: BulkArchiveItemsParams): Promise<void> {
+  async bulkArchiveitems(params: BulkItemArchiveOperation): Promise<void> {
     const { itemInfos, userId } = params;
     const errors: BaseError[] = [];
 
@@ -98,7 +94,7 @@ export class ItemManagementService {
         try {
           await this.archiveItem({
             itemInfo,
-            userId: userId,
+            userId,
           });
         } catch (error) {
           if (error instanceof BaseError) {

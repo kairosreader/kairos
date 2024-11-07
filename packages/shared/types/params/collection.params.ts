@@ -1,40 +1,62 @@
-import { ItemInfo } from "@shared/types/common/mod.ts";
+import {
+  CreateParams,
+  ResourceIdentifier,
+  SortablePaginatedQuery,
+  UpdateParams,
+  UserScoped,
+} from "@shared/types/params/base.params.ts";
+import { ItemInfo } from "@shared/types/common/item.types.ts";
 
-export interface CreateCollectionParams {
-  userId: string;
+export interface CollectionData {
   name: string;
   description?: string;
   color?: string;
   icon?: string;
 }
 
-export interface DeleteCollectionParams {
-  collectionId: string;
-  userId: string;
+export interface CreateCollectionParams extends CreateParams<CollectionData> {}
+
+export interface UpdateCollectionData {
+  name: string;
+  description: string;
+  color: string;
+  icon: string;
 }
 
-export interface AddToCollectionParams {
+export interface UpdateCollectionParams
+  extends UpdateParams<UpdateCollectionData> {}
+
+export interface ListCollectionsParams
+  extends SortablePaginatedQuery,
+    UserScoped {
+  sortBy?: "name" | "createdAt" | "itemCount";
+}
+
+export interface CollectionItemOperation extends ResourceIdentifier {
   itemInfo: ItemInfo;
-  collectionId: string;
 }
 
-export interface RemoveFromCollectionParams {
-  itemInfo: ItemInfo;
-  collectionId: string;
-}
+export interface AddToCollectionParams extends CollectionItemOperation {}
 
-export interface ArchiveItemParams {
-  itemInfo: ItemInfo;
-  userId: string;
-}
+export interface RemoveFromCollectionParams extends CollectionItemOperation {}
 
-export interface BulkArchiveItemsParams {
-  itemInfos: ItemInfo[];
-  userId: string;
-}
-
-export interface MoveItemParams {
+export interface MoveItemOperation extends UserScoped {
   itemInfo: ItemInfo;
   toCollectionId: string;
   removeFromOtherCollections?: boolean;
+}
+
+export interface ItemArchiveOperation extends UserScoped {
+  itemInfo: ItemInfo;
+}
+
+export interface BulkItemArchiveOperation extends UserScoped {
+  itemInfos: ItemInfo[];
+}
+
+export interface ListCollectionItemsParams
+  extends SortablePaginatedQuery,
+    UserScoped {
+  collectionId: string;
+  sortBy?: "addedAt" | "title";
 }

@@ -1,14 +1,14 @@
-import { SaveItemParams } from "@shared/types/params/mod.ts";
 import { QueueService } from "@core/queue/queue.service.ts";
 import { ItemService } from "@core/item/item.service.ts";
 import { Item } from "@core/item/item.entity.ts";
-import { ITEM_STATUS, ITEM_TYPE, ItemType } from "@shared/constants/mod.ts";
+import { ITEM_STATUS } from "@shared/constants/mod.ts";
 import {
   isArticleContent,
   isEmailContent,
   isPdfContent,
   ItemContent,
 } from "@shared/types/common/mod.ts";
+import { CreateItemParams } from "@shared/types/params/mod.ts";
 
 export class SaveItemUseCase {
   constructor(
@@ -16,12 +16,7 @@ export class SaveItemUseCase {
     private queueService: QueueService,
   ) {}
 
-  async execute(
-    params: SaveItemParams<ItemContent>,
-  ): Promise<Item<ItemContent>> {
-    // Validate content based on type
-    this.validateContent(params.type, params.content);
-
+  async execute(params: CreateItemParams): Promise<Item<ItemContent>> {
     const item: Item<ItemContent> = {
       id: crypto.randomUUID(),
       type: params.type,
@@ -43,28 +38,6 @@ export class SaveItemUseCase {
     });
 
     return savedItem;
-  }
-
-  private validateContent(type: ItemType, content: unknown): void {
-    switch (type) {
-      case ITEM_TYPE.ARTICLE:
-        if (!isArticleContent(content)) {
-          throw new Error("Invalid article content");
-        }
-        break;
-      case ITEM_TYPE.EMAIL:
-        if (!isEmailContent(content)) {
-          throw new Error("Invalid email content");
-        }
-        break;
-      case ITEM_TYPE.PDF:
-        if (!isPdfContent(content)) {
-          throw new Error("Invalid PDF content");
-        }
-        break;
-      default:
-        throw new Error(`Unsupported item type: ${type}`);
-    }
   }
 
   private getTitleFromContent(content: unknown): string {

@@ -15,11 +15,11 @@ export class HighlightService extends UserScopedService<Highlight> {
   create(params: CreateHighlightParams): Promise<Highlight> {
     const highlight: Highlight = {
       id: generateId(),
-      itemInfo: params.itemInfo,
+      itemInfo: params.data.itemInfo,
       userId: params.userId,
-      color: params.color || HIGHLIGHT_COLOR.YELLOW,
-      textSelection: params.textSelection,
-      note: params.note,
+      color: params.data.color || HIGHLIGHT_COLOR.YELLOW,
+      textSelection: params.data.textSelection,
+      note: params.data.note,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

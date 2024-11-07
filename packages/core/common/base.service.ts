@@ -10,8 +10,8 @@ import {
   NotFoundError,
   OperationError,
 } from "@shared/types/errors/mod.ts";
-import { UnauthorizedError } from "@shared/types/mod.ts";
-import { UserScopedParams } from "@shared/types/params/mod.ts";
+import { ResourceIdentifier, UnauthorizedError } from "@shared/types/mod.ts";
+import { UpdateParams } from "@shared/types/params/mod.ts";
 
 export abstract class BaseService<T extends BaseEntity> {
   protected abstract resourceName: string;
@@ -94,7 +94,7 @@ export abstract class UserScopedService<
     return this.repository.findByUser(userId);
   }
 
-  async verifyOwnership(params: UserScopedParams): Promise<T> {
+  async verifyOwnership(params: ResourceIdentifier): Promise<T> {
     const resource = await this.tryFindById(params.id);
     if (resource.userId !== params.userId) {
       throw new UnauthorizedError();
@@ -102,7 +102,7 @@ export abstract class UserScopedService<
     return resource;
   }
 
-  async update(params: UserScopedParams, updates: Partial<T>): Promise<T> {
+  async update(params: UpdateParams<T>): Promise<T> {
     // Check if resource exists
     const resource = await this.tryFindById(params.id);
     if (!resource) {
@@ -110,10 +110,10 @@ export abstract class UserScopedService<
     }
     // Verify ownership
     await this.verifyOwnership(params);
-    return this.repository.update(params.id, updates);
+    return this.repository.update(params.id, params.updates);
   }
 
-  async delete(params: UserScopedParams): Promise<void> {
+  async delete(params: ResourceIdentifier): Promise<void> {
     // Check if resource exists
     const resource = await this.tryFindById(params.id);
     if (!resource) {
@@ -124,7 +124,7 @@ export abstract class UserScopedService<
     await this.repository.delete(params);
   }
 
-  async bulkDelete(params: UserScopedParams[]): Promise<void> {
+  async bulkDelete(params: ResourceIdentifier[]): Promise<void> {
     const errors: BaseError[] = [];
 
     await Promise.all(

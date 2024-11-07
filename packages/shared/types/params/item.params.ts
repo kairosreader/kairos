@@ -1,24 +1,44 @@
+import { ItemContent } from "@shared/types/common/item.types.ts";
 import { ItemType } from "@shared/constants/item.constants.ts";
-import { UserScoped } from "@shared/types/common/entity.types.ts";
+import {
+  CollectionFilter,
+  ResourceIdentifier,
+  SortablePaginatedQuery,
+  StatusFilter,
+  TagFilters,
+  TypeFilter,
+  UpdateParams,
+  UserScoped,
+} from "@shared/types/params/base.params.ts";
 
-export interface ItemParams extends UserScoped {}
-
-export interface SaveItemParams<T = unknown> extends ItemParams {
+export interface CreateItemParams extends UserScoped {
   type: ItemType;
-  content: T;
+  content: ItemContent;
   tags?: string[];
 }
 
-export interface FindItemParams extends ItemParams {
-  id: string;
+export interface UpdateItemData {
+  title: string;
+  excerpt?: string;
+  content: ItemContent;
+  tags: string[];
+  coverImage?: string;
+  estimatedReadTime?: number;
 }
 
-export interface UpdateItemParams<T = unknown> extends ItemParams {
-  id: string;
-  updates: Partial<{
-    title: string;
-    excerpt: string;
-    tags: string[];
-    content: T;
-  }>;
+export interface UpdateItemParams extends UpdateParams<UpdateItemData> {}
+
+export interface ListItemsParams
+  extends SortablePaginatedQuery,
+    UserScoped,
+    CollectionFilter,
+    TagFilters,
+    TypeFilter,
+    StatusFilter {
+  sortBy?: "createdAt" | "updatedAt" | "title";
+}
+
+export interface UpdateReadingProgressParams extends ResourceIdentifier {
+  progress: number; // 0-100
+  lastPosition: number;
 }

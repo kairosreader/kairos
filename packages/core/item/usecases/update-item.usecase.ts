@@ -6,24 +6,7 @@ import { UpdateItemParams } from "@shared/types/params/mod.ts";
 export class UpdateItemUseCase {
   constructor(private itemService: ItemService<ItemContent>) {}
 
-  async execute(
-    params: UpdateItemParams<ItemContent>,
-  ): Promise<Item<ItemContent>> {
-    const item = await this.itemService.tryFindById(params.id);
-
-    // Update item
-    const updatedItem: Item<ItemContent> = {
-      ...item,
-      ...params.updates,
-      updatedAt: new Date(),
-    };
-
-    return this.itemService.update(
-      {
-        id: params.id,
-        userId: params.userId,
-      },
-      updatedItem,
-    );
+  execute(params: UpdateItemParams): Promise<Item<ItemContent>> {
+    return this.itemService.update(params);
   }
 }

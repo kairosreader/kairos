@@ -1,39 +1,48 @@
-type TagInfo = {
+import { TagColor } from "@shared/constants/tag.constants.ts";
+import {
+  CreateParams,
+  SortablePaginatedQuery,
+  UpdateParams,
+  UserScoped,
+} from "@shared/types/params/base.params.ts";
+
+export interface TagData {
   name: string;
-  color?: string;
-};
+  color?: TagColor;
+}
 
-export type FindTagByNameParams = {
-  userId: string;
+export interface CreateTagParams extends CreateParams<TagData> {}
+
+export interface UpdateTagData {
+  name: string;
+  color: TagColor;
+}
+
+export interface UpdateTagParams extends UpdateParams<UpdateTagData> {}
+
+export interface ListTagsParams extends SortablePaginatedQuery {
+  sortBy?: "name" | "itemCount";
+}
+
+export interface FindTagByNameParams extends UserScoped {
   tagName: string;
-};
+}
 
-export type CreateTagParams = {
-  userId: string;
-  tagInfo: TagInfo;
-};
+export interface TagItemOperation extends UserScoped {
+  itemId: string;
+  tagIds: string[];
+}
 
-export type CreateManyTagsParams = {
-  userId: string;
-  tagInfos: TagInfo[];
-};
+export interface BulkTagItemOperation extends UserScoped {
+  itemIds: string[];
+  tagIds: string[];
+}
 
-export type DeleteTagParams = { tagName: string; userId: string };
+export interface CreateManyTagsOperation extends UserScoped {
+  tagInfos: TagData[];
+}
 
-export type MergeTagsParams = {
-  userId: string;
+export interface MergeTagsOperation extends UserScoped {
   sourceTagId: string;
   targetTagId: string;
-};
-
-export type TagItemParams = {
-  itemId: string;
-  userId: string;
-  tagInfos: TagInfo[];
-};
-
-export type BulkTagParams = {
-  userId: string;
-  itemIds: string[];
-  tagInfos: TagInfo[];
-};
+}

@@ -1,38 +1,44 @@
-import { HighlightColor } from "@shared/constants/mod.ts";
-import { ItemInfo } from "@shared/types/common/mod.ts";
+import { ItemInfo } from "@shared/types/common/item.types.ts";
+import { HighlightColor } from "@shared/constants/highlight.constants.ts";
+import {
+  CreateParams,
+  SortablePaginatedQuery,
+  UpdateParams,
+  UserScoped,
+} from "@shared/types/params/base.params.ts";
 
-export type CreateHighlightParams = {
+export interface TextSelection {
+  start: number;
+  end: number;
+  selectedText: string;
+}
+
+export interface HighlightData {
   itemInfo: ItemInfo;
-  userId: string;
-  textSelection: {
-    start: number;
-    end: number;
-    selectedText: string;
-  };
   color?: HighlightColor;
+  textSelection: TextSelection;
   note?: string;
-};
+}
 
-export type UpdateHighlightParams = {
-  highlightId: string;
-  userId: string;
-  updates: {
-    color?: HighlightColor;
-    note?: string;
-  };
-};
+export interface CreateHighlightParams extends CreateParams<HighlightData> {}
 
-export type DeleteHighlightParams = {
-  highlightId: string;
-  userId: string;
-};
+export interface UpdateHighlightData {
+  color: HighlightColor;
+  note: string;
+}
 
-export type BulkDeleteHighlightsParams = {
+export interface UpdateHighlightParams
+  extends UpdateParams<UpdateHighlightData> {}
+
+export interface ListHighlightsParams
+  extends SortablePaginatedQuery,
+    UserScoped {
+  itemId?: string;
+  color?: HighlightColor;
+  hasNote?: boolean;
+  sortBy?: "createdAt" | "position";
+}
+
+export interface BulkDeleteHighlightsOperation extends UserScoped {
   highlightIds: string[];
-  userId: string;
-};
-
-export type VerifyHighlightOwnershipParams = {
-  highlightId: string;
-  userId: string;
-};
+}

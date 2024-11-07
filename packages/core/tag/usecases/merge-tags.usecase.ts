@@ -2,7 +2,7 @@ import {
   TagNotFoundError,
   UnauthorizedError,
 } from "@shared/types/errors/mod.ts";
-import { MergeTagsParams } from "@shared/types/params/mod.ts";
+import { MergeTagsOperation } from "@shared/types/params/mod.ts";
 import { TagService } from "@core/tag/tag.service.ts";
 import { ItemService } from "@core/item/item.service.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
@@ -13,7 +13,7 @@ export class MergeTagsUseCase {
     private itemService: ItemService<ItemContent>,
   ) {}
 
-  async execute(params: MergeTagsParams): Promise<void> {
+  async execute(params: MergeTagsOperation): Promise<void> {
     // Check if source and target tags exist
     const [sourceTag, targetTag] = await Promise.all([
       this.tagService.findByName({

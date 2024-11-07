@@ -1,16 +1,11 @@
 import { TagRepository } from "@core/tag/tag.repository.ts";
 import { Tag } from "@core/tag/tag.entity.ts";
 import {
-  BaseError,
-  BulkOperationError,
-  OperationError,
-} from "@shared/types/errors/mod.ts";
-import {
-  BulkTagParams,
-  CreateManyTagsParams,
+  BulkTagItemOperation,
+  CreateManyTagsOperation,
   CreateTagParams,
   FindTagByNameParams,
-  TagItemParams,
+  TagItemOperation,
 } from "@shared/types/params/mod.ts";
 import { ItemService } from "@core/item/item.service.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
@@ -33,11 +28,11 @@ export class TagService extends UserScopedService<Tag> {
   }
 
   async getOrCreate(params: CreateTagParams): Promise<Tag> {
-    const { userId, tagInfo } = params;
+    const { userId, data } = params;
 
     // Check if the tag already exists for the user
     let tag = await this.tagRepo.findByName({
-      tagName: params.tagInfo.name,
+      tagName: data.name,
       userId,
     });
     if (!tag) {
@@ -45,8 +40,8 @@ export class TagService extends UserScopedService<Tag> {
       tag = {
         id: generateId(),
         userId: userId,
-        name: tagInfo.name,
-        color: tagInfo.color,
+        name: data.name,
+        color: data.color,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -55,44 +50,61 @@ export class TagService extends UserScopedService<Tag> {
     return tag;
   }
 
-  getOrCreateMany(params: CreateManyTagsParams): Promise<Tag[]> {
+  getOrCreateMany(params: CreateManyTagsOperation): Promise<Tag[]> {
     const { userId, tagInfos } = params;
 
     return Promise.all(
-      tagInfos.map((tagInfo) => this.getOrCreate({ userId: userId, tagInfo })),
+      tagInfos.map((tagInfo) =>
+        this.getOrCreate({ userId: userId, data: tagInfo }),
+      ),
     );
   }
 
-  async addToItem(params: TagItemParams): Promise<void> {
-    const item = await this.itemService.tryFindById(params.itemId);
-    const newTags = params.tagInfos.map((t) => t.name);
+  async addToItem(params: TagItemOperation): Promise<void> {
+    const { userId, itemId, tagIds } = params;
 
-    item.tags = [...new Set([...item.tags, ...newTags])];
+    const item = await this.itemService.tryFindById(itemId);
+
+    // Verify item ownership
+    await this.itemService.verifyOwnership({
+      id: itemId,
+      userId: userId,
+    });
+
+    item.tags = [...new Set([...item.tags, ...tagIds])];
     await this.itemService.save(item);
   }
 
-  async bulkAddToItem(params: BulkTagParams): Promise<void> {
-    const errors: BaseError[] = [];
+  async bulkAddToItem(params: BulkTagItemOperation): Promise<void> {
+    const { userId, itemIds, tagIds } = params;
 
-    await Promise.all(
-      params.itemIds.map(async (itemId) => {
-        try {
-          await this.addToItem({
-            itemId: itemId,
-            ...params,
-          });
-        } catch (error) {
-          if (error instanceof BaseError) {
-            errors.push(error);
-          } else {
-            errors.push(new OperationError(`Unknown error`, error));
-          }
-        }
-      }),
+    // Validate inputs
+    if (!itemIds.length || !tagIds.length) {
+      return;
+    }
+
+    // Get all items in one query
+    const items = await Promise.all(
+      itemIds.map((id) => this.itemService.tryFindById(id)),
     );
 
-    if (errors.length > 0) {
-      throw new BulkOperationError(`Failed to tag some items`, errors);
-    }
+    // Verify ownership of all items in bulk
+    await Promise.all(
+      itemIds.map((itemId) =>
+        this.itemService.verifyOwnership({
+          id: itemId,
+          userId: userId,
+        }),
+      ),
+    );
+
+    // Update tags for all items
+    const updatedItems = items.map((item) => ({
+      ...item,
+      tags: [...new Set([...item.tags, ...tagIds])],
+    }));
+
+    // Save all items in parallel
+    await Promise.all(updatedItems.map((item) => this.itemService.save(item)));
   }
 }

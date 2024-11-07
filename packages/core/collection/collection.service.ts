@@ -27,12 +27,12 @@ export class CollectionService extends UserScopedService<Collection> {
     const collection: Collection = {
       id: crypto.randomUUID(),
       userId: params.userId,
-      name: params.name,
-      description: params.description,
+      name: params.data.name,
+      description: params.data.description,
       isDefault: false,
       isArchive: false,
-      color: params.color,
-      icon: params.icon,
+      color: params.data.color,
+      icon: params.data.icon,
       itemCount: 0,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -42,7 +42,8 @@ export class CollectionService extends UserScopedService<Collection> {
   }
 
   async addItem(params: AddToCollectionParams): Promise<void> {
-    const { collectionId, itemInfo } = params;
+    const { id, itemInfo } = params;
+
     // Check if item exists
     const item = await this.itemRepo.findById(itemInfo.itemId);
     if (!item) {
@@ -50,23 +51,17 @@ export class CollectionService extends UserScopedService<Collection> {
     }
 
     // Check if target list exists
-    const targetList = await this.collectionRepo.findById(collectionId);
+    const targetList = await this.collectionRepo.findById(id);
     if (!targetList) {
-      throw new CollectionNotFoundError(collectionId);
+      throw new CollectionNotFoundError(id);
     }
 
     // Add the new item
-    await this.collectionRepo.addItem({
-      collectionId: collectionId,
-      itemInfo: itemInfo,
-    });
+    await this.collectionRepo.addItem(params);
   }
 
   async removeItem(params: RemoveFromCollectionParams): Promise<void> {
-    await this.collectionRepo.removeItem({
-      collectionId: params.collectionId,
-      itemInfo: params.itemInfo,
-    });
+    await this.collectionRepo.removeItem(params);
   }
 
   findByitem(itemId: string): Promise<Collection[]> {
