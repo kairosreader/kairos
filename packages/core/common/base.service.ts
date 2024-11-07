@@ -13,6 +13,11 @@ import {
 import { ResourceIdentifier, UnauthorizedError } from "@shared/types/mod.ts";
 import { UpdateParams } from "@shared/types/params/mod.ts";
 
+interface FindByIdsResult<T> {
+  found: T[];
+  missing: string[];
+}
+
 export abstract class BaseService<T extends BaseEntity> {
   protected abstract resourceName: string;
 
@@ -22,12 +27,47 @@ export abstract class BaseService<T extends BaseEntity> {
     return this.repository.findById(id);
   }
 
+  findByIds(ids: string[]): Promise<T[]> {
+    return this.repository.findByIds(ids);
+  }
+
   async tryFindById(id: string): Promise<T> {
     const resource = await this.repository.findById(id);
     if (!resource) {
       throw new NotFoundError(this.resourceName, id);
     }
     return resource;
+  }
+
+  async findByIdsWithReport(ids: string[]): Promise<FindByIdsResult<T>> {
+    if (!ids.length) {
+      return { found: [], missing: [] };
+    }
+
+    const uniqueIds = [...new Set(ids)];
+    const resources = await this.repository.findByIds(uniqueIds);
+
+    // Create a Set of found IDs for efficient lookup
+    const foundIds = new Set(resources.map((resource) => resource.id));
+    const missing = uniqueIds.filter((id) => !foundIds.has(id));
+
+    return {
+      found: resources,
+      missing,
+    };
+  }
+
+  async tryFindByIds(ids: string[]): Promise<T[]> {
+    const { found, missing } = await this.findByIdsWithReport(ids);
+
+    if (missing.length > 0) {
+      throw new NotFoundError(
+        this.resourceName,
+        `Missing ${this.resourceName}(s): ${missing.join(", ")}`,
+      );
+    }
+
+    return found;
   }
 
   save(entity: T): Promise<T> {

@@ -83,10 +83,8 @@ export class TagService extends UserScopedService<Tag> {
       return;
     }
 
-    // Get all items in one query
-    const items = await Promise.all(
-      itemIds.map((id) => this.itemService.tryFindById(id)),
-    );
+    // Find all items and throw if not found
+    const items = await this.itemService.tryFindByIds(itemIds);
 
     // Verify ownership of all items in bulk
     await Promise.all(
