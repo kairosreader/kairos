@@ -13,9 +13,10 @@ export class EmailProcessingHandler extends BaseItemHandler {
       content.content.split(/\s+/).length / 200,
     );
 
-    await this.itemService.update(
-      { id: item.id, userId: item.userId },
-      { estimatedReadTime },
-    );
+    await this.itemService.update({
+      id: item.id,
+      userId: item.userId,
+      updates: { estimatedReadTime },
+    });
   }
 }

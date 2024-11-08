@@ -17,9 +17,10 @@ export class ArticleProcessingHandler extends BaseItemHandler {
       content.url,
     );
 
-    await this.itemService.update(
-      { id: item.id, userId: item.userId },
-      {
+    await this.itemService.update({
+      id: item.id,
+      userId: item.userId,
+      updates: {
         content: {
           ...content,
           content: extractedContent.content,
@@ -31,6 +32,6 @@ export class ArticleProcessingHandler extends BaseItemHandler {
         coverImage: extractedContent.coverImage,
         estimatedReadTime: extractedContent.estimatedReadTime,
       },
-    );
+    });
   }
 }
