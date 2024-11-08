@@ -7,5 +7,5 @@ export * from "./highlight/usecases/mod.ts";
 export * from "./item/mod.ts";
 export * from "./tag/tag.service.ts";
 export * from "./tag/usecases/mod.ts";
-export * from "./user/user.entity.ts";
+export * from "./user/mod.ts";
 export * from "./queue/mod.ts";
