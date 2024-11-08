@@ -1,12 +1,17 @@
 import { Item, ItemRepository, ReadingProgress } from "@core/item/mod.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
-import { ItemParams, UserScopedParams } from "@shared/types/params/mod.ts";
+
 import { ItemType } from "@shared/constants/mod.ts";
 import { ItemNotFoundError } from "@shared/types/errors/mod.ts";
+import { ResourceIdentifier } from "@shared/types/params/base.params.ts";
+
 
 export class PostgresItemRepository implements ItemRepository<ItemContent> {
+  findByIds(ids: string[]): Promise<Item<ItemContent>[]> {
+    throw new Error("Method not implemented.");
+  }
   findByUserAndType(
-    params: ItemParams & { type?: ItemType },
+    params: ResourceIdentifier & { type?: ItemType },
   ): Promise<Item<ItemContent>[]> {
     return Promise.resolve([]);
   }
@@ -16,7 +21,7 @@ export class PostgresItemRepository implements ItemRepository<ItemContent> {
   findByUser(userId: string): Promise<Item<ItemContent>[]> {
     throw new ItemNotFoundError("Method not implemented.");
   }
-  delete(params: UserScopedParams): Promise<void> {
+  delete(params: ResourceIdentifier): Promise<void> {
     return Promise.resolve();
   }
   findById(id: string): Promise<Item<ItemContent> | null> {
