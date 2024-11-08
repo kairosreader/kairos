@@ -13,7 +13,7 @@ import { BullQueueService } from "@infra/queue/bull/bull-queue.service.ts";
 import { ReadabilityExtractorService } from "@infra/content/readability/readability-extractor.service.ts";
 import { ArticleProcessingHandler } from "@infra/queue/handlers/article.handler.ts";
 import { EmailProcessingHandler } from "@infra/queue/handlers/email.handler.ts";
-import { PostgresItemRepository } from "@infra/repositories/postgres/item.repository.ts";
+import { DrizzleItemRepository } from "@infra/repositories/postgres/item.repository.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
 import { GetItemUseCase } from "@core/item/usecases/get-item.usecase.ts";
 import { ListItemsUseCase } from "@core/item/usecases/list-item.usecase.ts";
@@ -35,7 +35,7 @@ export function configureContainer(
   container.registerSingleton<ItemRepository<ItemContent>>(
     TOKENS.ItemRepository,
     () => {
-      return new PostgresItemRepository();
+      return new DrizzleItemRepository();
     },
   );
 
