@@ -24,9 +24,9 @@ export class BullQueueService implements QueueService {
   }
 
   registerHandler<T>(queueName: string, handler: QueueHandler<T>): void {
-    const worker = new Bull.Worker(
+    const worker = new Bull.Worker<T>(
       queueName,
-      async (job: any) => {
+      async (job: Bull.Job) => {
         try {
           await handler.handle(job.data);
         } catch (error) {
