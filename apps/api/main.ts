@@ -1,11 +1,12 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
-import { ItemRoutes } from "@api/item/item.route.ts";
 import {
   TsyringeContainer,
   configureContainer,
   TOKENS,
 } from "@infra/di/mod.ts";
+import { ItemController } from "@api/item/item.controller.ts";
+import { AppEnv } from "@api/common/controller/controller.types.ts";
 
 const container = new TsyringeContainer();
 // Configure container
@@ -18,16 +19,20 @@ configureContainer(container, {
 });
 
 // Initialize controller with dependencies
-const itemRoutes = new ItemRoutes(
+const itemController = new ItemController(
   container.resolve(TOKENS.SaveItemUseCase),
   container.resolve(TOKENS.UpdateItemUseCase),
-  container.resolve(TOKENS.ItemService),
+  container.resolve(TOKENS.GetItemUseCase),
+  container.resolve(TOKENS.ListItemsUseCase),
+  container.resolve(TOKENS.UpdateReadingProgressUseCase),
+  container.resolve(TOKENS.DeleteItemUseCase),
+  container.resolve(TOKENS.BulkDeleteItemsUseCase),
 );
 
-const app = new OpenAPIHono();
+const app = new OpenAPIHono<AppEnv>();
 
 // Register routes
-app.route("/api", itemRoutes.register());
+app.route("/api", itemController.register());
 
 // OpenAPI documentation
 app.doc("/api", {
