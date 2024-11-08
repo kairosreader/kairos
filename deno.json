@@ -17,7 +17,7 @@
     "@core/": "./packages/core/",
     "@infra/": "./packages/infra/",
     "@shared/": "./packages/shared/",
-    "@hono/hono": "jsr:@hono/hono@^4.6.9",
+    "@hono/hono": "npm:hono@^4.6.9",
     "@hono/swagger-ui": "npm:@hono/swagger-ui@0.4.1",
     "@hono/zod-openapi": "npm:@hono/zod-openapi@0.16.4",
     "@mozilla/readability": "npm:@mozilla/readability@0.5.0",
@@ -29,9 +29,9 @@
   },
   "compilerOptions": {
     "strict": true,
-    "allowJs": true,
     "lib": ["deno.ns", "dom"]
   },
+  "nodeModulesDir": "auto",
   "fmt": {
     "include": ["apps/", "packages/"],
     "options": {

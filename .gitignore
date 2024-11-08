@@ -1,0 +1,28 @@
+# Deno specific
+/.deno/
+.env
+.env.*
+!.env.example
+
+# Dependencies
+/node_modules/
+
+# IDE and editor files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+*.code-workspace
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Docker
+.docker/data/
+docker-compose.override.yml

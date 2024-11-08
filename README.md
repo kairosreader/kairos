@@ -100,7 +100,7 @@ git clone https://github.com/yourusername/kairos.git
 docker-compose up -d
 
 # Install dependencies
-deno cache
+deno install --allow-scripts
 
 # Start development
 deno task dev
