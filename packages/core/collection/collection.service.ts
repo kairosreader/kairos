@@ -1,17 +1,17 @@
-import type { Collection } from "@core/collection/collection.entity.ts";
-import type { CollectionRepository } from "@core/collection/collection.repository.ts";
+import type {
+  AddToCollectionParams,
+  CreateCollectionParams,
+  ItemContent,
+  RemoveFromCollectionParams,
+} from "@kairos/shared/types";
 import {
   CollectionNotFoundError,
   ItemNotFoundError,
-} from "@shared/types/errors/mod.ts";
-import {
-  AddToCollectionParams,
-  CreateCollectionParams,
-  RemoveFromCollectionParams,
-} from "@shared/types/params/mod.ts";
-import { UserScopedService } from "@core/common/base.service.ts";
-import { ItemContent } from "@shared/types/common/mod.ts";
-import { ItemService } from "@core/item/item.service.ts";
+} from "@kairos/shared/types/errors";
+import { UserScopedService } from "../common/base.service.ts";
+import type { ItemService } from "../item/item.service.ts";
+import type { Collection } from "./collection.entity.ts";
+import type { CollectionRepository } from "./collection.repository.ts";
 
 export class CollectionService extends UserScopedService<Collection> {
   protected override resourceName: string;

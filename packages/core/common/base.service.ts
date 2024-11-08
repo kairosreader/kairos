@@ -1,17 +1,20 @@
-import { BaseEntity, UserScoped } from "@shared/types/common/mod.ts";
-import {
-  BaseRepository,
-  NonUserScopedRepository,
-  UserScopedRepository,
-} from "@core/common/base.repository.ts";
+import type { BaseEntity, UserScoped } from "@kairos/shared/types/common";
+import type {
+  ResourceIdentifier,
+  UpdateParams,
+} from "@kairos/shared/types/params";
 import {
   BaseError,
   BulkOperationError,
   NotFoundError,
   OperationError,
-} from "@shared/types/errors/mod.ts";
-import { ResourceIdentifier, UnauthorizedError } from "@shared/types/mod.ts";
-import { UpdateParams } from "@shared/types/params/mod.ts";
+  UnauthorizedError,
+} from "@kairos/shared/types/errors";
+import type {
+  BaseRepository,
+  NonUserScopedRepository,
+  UserScopedRepository,
+} from "./base.repository.ts";
 
 interface FindByIdsResult<T> {
   found: T[];

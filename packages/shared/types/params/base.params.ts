@@ -1,7 +1,7 @@
-import { ItemType } from "@shared/constants/item.constants.ts";
+import type { ItemType } from "../../constants/item.constants.ts";
 
 // Base interfaces for common patterns
-export interface UserScoped {
+export interface UserScopedParams {
   userId: string;
 }
 
@@ -9,13 +9,13 @@ export interface ResourceId {
   id: string;
 }
 
-export interface ResourceIdentifier extends UserScoped, ResourceId {}
+export interface ResourceIdentifier extends UserScopedParams, ResourceId {}
 
 export type ItemId = ResourceId["id"];
-export type UserId = UserScoped["userId"];
+export type UserId = UserScopedParams["userId"];
 export type TagId = ResourceId["id"];
 
-export const isUserScoped = (obj: unknown): obj is UserScoped => {
+export const isUserScoped = (obj: unknown): obj is UserScopedParams => {
   return typeof obj === "object" && obj !== null && "userId" in obj;
 };
 
@@ -43,7 +43,7 @@ export interface UpdateParams<T> extends ResourceIdentifier {
   updates: Partial<T>;
 }
 
-export interface CreateParams<T> extends UserScoped {
+export interface CreateParams<T> extends UserScopedParams {
   data: T;
 }
 
@@ -51,7 +51,7 @@ export interface GetParams extends ResourceIdentifier {}
 
 export interface DeleteParams extends ResourceIdentifier {}
 
-export interface BulkDeleteParams extends UserScoped {
+export interface BulkDeleteParams extends UserScopedParams {
   ids: string[];
 }
 

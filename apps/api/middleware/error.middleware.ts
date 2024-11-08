@@ -1,7 +1,7 @@
-import { Context } from "@hono/hono";
+import type { Context } from "@hono/hono";
 import { HTTPException } from "@hono/hono/http-exception";
-import { StatusCode } from "@hono/hono/utils/http-status";
-import { BaseError, BulkOperationError } from "@shared/types/errors/mod.ts";
+import type { StatusCode } from "@hono/hono/utils/http-status";
+import { BaseError, BulkOperationError } from "@kairos/shared/types/errors";
 
 const isProd = Deno.env.get("DENO_ENV") === "production";
 

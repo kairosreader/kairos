@@ -1,6 +1,6 @@
-import { BaseItemHandler } from "@core/queue/mod.ts";
-import { Item, ItemService } from "@core/item/mod.ts";
-import type { EmailContent, ItemContent } from "@shared/types/common/mod.ts";
+import { BaseItemHandler } from "@kairos/core/queue";
+import type { Item, ItemService } from "@kairos/core/item";
+import type { EmailContent, ItemContent } from "@kairos/shared/types/common";
 
 export class EmailProcessingHandler extends BaseItemHandler {
   constructor(itemService: ItemService<ItemContent>) {

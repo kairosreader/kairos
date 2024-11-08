@@ -1,7 +1,7 @@
 import { pgTable, unique, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { TAG_COLOR } from "@shared/constants/mod.ts";
-import { users } from "@infra/db/drizzle/schema/user.ts";
-import { enumValues } from "@shared/mod.ts";
+import { enumValues } from "@kairos/shared/utils";
+import { TAG_COLOR } from "@kairos/shared/constants";
+import { users } from "./user.ts";
 
 export const tags = pgTable(
   "tags",

@@ -1,12 +1,14 @@
-import { TsyringeContainer } from "@infra/di/tsyringe/container.ts";
-import { configureContainer } from "@infra/di/container.config.ts";
-import { TOKENS } from "@infra/di/tokens.ts";
-import { QueueService } from "@core/queue/queue.service.ts";
-import { ITEM_TYPE } from "@shared/constants/mod.ts";
+import {
+  TsyringeContainer,
+  configureContainer,
+  TOKENS,
+} from "@kairos/infra/di";
+import { QueueService } from "@kairos/core";
+import { ITEM_TYPE } from "@kairos/shared";
 import {
   ArticleProcessingHandler,
   EmailProcessingHandler,
-} from "@infra/queue/handlers/mod.ts";
+} from "@kairos/infra/queue";
 
 const container = new TsyringeContainer();
 

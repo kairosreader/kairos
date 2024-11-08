@@ -1,16 +1,16 @@
 import { eq, and, inArray } from "drizzle-orm";
-import { db } from "@infra/db/connection.ts";
-import { items } from "@infra/db/drizzle/schema/item.ts";
-import { readingProgress } from "@infra/db/drizzle/schema/reading.ts";
-import { Item, ItemRepository, ReadingProgress } from "@core/item/mod.ts";
-import { ItemContent } from "@shared/types/common/mod.ts";
-import { ItemType } from "@shared/constants/mod.ts";
-import { ResourceIdentifier } from "@shared/types/params/mod.ts";
+import type { Item, ItemRepository, ReadingProgress } from "@kairos/core/item";
+import type { ItemContent } from "@kairos/shared/types/common";
+import { db } from "../../db/connection.ts";
+import { items } from "../../db/drizzle/schema/item.ts";
 import {
-  mapNullToUndefined,
+  type DatabaseResult,
   mapArrayNullToUndefined,
-} from "@infra/db/utils.ts";
-import { DatabaseResult } from "@infra/db/utils.ts";
+  mapNullToUndefined,
+} from "../../db/utils.ts";
+import type { ResourceIdentifier } from "@kairos/shared/types/params";
+import type { ItemType } from "@kairos/shared/constants";
+import { readingProgress } from "../../db/drizzle/schema/reading.ts";
 
 export class DrizzleItemRepository implements ItemRepository<ItemContent> {
   async findById(id: string): Promise<Item<ItemContent> | null> {

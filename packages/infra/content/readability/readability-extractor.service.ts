@@ -1,10 +1,10 @@
-import { Readability } from "@mozilla/readability";
-import { JSDOM } from "jsdom";
-import {
+import type {
   ContentExtractorService,
   ExtractedContent,
-} from "@core/content/mod.ts";
-import { OperationError } from "@shared/types/errors/mod.ts";
+} from "@kairos/core/content";
+import { OperationError } from "@kairos/shared/types/errors";
+import { Readability } from "@mozilla/readability";
+import { JSDOM } from "jsdom";
 
 export class ReadabilityExtractorService implements ContentExtractorService {
   async extractFromUrl(url: string): Promise<ExtractedContent> {

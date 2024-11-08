@@ -1,6 +1,6 @@
 import { pgTable, timestamp, uuid, integer } from "drizzle-orm/pg-core";
-import { items } from "@infra/db/drizzle/schema/item.ts";
-import { users } from "@infra/db/drizzle/schema/user.ts";
+import { items } from "./item.ts";
+import { users } from "./user.ts";
 
 export const readingProgress = pgTable("reading_progress", {
   id: uuid("id").primaryKey().defaultRandom(),

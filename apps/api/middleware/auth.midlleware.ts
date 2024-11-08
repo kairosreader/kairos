@@ -1,6 +1,6 @@
 import type { Context, Next } from "@hono/hono";
-import { UnauthorizedError } from "@shared/types/errors/mod.ts";
-import { AppEnv } from "@api/common/controller/controller.types.ts";
+import { UnauthorizedError } from "@kairos/shared/types/errors";
+import { AppEnv } from "../common/controller/controller.types.ts";
 
 export async function authMiddleware(c: Context<AppEnv>, next: Next) {
   const authHeader = c.req.header("authorization");

@@ -1,5 +1,5 @@
-import { HighlightColor } from "@shared/constants/mod.ts";
-import { BaseEntity, ItemInfo, UserScoped } from "@shared/types/common/mod.ts";
+import type { BaseEntity, ItemInfo, UserScoped } from "@kairos/shared/types";
+import type { HighlightColor } from "@kairos/shared/constants";
 
 export interface Highlight extends BaseEntity, UserScoped {
   itemInfo: ItemInfo;

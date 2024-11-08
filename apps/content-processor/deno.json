@@ -1,0 +1,17 @@
+{
+  "name": "@kairos/content-processor",
+  "version": "0.0.0",
+  "tasks": {
+    "start": "deno run -A main.ts",
+    "test": "deno test -A"
+  },
+  "imports": {
+    "@kairos/core": "../../packages/core/mod.ts",
+    "@kairos/infra/di": "../../packages/infra/di/mod.ts",
+    "@kairos/infra/queue": "../../packages/infra/queue/mod.ts",
+    "@kairos/shared": "../../packages/shared/mod.ts"
+  },
+  "exports": {
+    ".": "./main.ts"
+  }
+}

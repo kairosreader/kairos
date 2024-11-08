@@ -1,5 +1,5 @@
-import { BaseEntity, UserScoped } from "@shared/types/common/mod.ts";
-import { TagColor } from "@shared/constants/mod.ts";
+import type { BaseEntity, UserScoped } from "@kairos/shared/types";
+import type { TagColor } from "@kairos/shared/constants";
 
 export interface Tag extends BaseEntity, UserScoped {
   name: string;

@@ -1,5 +1,5 @@
 import { migrate } from "drizzle-orm/postgres-js/migrator";
-import { db, migrationClient } from "@infra/db/connection.ts";
+import { db, migrationClient } from "../connection.ts";
 
 // This script will automatically run all pending migrations
 console.log("Running migrations...");

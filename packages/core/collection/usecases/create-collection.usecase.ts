@@ -1,6 +1,6 @@
-import { CreateCollectionParams } from "@shared/types/params/mod.ts";
-import { Collection } from "@core/collection/collection.entity.ts";
-import { CollectionService } from "@core/collection/collection.service.ts";
+import type { CreateCollectionParams } from "@kairos/shared/types/params";
+import type { CollectionService } from "../collection.service.ts";
+import type { Collection } from "../collection.entity.ts";
 
 export class CreateReadingListUseCase {
   constructor(private collectionService: CollectionService) {}

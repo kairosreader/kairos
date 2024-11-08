@@ -6,10 +6,10 @@ import {
   integer,
   jsonb,
 } from "drizzle-orm/pg-core";
-import { ItemContent } from "@shared/types/common/mod.ts";
-import { ITEM_STATUS, ITEM_TYPE } from "@shared/constants/mod.ts";
-import { users } from "@infra/db/drizzle/schema/user.ts";
-import { enumValues } from "@shared/utils/mod.ts";
+import { users } from "./user.ts";
+import { enumValues } from "@kairos/shared/utils";
+import { ITEM_STATUS, ITEM_TYPE } from "@kairos/shared/constants";
+import type { ItemContent } from "@kairos/shared/types/common";
 
 export const items = pgTable("items", {
   id: uuid("id").primaryKey().defaultRandom(),

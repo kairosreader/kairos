@@ -1,8 +1,8 @@
 import { pgTable, text, timestamp, uuid, jsonb } from "drizzle-orm/pg-core";
-import { HIGHLIGHT_COLOR } from "@shared/constants/mod.ts";
-import { items } from "@infra/db/drizzle/schema/item.ts";
-import { users } from "@infra/db/drizzle/schema/user.ts";
-import { enumValues } from "@shared/utils/mod.ts";
+import { enumValues } from "@kairos/shared/utils";
+import { HIGHLIGHT_COLOR } from "@kairos/shared/constants";
+import { items } from "./item.ts";
+import { users } from "./user.ts";
 
 export const highlights = pgTable("highlights", {
   id: uuid("id").primaryKey().defaultRandom(),

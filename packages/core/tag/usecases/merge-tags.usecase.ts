@@ -1,11 +1,10 @@
+import type { ItemContent, MergeTagsOperation } from "@kairos/shared/types";
 import {
   TagNotFoundError,
   UnauthorizedError,
-} from "@shared/types/errors/mod.ts";
-import { MergeTagsOperation } from "@shared/types/params/mod.ts";
-import { TagService } from "@core/tag/tag.service.ts";
-import { ItemService } from "@core/item/item.service.ts";
-import { ItemContent } from "@shared/types/common/mod.ts";
+} from "@kairos/shared/types/errors";
+import type { ItemService } from "../../item/item.service.ts";
+import type { TagService } from "../tag.service.ts";
 
 export class MergeTagsUseCase {
   constructor(

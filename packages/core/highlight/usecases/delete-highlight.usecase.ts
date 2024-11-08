@@ -1,5 +1,5 @@
-import type { HighlightService } from "@core/highlight/highlight.service.ts";
-import { DeleteParams } from "@shared/types/params/mod.ts";
+import type { DeleteParams } from "@kairos/shared/types";
+import type { HighlightService } from "../highlight.service.ts";
 
 export class DeleteHighlightUseCase {
   constructor(private highlightService: HighlightService) {}

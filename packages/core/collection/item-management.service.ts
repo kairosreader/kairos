@@ -1,15 +1,15 @@
+import type {
+  BulkItemArchiveOperation,
+  ItemArchiveOperation,
+  MoveItemOperation,
+} from "@kairos/shared/types/params";
 import {
   BaseError,
   BulkOperationError,
   CollectionOperationError,
-} from "@shared/types/errors/mod.ts";
-import { CollectionService } from "@core/collection/collection.service.ts";
-import { SpecialCollectionService } from "@core/collection/special-collection.service.ts";
-import {
-  BulkItemArchiveOperation,
-  ItemArchiveOperation,
-  MoveItemOperation,
-} from "@shared/types/params/mod.ts";
+} from "@kairos/shared/types/errors";
+import type { CollectionService } from "./collection.service.ts";
+import type { SpecialCollectionService } from "./special-collection.service.ts";
 
 export class ItemManagementService {
   constructor(

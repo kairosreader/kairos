@@ -1,9 +1,9 @@
-import type { HighlightRepository } from "@core/highlight/highlight.repository.ts";
-import { type Highlight } from "@core/highlight/highlight.entity.ts";
-import { CreateHighlightParams } from "@shared/types/params/mod.ts";
-import { UserScopedService } from "@core/common/base.service.ts";
-import { generateId } from "@shared/utils/mod.ts";
-import { HIGHLIGHT_COLOR } from "@shared/constants/mod.ts";
+import type { CreateHighlightParams } from "@kairos/shared/types";
+import { UserScopedService } from "../common/base.service.ts";
+import type { Highlight } from "./highlight.entity.ts";
+import type { HighlightRepository } from "./highlight.repository.ts";
+import { generateId } from "@kairos/shared/utils";
+import { HIGHLIGHT_COLOR } from "@kairos/shared/constants";
 
 export class HighlightService extends UserScopedService<Highlight> {
   protected override resourceName: string;

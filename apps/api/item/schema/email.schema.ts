@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
-import { urlSchema } from "@api/common/schema/url.schema.ts";
+import { ITEM_TYPE } from "@kairos/shared/constants";
+import { urlSchema } from "../../common/schema/url.schema.ts";
 import { baseItemFields } from "./item.schema.ts";
-import { ITEM_TYPE } from "@shared/constants/mod.ts";
 
 export const EmailAttachmentSchema = z.object({
   name: z.string(),

@@ -1,4 +1,4 @@
-import { HighlightColor } from "@shared/constants/mod.ts";
+import type { HighlightColor } from "@kairos/shared/constants";
 
 export interface User {
   id: string;

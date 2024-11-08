@@ -4,9 +4,9 @@ import {
   TsyringeContainer,
   configureContainer,
   TOKENS,
-} from "@infra/di/mod.ts";
-import { ItemController } from "@api/item/item.controller.ts";
-import { AppEnv } from "@api/common/controller/controller.types.ts";
+} from "@kairos/infra/di";
+import { ItemController } from "./item/item.controller.ts";
+import type { AppEnv } from "./common/controller/controller.types.ts";
 
 const container = new TsyringeContainer();
 // Configure container

@@ -1,9 +1,9 @@
-import { BaseEntity, UserScoped } from "@shared/types/common/entity.types.ts";
 import type {
   ITEM_TYPE,
   ItemStatus,
   ItemType,
-} from "@shared/constants/item.constants.ts";
+} from "../../constants/item.constants.ts";
+import type { BaseEntity, UserScoped } from "./entity.types.ts";
 
 export interface BaseItem extends BaseEntity, UserScoped {
   type: ItemType;

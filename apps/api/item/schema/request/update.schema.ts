@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
-import { ArticleContentSchema } from "@api/item/schema/article.schema.ts";
-import { EmailContentSchema } from "@api/item/schema/email.schema.ts";
-import { PdfContentSchema } from "@api/item/schema/pdf.schema.ts";
+import { ArticleContentSchema } from "../article.schema.ts";
+import { EmailContentSchema } from "../email.schema.ts";
+import { PdfContentSchema } from "../pdf.schema.ts";
 
 export const UpdateItemRequestSchema = z
   .object({

@@ -1,14 +1,10 @@
-import { TagService } from "@core/tag/tag.service.ts";
-import { TagItemParams } from "@shared/types/params/mod.ts";
+import type { TagItemOperation } from "@kairos/shared/types";
+import type { TagService } from "../tag.service.ts";
 
 export class TagItemUseCase {
   constructor(private tagService: TagService) {}
 
-  async execute(params: TagItemParams): Promise<void> {
-    // First get or create all tags
-    await this.tagService.getOrCreateMany(params);
-
-    // Then add tags to the article
+  async execute(params: TagItemOperation): Promise<void> {
     await this.tagService.addToItem(params);
   }
 }

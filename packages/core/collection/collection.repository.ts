@@ -1,10 +1,10 @@
-import type { Collection } from "@core/collection/collection.entity.ts";
-import { UserScopedRepository } from "@core/common/base.repository.ts";
-import { Item } from "@core/item/item.entity.ts";
-import {
+import type {
   AddToCollectionParams,
   RemoveFromCollectionParams,
-} from "@shared/types/params/mod.ts";
+} from "@kairos/shared/types/params";
+import type { UserScopedRepository } from "../common/base.repository.ts";
+import type { Collection } from "./collection.entity.ts";
+import type { Item } from "../item/item.entity.ts";
 
 export interface CollectionRepository extends UserScopedRepository<Collection> {
   findByItem(itemId: string): Promise<Collection[]>;

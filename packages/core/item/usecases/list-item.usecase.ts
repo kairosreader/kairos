@@ -1,7 +1,6 @@
-import { ItemService } from "@core/item/item.service.ts";
-import { ItemContent } from "@shared/types/common/mod.ts";
-import { Item } from "@core/item/item.entity.ts";
-import { ListItemsParams } from "@shared/types/params/mod.ts";
+import type { ItemContent, ListItemsParams } from "@kairos/shared/types";
+import type { ItemService } from "../item.service.ts";
+import type { Item } from "../item.entity.ts";
 
 export class ListItemsUseCase {
   constructor(private itemService: ItemService<ItemContent>) {}

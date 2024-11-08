@@ -1,6 +1,6 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
-import { AppEnv } from "@api/common/controller/controller.types.ts";
-import { createRouter } from "@api/common/controller/controller.utils.ts";
+import type { OpenAPIHono } from "@hono/zod-openapi";
+import type { AppEnv } from "./controller.types.ts";
+import { createRouter } from "./controller.utils.ts";
 
 export abstract class BaseController {
   protected router: OpenAPIHono<AppEnv>;

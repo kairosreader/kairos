@@ -1,5 +1,5 @@
-import { AddToCollectionParams } from "@shared/types/params/mod.ts";
-import { CollectionService } from "@core/collection/collection.service.ts";
+import type { AddToCollectionParams } from "@kairos/shared/types/params";
+import type { CollectionService } from "../../collection.service.ts";
 
 export class AddToReadingListUseCase {
   constructor(private collectionService: CollectionService) {}

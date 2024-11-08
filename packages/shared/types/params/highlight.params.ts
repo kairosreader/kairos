@@ -1,11 +1,11 @@
-import { ItemInfo } from "@shared/types/common/item.types.ts";
-import { HighlightColor } from "@shared/constants/highlight.constants.ts";
-import {
+import type { HighlightColor } from "../../constants/highlight.constants.ts";
+import type { ItemInfo } from "../common/item.types.ts";
+import type {
   CreateParams,
   SortablePaginatedQuery,
   UpdateParams,
-  UserScoped,
-} from "@shared/types/params/base.params.ts";
+  UserScopedParams,
+} from "./base.params.ts";
 
 export interface TextSelection {
   start: number;
@@ -32,13 +32,13 @@ export interface UpdateHighlightParams
 
 export interface ListHighlightsParams
   extends SortablePaginatedQuery,
-    UserScoped {
+    UserScopedParams {
   itemId?: string;
   color?: HighlightColor;
   hasNote?: boolean;
   sortBy?: "createdAt" | "position";
 }
 
-export interface BulkDeleteHighlightsOperation extends UserScoped {
+export interface BulkDeleteHighlightsOperation extends UserScopedParams {
   highlightIds: string[];
 }

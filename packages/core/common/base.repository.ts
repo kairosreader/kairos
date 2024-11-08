@@ -1,5 +1,4 @@
-import { BaseEntity } from "@shared/types/common/mod.ts";
-import { ResourceIdentifier } from "@shared/types/params/mod.ts";
+import type { BaseEntity, ResourceIdentifier } from "@kairos/shared";
 
 export interface BaseRepository<T extends BaseEntity> {
   findById(id: string): Promise<T | null>;

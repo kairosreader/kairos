@@ -1,5 +1,5 @@
 import { z } from "@hono/zod-openapi";
-import { idSchema } from "@api/common/schema/id.schema.ts";
+import { idSchema } from "../../../common/schema/id.schema.ts";
 
 export const ItemParamsSchema = z.object({
   id: idSchema,

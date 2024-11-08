@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid, jsonb } from "drizzle-orm/pg-core";
-import { UserPreferences } from "@core/user/mod.ts";
+import type { UserPreferences } from "@kairos/core";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),

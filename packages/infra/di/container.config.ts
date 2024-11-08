@@ -1,25 +1,23 @@
 import "reflect-metadata";
-import { Container } from "@core/di/container.ts";
-import { TOKENS } from "@infra/di/tokens.ts";
+import type { Container, QueueService } from "@kairos/core";
+import { type ItemRepository, ItemService } from "@kairos/core/item";
 import {
-  ItemRepository,
-  ItemService,
+  BulkDeleteItemsUseCase,
+  DeleteItemUseCase,
+  GetItemUseCase,
+  ListItemsUseCase,
   SaveItemUseCase,
   UpdateItemUseCase,
-} from "@core/item/mod.ts";
-import { ContentExtractorService } from "@core/content/content-extractor.service.ts";
-import { QueueService } from "@core/queue/queue.service.ts";
-import { BullQueueService } from "@infra/queue/bull/bull-queue.service.ts";
-import { ReadabilityExtractorService } from "@infra/content/readability/readability-extractor.service.ts";
-import { ArticleProcessingHandler } from "@infra/queue/handlers/article.handler.ts";
-import { EmailProcessingHandler } from "@infra/queue/handlers/email.handler.ts";
-import { DrizzleItemRepository } from "@infra/repositories/postgres/item.repository.ts";
-import { ItemContent } from "@shared/types/common/mod.ts";
-import { GetItemUseCase } from "@core/item/usecases/get-item.usecase.ts";
-import { ListItemsUseCase } from "@core/item/usecases/list-item.usecase.ts";
-import { UpdateReadingProgressUseCase } from "@core/item/usecases/update-reading-progress.usecase.ts";
-import { DeleteItemUseCase } from "@core/item/usecases/delete-item.usecase.ts";
-import { BulkDeleteItemsUseCase } from "@core/item/usecases/bulk-delete-items.usecase.ts";
+  UpdateReadingProgressUseCase,
+} from "@kairos/core/item/usecases";
+import type { ItemContent } from "@kairos/shared/types/common";
+import { DrizzleItemRepository } from "../repositories/postgres/item.repository.ts";
+import { TOKENS } from "./tokens.ts";
+import { BullQueueService } from "../queue/bull/bull-queue.service.ts";
+import type { ContentExtractorService } from "@kairos/core/content";
+import { ReadabilityExtractorService } from "../content/readability/readability-extractor.service.ts";
+import { ArticleProcessingHandler } from "../queue/handlers/article.handler.ts";
+import { EmailProcessingHandler } from "../queue/handlers/email.handler.ts";
 
 export function configureContainer(
   container: Container,

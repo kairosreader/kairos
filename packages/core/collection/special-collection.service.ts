@@ -1,9 +1,9 @@
-import type { CollectionRepository } from "@core/collection/collection.repository.ts";
-import type { Collection } from "@core/collection/collection.entity.ts";
 import {
   SPECIAL_COLLECTION,
-  SpecialCollection,
-} from "@shared/constants/mod.ts";
+  type SpecialCollection,
+} from "@kairos/shared/constants";
+import type { Collection } from "./collection.entity.ts";
+import type { CollectionRepository } from "./collection.repository.ts";
 
 export class SpecialCollectionService {
   constructor(private collectionRepo: CollectionRepository) {}

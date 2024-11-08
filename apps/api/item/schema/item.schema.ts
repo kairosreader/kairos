@@ -1,8 +1,8 @@
 import { z } from "@hono/zod-openapi";
-import { ITEM_STATUS } from "@shared/constants/mod.ts";
+import { ITEM_STATUS } from "@kairos/shared/constants";
 import { dateSchema } from "../../common/schema/date.schema.ts";
-import { idSchema, userIdSchema } from "@api/common/schema/id.schema.ts";
-import { urlSchema } from "@api/common/schema/url.schema.ts";
+import { idSchema, userIdSchema } from "../../common/schema/id.schema.ts";
+import { urlSchema } from "../../common/schema/url.schema.ts";
 
 export const baseItemFields = {
   id: idSchema,

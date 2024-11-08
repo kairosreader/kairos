@@ -1,5 +1,5 @@
-import { TagService } from "@core/tag/tag.service.ts";
-import { BulkTagItemOperation } from "@shared/types/mod.ts";
+import type { BulkTagItemOperation } from "@kairos/shared/types";
+import type { TagService } from "../tag.service.ts";
 
 export class BulkTagUseCase {
   constructor(private tagService: TagService) {}

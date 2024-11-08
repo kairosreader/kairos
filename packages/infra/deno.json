@@ -1,0 +1,41 @@
+{
+  "name": "@kairos/infra",
+  "version": "0.0.0",
+  "tasks": {
+    "db:generate": "drizzle-kit generate:pg",
+    "db:migrate": "deno run -A ./db/drizzle/migrate.ts",
+    "db:studio": "drizzle-kit studio"
+  },
+  "imports": {
+    "@kairos/core": "../core/mod.ts",
+    "@kairos/core/collection": "../core/collection/mod.ts",
+    "@kairos/core/item": "../core/item/mod.ts",
+    "@kairos/core/item/usecases": "../core/item/usecases/mod.ts",
+    "@kairos/core/queue": "../core/queue/mod.ts",
+    "@kairos/core/content": "../core/content/mod.ts",
+    "@kairos/shared/constants": "../shared/constants/mod.ts",
+    "@kairos/shared/types/common": "../shared/types/common/mod.ts",
+    "@kairos/shared/types/params": "../shared/types/params/mod.ts",
+    "@kairos/shared/types/errors": "../shared/types/errors/mod.ts",
+    "@kairos/shared/utils": "../shared/utils/mod.ts",
+    "@mozilla/readability": "npm:@mozilla/readability@0.5.0",
+    "bullmq": "npm:bullmq@5.25.0",
+    "drizzle-kit": "npm:drizzle-kit@^0.28.0",
+    "drizzle-orm": "npm:drizzle-orm@^0.36.1",
+    "jsdom": "npm:jsdom@25.0.1",
+    "postgres": "npm:postgres@^3.4.5",
+    "reflect-metadata": "npm:reflect-metadata@0.2.2",
+    "tsyringe": "npm:tsyringe@4.8.0"
+  },
+  "exports": {
+    ".": "./mod.ts",
+    "./content": "./content/readability/mod.ts",
+    "./db": "./db/mod.ts",
+    "./db/connection": "./db/mod.ts",
+    "./db/drizzle": "./db/drizzle/mod.ts",
+    "./db/drizzle/schema": "./db/drizzle/schema/mod.ts",
+    "./di": "./di/mod.ts",
+    "./queue": "./queue/mod.ts",
+    "./queue/handlers": "./queue/handlers/mod.ts"
+  }
+}

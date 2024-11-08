@@ -1,5 +1,5 @@
-import { ItemManagementService } from "@core/collection/item-management.service.ts";
-import { MoveItemOperation } from "@shared/types/params/mod.ts";
+import type { MoveItemOperation } from "@kairos/shared/types/params";
+import type { ItemManagementService } from "../../item-management.service.ts";
 
 export class MoveItemUseCase {
   constructor(private itemManagementService: ItemManagementService) {}

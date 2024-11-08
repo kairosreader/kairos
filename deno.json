@@ -3,7 +3,7 @@
     "start:api": "deno run -A --watch apps/api/main.ts",
     "dev": "deno task start:api & deno task start:processor",
     "db:generate": "drizzle-kit generate:pg",
-    "db:migrate": "deno run -A ./packages/infra/database/drizzle/migrate.ts",
+    "db:migrate": "deno run -A ./packages/infra/db/drizzle/migrate.ts",
     "db:studio": "drizzle-kit studio",
     "lint": "deno lint",
     "fmt": "deno fmt",
@@ -13,26 +13,13 @@
     "compile:api": "deno compile -A --output dist/api apps/api/main.ts",
     "compile:processor": "deno compile -A --output dist/processor apps/content-processor/main.ts"
   },
-  "imports": {
-    "@/": "./",
-    "@api/": "./apps/api/",
-    "@web/": "./apps/web/",
-    "@core/": "./packages/core/",
-    "@infra/": "./packages/infra/",
-    "@shared/": "./packages/shared/",
-    "@hono/hono": "npm:hono@^4.6.9",
-    "@hono/swagger-ui": "npm:@hono/swagger-ui@0.4.1",
-    "@hono/zod-openapi": "npm:@hono/zod-openapi@0.16.4",
-    "@mozilla/readability": "npm:@mozilla/readability@0.5.0",
-    "bullmq": "npm:bullmq@5.25.0",
-    "drizzle-kit": "npm:drizzle-kit@^0.28.0",
-    "drizzle-orm": "npm:drizzle-orm@^0.36.1",
-    "hono-pino": "jsr:@maou-shonen/hono-pino@0.5.1",
-    "jsdom": "npm:jsdom@25.0.1",
-    "postgres": "npm:postgres@^3.4.5",
-    "reflect-metadata": "npm:reflect-metadata@0.2.2",
-    "tsyringe": "npm:tsyringe@4.8.0"
-  },
+  "workspace": [
+    "./apps/api",
+    "./apps/content-processor",
+    "./packages/core",
+    "./packages/infra",
+    "./packages/shared"
+  ],
   "compilerOptions": {
     "strict": true,
     "lib": ["deno.ns", "dom"]

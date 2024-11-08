@@ -1,5 +1,5 @@
-import { TagService } from "@core/tag/tag.service.ts";
-import { DeleteParams } from "@shared/types/params/mod.ts";
+import type { DeleteParams } from "@kairos/shared/types";
+import type { TagService } from "../tag.service.ts";
 
 export class DeleteTagUseCase {
   constructor(private tagService: TagService) {}

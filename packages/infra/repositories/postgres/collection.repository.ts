@@ -1,16 +1,12 @@
 import { eq, and, inArray } from "drizzle-orm";
-import { Tag } from "@core/tag/tag.entity.ts";
-import { TagRepository } from "@core/tag/tag.repository.ts";
-import {
+import type { Tag, TagRepository } from "@kairos/core";
+import type {
   FindTagByNameParams,
   ResourceIdentifier,
-} from "@shared/types/params/mod.ts";
-import { db } from "@infra/db/connection.ts";
-import { tags } from "@infra/db/drizzle/schema/tag.ts";
-import {
-  mapArrayNullToUndefined,
-  mapNullToUndefined,
-} from "@infra/db/utils.ts";
+} from "@kairos/shared/types/params";
+import { db } from "../../db/connection.ts";
+import { tags } from "../../db/drizzle/schema/tag.ts";
+import { mapArrayNullToUndefined, mapNullToUndefined } from "../../db/utils.ts";
 
 export class DrizzleTagRepository implements TagRepository {
   async findById(id: string): Promise<Tag | null> {

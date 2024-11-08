@@ -1,11 +1,11 @@
-import {
+import type { ItemInfo } from "../common/item.types.ts";
+import type {
   CreateParams,
   ResourceIdentifier,
   SortablePaginatedQuery,
   UpdateParams,
-  UserScoped,
-} from "@shared/types/params/base.params.ts";
-import { ItemInfo } from "@shared/types/common/item.types.ts";
+  UserScopedParams,
+} from "./base.params.ts";
 
 export interface CollectionData {
   name: string;
@@ -28,7 +28,7 @@ export interface UpdateCollectionParams
 
 export interface ListCollectionsParams
   extends SortablePaginatedQuery,
-    UserScoped {
+    UserScopedParams {
   sortBy?: "name" | "createdAt" | "itemCount";
 }
 
@@ -40,23 +40,23 @@ export interface AddToCollectionParams extends CollectionItemOperation {}
 
 export interface RemoveFromCollectionParams extends CollectionItemOperation {}
 
-export interface MoveItemOperation extends UserScoped {
+export interface MoveItemOperation extends UserScopedParams {
   itemInfo: ItemInfo;
   toCollectionId: string;
   removeFromOtherCollections?: boolean;
 }
 
-export interface ItemArchiveOperation extends UserScoped {
+export interface ItemArchiveOperation extends UserScopedParams {
   itemInfo: ItemInfo;
 }
 
-export interface BulkItemArchiveOperation extends UserScoped {
+export interface BulkItemArchiveOperation extends UserScopedParams {
   itemInfos: ItemInfo[];
 }
 
 export interface ListCollectionItemsParams
   extends SortablePaginatedQuery,
-    UserScoped {
+    UserScopedParams {
   collectionId: string;
   sortBy?: "addedAt" | "title";
 }

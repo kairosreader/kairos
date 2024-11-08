@@ -1,5 +1,5 @@
-import { ItemManagementService } from "@core/collection/item-management.service.ts";
-import { BulkItemArchiveOperation } from "@shared/types/params/mod.ts";
+import type { BulkItemArchiveOperation } from "@kairos/shared/types/params";
+import type { ItemManagementService } from "../../item-management.service.ts";
 
 export class BulkArchiveUseCase {
   constructor(private itemManagementService: ItemManagementService) {}

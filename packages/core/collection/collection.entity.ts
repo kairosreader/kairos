@@ -1,4 +1,4 @@
-import { BaseEntity, UserScoped } from "@shared/types/common/mod.ts";
+import type { BaseEntity, UserScoped } from "@kairos/shared/types/common";
 
 export interface Collection extends BaseEntity, UserScoped {
   name: string;

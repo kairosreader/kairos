@@ -1,8 +1,8 @@
-import { QueueHandler } from "@core/queue/queue.service.ts";
-import { Item } from "@core/item/item.entity.ts";
-import { ItemService } from "@core/item/item.service.ts";
-import { ITEM_STATUS } from "@shared/constants/mod.ts";
-import type { ItemContent } from "@shared/types/common/mod.ts";
+import type { ItemContent } from "@kairos/shared/types/common";
+import type { ItemService } from "../../item/item.service.ts";
+import type { QueueHandler } from "../queue.service.ts";
+import { ITEM_STATUS } from "@kairos/shared/constants";
+import type { Item } from "../../item/item.entity.ts";
 
 export interface ItemProcessPayload {
   itemId: string;
@@ -20,22 +20,25 @@ export abstract class BaseItemHandler
     try {
       const item = await this.itemService.tryFindById(itemId);
 
-      await this.itemService.update(
-        { id: itemId, userId },
-        { status: ITEM_STATUS.PROCESSING },
-      );
+      await this.itemService.update({
+        id: itemId,
+        userId,
+        updates: { status: ITEM_STATUS.PROCESSING },
+      });
 
       await this.processItem(item);
 
-      await this.itemService.update(
-        { id: itemId, userId },
-        { status: ITEM_STATUS.READY },
-      );
+      await this.itemService.update({
+        id: itemId,
+        userId,
+        updates: { status: ITEM_STATUS.READY },
+      });
     } catch (error) {
-      await this.itemService.update(
-        { id: itemId, userId },
-        { status: ITEM_STATUS.FAILED },
-      );
+      await this.itemService.update({
+        id: itemId,
+        userId,
+        updates: { status: ITEM_STATUS.FAILED },
+      });
       throw error;
     }
   }

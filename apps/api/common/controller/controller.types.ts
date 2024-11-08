@@ -1,4 +1,4 @@
-import { Env, ContextVariableMap } from "@hono/hono";
+import type { Env, ContextVariableMap } from "@hono/hono";
 
 export interface ValidationResult {
   success: boolean;

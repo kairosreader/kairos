@@ -1,16 +1,16 @@
-import { TagRepository } from "@core/tag/tag.repository.ts";
-import { Tag } from "@core/tag/tag.entity.ts";
-import {
+import type { ItemContent } from "@kairos/shared/types/common";
+import type {
   BulkTagItemOperation,
   CreateManyTagsOperation,
   CreateTagParams,
   FindTagByNameParams,
   TagItemOperation,
-} from "@shared/types/params/mod.ts";
-import { ItemService } from "@core/item/item.service.ts";
-import { ItemContent } from "@shared/types/common/mod.ts";
-import { generateId } from "@shared/utils/mod.ts";
-import { UserScopedService } from "@core/common/base.service.ts";
+} from "@kairos/shared/types/params";
+import { generateId } from "@kairos/shared/utils";
+import { UserScopedService } from "../common/base.service.ts";
+import type { ItemService } from "../item/item.service.ts";
+import type { Tag } from "./tag.entity.ts";
+import type { TagRepository } from "./tag.repository.ts";
 
 export class TagService extends UserScopedService<Tag> {
   protected override resourceName: string;

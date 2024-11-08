@@ -1,7 +1,7 @@
 import { z } from "@hono/zod-openapi";
-import { ArticleSchema } from "@api/item/schema/article.schema.ts";
-import { EmailSchema } from "@api/item/schema/email.schema.ts";
-import { PdfSchema } from "@api/item/schema/pdf.schema.ts";
+import { ArticleSchema } from "../article.schema.ts";
+import { EmailSchema } from "../email.schema.ts";
+import { PdfSchema } from "../pdf.schema.ts";
 
 export const ItemResponseSchema = z
   .union([ArticleSchema, EmailSchema, PdfSchema])

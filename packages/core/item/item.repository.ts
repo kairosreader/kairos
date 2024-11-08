@@ -1,7 +1,7 @@
-import { Item, ReadingProgress } from "@core/item/item.entity.ts";
-import { ResourceIdentifier } from "@shared/types/params/mod.ts";
-import { ItemType } from "@shared/constants/mod.ts";
-import { UserScopedRepository } from "@core/common/base.repository.ts";
+import type { ResourceIdentifier } from "@kairos/shared/types";
+import type { UserScopedRepository } from "../common/base.repository.ts";
+import type { Item, ReadingProgress } from "./item.entity.ts";
+import type { ItemType } from "@kairos/shared/constants";
 
 export interface ItemRepository<T> extends UserScopedRepository<Item<T>> {
   findByUserAndType(

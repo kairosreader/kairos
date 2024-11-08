@@ -9,8 +9,8 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import { eq } from "drizzle-orm/sql";
-import { users } from "@infra/db/drizzle/schema/user.ts";
-import { items } from "@infra/db/drizzle/schema/item.ts";
+import { users } from "./user.ts";
+import { items } from "./item.ts";
 
 export const collections = pgTable(
   "collections",

@@ -1,7 +1,7 @@
-import { BaseItemHandler } from "@core/queue/mod.ts";
-import { Item, ItemService } from "@core/item/mod.ts";
-import { ContentExtractorService } from "@core/content/mod.ts";
-import type { ArticleContent, ItemContent } from "@shared/types/common/mod.ts";
+import { BaseItemHandler } from "@kairos/core/queue";
+import type { Item, ItemService } from "@kairos/core/item";
+import type { ArticleContent, ItemContent } from "@kairos/shared/types/common";
+import type { ContentExtractorService } from "@kairos/core/content";
 
 export class ArticleProcessingHandler extends BaseItemHandler {
   constructor(

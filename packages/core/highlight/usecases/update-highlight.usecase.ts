@@ -1,6 +1,6 @@
-import { HighlightService } from "@core/highlight/highlight.service.ts";
-import type { Highlight } from "@core/highlight/highlight.entity.ts";
-import { UpdateHighlightParams } from "@shared/types/params/mod.ts";
+import type { UpdateHighlightParams } from "@kairos/shared/types";
+import type { Highlight } from "../highlight.entity.ts";
+import type { HighlightService } from "../highlight.service.ts";
 
 export class UpdateHighlightUseCase {
   constructor(private highlightService: HighlightService) {}

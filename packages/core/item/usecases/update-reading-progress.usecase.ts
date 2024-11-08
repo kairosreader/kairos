@@ -1,7 +1,9 @@
-import { ItemService } from "@core/item/item.service.ts";
-import { ItemContent } from "@shared/types/mod.ts";
-import { ReadingProgress } from "@core/item/item.entity.ts";
-import { UpdateReadingProgressParams } from "@shared/types/params/mod.ts";
+import type {
+  ItemContent,
+  UpdateReadingProgressParams,
+} from "@kairos/shared/types";
+import type { ItemService } from "../item.service.ts";
+import type { ReadingProgress } from "../item.entity.ts";
 
 export class UpdateReadingProgressUseCase {
   constructor(private itemService: ItemService<ItemContent>) {}

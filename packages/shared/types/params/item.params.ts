@@ -1,6 +1,6 @@
-import { ItemContent } from "@shared/types/common/item.types.ts";
-import { ItemType } from "@shared/constants/item.constants.ts";
-import {
+import type { ItemType } from "../../constants/item.constants.ts";
+import type { ItemContent } from "../common/item.types.ts";
+import type {
   CollectionFilter,
   ResourceIdentifier,
   SortablePaginatedQuery,
@@ -8,10 +8,10 @@ import {
   TagFilters,
   TypeFilter,
   UpdateParams,
-  UserScoped,
-} from "@shared/types/params/base.params.ts";
+  UserScopedParams,
+} from "./base.params.ts";
 
-export interface CreateItemParams extends UserScoped {
+export interface CreateItemParams extends UserScopedParams {
   type: ItemType;
   content: ItemContent;
   tags?: string[];
@@ -30,7 +30,7 @@ export interface UpdateItemParams extends UpdateParams<UpdateItemData> {}
 
 export interface ListItemsParams
   extends SortablePaginatedQuery,
-    UserScoped,
+    UserScopedParams,
     CollectionFilter,
     TagFilters,
     TypeFilter,

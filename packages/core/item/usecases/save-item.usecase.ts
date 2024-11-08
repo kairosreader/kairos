@@ -1,14 +1,14 @@
-import { QueueService } from "@core/queue/queue.service.ts";
-import { ItemService } from "@core/item/item.service.ts";
-import { Item } from "@core/item/item.entity.ts";
-import { ITEM_STATUS } from "@shared/constants/mod.ts";
 import {
   isArticleContent,
   isEmailContent,
   isPdfContent,
-  ItemContent,
-} from "@shared/types/common/mod.ts";
-import { CreateItemParams } from "@shared/types/params/mod.ts";
+  type ItemContent,
+} from "@kairos/shared/types/common";
+import type { CreateItemParams } from "@kairos/shared/types/params";
+import type { ItemService } from "../item.service.ts";
+import type { QueueService } from "../../queue/queue.service.ts";
+import type { Item } from "../item.entity.ts";
+import { ITEM_STATUS } from "@kairos/shared/constants";
 
 export class SaveItemUseCase {
   constructor(

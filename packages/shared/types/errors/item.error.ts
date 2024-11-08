@@ -1,4 +1,4 @@
-import { NotFoundError } from "@shared/types/errors/common.error.ts";
+import { NotFoundError } from "./common.error.ts";
 
 export class ItemNotFoundError extends NotFoundError {
   constructor(itemId: string) {

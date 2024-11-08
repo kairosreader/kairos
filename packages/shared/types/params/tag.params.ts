@@ -1,10 +1,10 @@
-import { TagColor } from "@shared/constants/tag.constants.ts";
-import {
+import type { TagColor } from "../../constants/tag.constants.ts";
+import type {
   CreateParams,
   SortablePaginatedQuery,
   UpdateParams,
-  UserScoped,
-} from "@shared/types/params/base.params.ts";
+  UserScopedParams,
+} from "./base.params.ts";
 
 export interface TagData {
   name: string;
@@ -24,25 +24,25 @@ export interface ListTagsParams extends SortablePaginatedQuery {
   sortBy?: "name" | "itemCount";
 }
 
-export interface FindTagByNameParams extends UserScoped {
+export interface FindTagByNameParams extends UserScopedParams {
   tagName: string;
 }
 
-export interface TagItemOperation extends UserScoped {
+export interface TagItemOperation extends UserScopedParams {
   itemId: string;
   tagIds: string[];
 }
 
-export interface BulkTagItemOperation extends UserScoped {
+export interface BulkTagItemOperation extends UserScopedParams {
   itemIds: string[];
   tagIds: string[];
 }
 
-export interface CreateManyTagsOperation extends UserScoped {
+export interface CreateManyTagsOperation extends UserScopedParams {
   tagInfos: TagData[];
 }
 
-export interface MergeTagsOperation extends UserScoped {
+export interface MergeTagsOperation extends UserScopedParams {
   sourceTagId: string;
   targetTagId: string;
 }

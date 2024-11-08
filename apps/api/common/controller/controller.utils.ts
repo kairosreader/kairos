@@ -1,7 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { errorHandler } from "@api/middleware/error.middleware.ts";
-import { pinoLogger } from "@api/middleware/pino-logger.middleware.ts";
-import { AppEnv } from "@api/common/controller/controller.types.ts";
+import type { AppEnv } from "./controller.types.ts";
+import { errorHandler } from "../../middleware/error.middleware.ts";
+import { pinoLogger } from "../../middleware/pino-logger.middleware.ts";
 
 export function createRouter() {
   const router = new OpenAPIHono<AppEnv>({

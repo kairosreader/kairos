@@ -1,0 +1,14 @@
+{
+  "name": "@kairos/shared",
+  "version": "0.0.0",
+  "exports": {
+    ".": "./mod.ts",
+    "./constants": "./constants/mod.ts",
+    "./types": "./types/mod.ts",
+    "./utils": "./utils/mod.ts",
+    "./constants/*": "./constants/*",
+    "./types/common": "./types/common/mod.ts",
+    "./types/errors": "./types/errors/mod.ts",
+    "./types/params": "./types/params/mod.ts"
+  }
+}

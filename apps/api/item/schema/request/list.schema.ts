@@ -1,9 +1,9 @@
 import { z } from "@hono/zod-openapi";
+import { ITEM_STATUS, ITEM_TYPE } from "@kairos/shared/constants";
 import {
   paginationSchema,
   sortSchema,
-} from "@api/common/schema/pagination.schema.ts";
-import { ITEM_STATUS, ITEM_TYPE } from "@shared/constants/mod.ts";
+} from "../../../common/schema/pagination.schema.ts";
 
 export const ListItemsQuerySchema = z
   .object({

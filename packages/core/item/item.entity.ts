@@ -1,9 +1,9 @@
-import {
+import type {
   ArticleContent,
   BaseItem,
   EmailContent,
   PdfContent,
-} from "@shared/types/common/item.types.ts";
+} from "@kairos/shared/types";
 
 export interface Item<T = unknown> extends BaseItem {
   content: T;

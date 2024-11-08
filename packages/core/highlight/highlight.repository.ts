@@ -1,5 +1,5 @@
-import type { Highlight } from "@core/highlight/highlight.entity.ts";
-import { UserScopedRepository } from "@core/common/base.repository.ts";
+import type { UserScopedRepository } from "../common/base.repository.ts";
+import type { Highlight } from "./highlight.entity.ts";
 
 export interface HighlightRepository extends UserScopedRepository<Highlight> {
   findByItem(itemId: string): Promise<Highlight[]>;

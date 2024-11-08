@@ -1,6 +1,6 @@
-import { UserScopedService } from "@core/common/base.service.ts";
-import { Item } from "@core/item/item.entity.ts";
-import { ItemRepository } from "@core/item/item.repository.ts";
+import { UserScopedService } from "../common/base.service.ts";
+import type { Item } from "./item.entity.ts";
+import type { ItemRepository } from "./item.repository.ts";
 
 export class ItemService<T> extends UserScopedService<Item<T>> {
   protected override resourceName: string;
