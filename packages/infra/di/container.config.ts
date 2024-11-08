@@ -15,6 +15,11 @@ import { ArticleProcessingHandler } from "@infra/queue/handlers/article.handler.
 import { EmailProcessingHandler } from "@infra/queue/handlers/email.handler.ts";
 import { PostgresItemRepository } from "@infra/repositories/postgres/item.repository.ts";
 import { ItemContent } from "@shared/types/common/mod.ts";
+import { GetItemUseCase } from "@core/item/usecases/get-item.usecase.ts";
+import { ListItemsUseCase } from "@core/item/usecases/list-item.usecase.ts";
+import { UpdateReadingProgressUseCase } from "@core/item/usecases/update-reading-progress.usecase.ts";
+import { DeleteItemUseCase } from "@core/item/usecases/delete-item.usecase.ts";
+import { BulkDeleteItemsUseCase } from "@core/item/usecases/bulk-delete-items.usecase.ts";
 
 export function configureContainer(
   container: Container,
@@ -92,5 +97,40 @@ export function configureContainer(
       TOKENS.ItemService,
     );
     return new UpdateItemUseCase(itemService);
+  });
+
+  container.registerSingleton(TOKENS.GetItemUseCase, () => {
+    const itemService = container.resolve<ItemService<ItemContent>>(
+      TOKENS.ItemService,
+    );
+    return new GetItemUseCase(itemService);
+  });
+
+  container.registerSingleton(TOKENS.ListItemsUseCase, () => {
+    const itemService = container.resolve<ItemService<ItemContent>>(
+      TOKENS.ItemService,
+    );
+    return new ListItemsUseCase(itemService);
+  });
+
+  container.registerSingleton(TOKENS.UpdateReadingProgressUseCase, () => {
+    const itemService = container.resolve<ItemService<ItemContent>>(
+      TOKENS.ItemService,
+    );
+    return new UpdateReadingProgressUseCase(itemService);
+  });
+
+  container.registerSingleton(TOKENS.DeleteItemUseCase, () => {
+    const itemService = container.resolve<ItemService<ItemContent>>(
+      TOKENS.ItemService,
+    );
+    return new DeleteItemUseCase(itemService);
+  });
+
+  container.registerSingleton(TOKENS.BulkDeleteItemsUseCase, () => {
+    const itemService = container.resolve<ItemService<ItemContent>>(
+      TOKENS.ItemService,
+    );
+    return new BulkDeleteItemsUseCase(itemService);
   });
 }

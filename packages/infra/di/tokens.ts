@@ -14,4 +14,9 @@ export const TOKENS = {
   // Use Cases
   SaveItemUseCase: "SaveItemUseCase",
   UpdateItemUseCase: "UpdateItemUseCase",
+  GetItemUseCase: "GetItemUseCase",
+  ListItemsUseCase: "ListItemsUseCase",
+  UpdateReadingProgressUseCase: "UpdateReadingProgressUseCase",
+  DeleteItemUseCase: "DeleteItemUseCase",
+  BulkDeleteItemsUseCase: "BulkDeleteItemsUseCase",
 } as const;
