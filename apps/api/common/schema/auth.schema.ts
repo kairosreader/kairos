@@ -11,3 +11,7 @@ export const AuthHeadersSchema = z.object({
     example: "Bearer eyJhbGciOiJIUzI1NiIsIn...",
   }),
 });
+
+export const BearerSecurity = {
+  Bearer: [],
+};

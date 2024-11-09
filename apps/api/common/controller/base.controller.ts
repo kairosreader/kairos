@@ -7,6 +7,10 @@ export abstract class BaseController {
 
   constructor() {
     this.router = createRouter();
+    this.router.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
+      type: "http",
+      scheme: "bearer",
+    });
     this.register = this.register.bind(this);
   }
 

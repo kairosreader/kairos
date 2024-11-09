@@ -30,6 +30,10 @@ const itemController = new ItemController(
 );
 
 const app = new OpenAPIHono<AppEnv>();
+app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
+  type: "http",
+  scheme: "bearer",
+});
 
 // Register routes
 app.route("/api", itemController.register());

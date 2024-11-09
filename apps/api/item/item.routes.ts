@@ -1,6 +1,6 @@
 import { createRoute } from "@hono/zod-openapi";
 import { authMiddleware } from "../middleware/auth.midlleware.ts";
-import { AuthHeadersSchema } from "../common/schema/auth.schema.ts";
+import { AuthHeadersSchema, BearerSecurity } from "../common/schema/auth.schema.ts";
 import { CreateItemRequestSchema } from "./schema/request/create.schema.ts";
 import {
   ItemListResponseSchema,
@@ -17,6 +17,7 @@ export const createItemRoute = createRoute({
   method: "post",
   path: "/item",
   tags: ["Items"],
+  security: [BearerSecurity],
   middlewares: [authMiddleware],
   summary: "Create a new item",
   description: "Create a new reading list item with the specified content",
@@ -47,6 +48,7 @@ export const updateItemRoute = createRoute({
   method: "patch",
   path: "/item/{id}",
   tags: ["Items"],
+  security: [BearerSecurity],
   middlewares: [authMiddleware],
   summary: "Update an existing item",
   request: {
@@ -77,6 +79,7 @@ export const getItemRoute = createRoute({
   method: "get",
   path: "/item/{id}",
   tags: ["Items"],
+  security: [BearerSecurity],
   middlewares: [authMiddleware],
   summary: "Get a single item",
   request: {
@@ -100,6 +103,7 @@ export const updateReadingProgressRoute = createRoute({
   method: "patch",
   path: "/item/{id}/reading-progress",
   tags: ["Items"],
+  security: [BearerSecurity],
   middlewares: [authMiddleware],
   summary: "Update reading progress of an item",
   request: {
@@ -125,6 +129,7 @@ export const deleteItemRoute = createRoute({
   method: "delete",
   path: "/item/{id}",
   tags: ["Items"],
+  security: [BearerSecurity],
   middlewares: [authMiddleware],
   summary: "Delete an item",
   request: {
@@ -143,6 +148,7 @@ export const bulkDeleteItemsRoute = createRoute({
   method: "delete",
   path: "/items",
   tags: ["Items"],
+  security: [BearerSecurity],
   middlewares: [authMiddleware],
   summary: "Bulk delete items",
   request: {
@@ -167,6 +173,7 @@ export const listItemsRoute = createRoute({
   method: "get",
   path: "/items",
   tags: ["Items"],
+  security: [BearerSecurity],
   middlewares: [authMiddleware],
   summary: "List all items",
   description:
