@@ -1,23 +1,25 @@
 import { createRoute } from "@hono/zod-openapi";
-import { AuthHeadersSchema } from "@api/common/schema/auth.schema.ts";
-import { standardErrorResponses } from "@api/common/schema/error.schema.ts";
-import { authMiddleware } from "@api/middleware/auth.midlleware.ts";
-import { CreateItemRequestSchema } from "@api/item/schema/request/create.schema.ts";
+import { authMiddleware } from "../middleware/auth.midlleware.ts";
+import { AuthHeadersSchema } from "../common/schema/auth.schema.ts";
+import { CreateItemRequestSchema } from "./schema/request/create.schema.ts";
 import {
   ItemListResponseSchema,
   ItemResponseSchema,
-} from "@api/item/schema/response/response.schema.ts";
-import { ItemParamsSchema } from "@api/item/schema/request/params.schema.ts";
-import { UpdateItemRequestSchema } from "@api/item/schema/request/update.schema.ts";
-import { UpdateReadingProgressRequestSchema } from "@api/item/schema/request/update-progress.schema.ts";
-import { BulkDeleteRequestSchema } from "@api/item/schema/request/bulk-delete.schema.ts";
+} from "./schema/response/response.schema.ts";
+import { standardErrorResponses } from "../common/schema/error.schema.ts";
+import { ItemParamsSchema } from "./schema/request/params.schema.ts";
+import { UpdateItemRequestSchema } from "./schema/request/update.schema.ts";
+import { UpdateReadingProgressRequestSchema } from "./schema/request/update-progress.schema.ts";
+import { BulkDeleteRequestSchema } from "./schema/request/bulk-delete.schema.ts";
+import { ListItemsQuerySchema } from "./schema/request/list.schema.ts";
 
 export const createItemRoute = createRoute({
   method: "post",
   path: "/item",
   tags: ["Items"],
-  summary: "Create a new item",
   middlewares: [authMiddleware],
+  summary: "Create a new item",
+  description: "Create a new reading list item with the specified content",
   request: {
     headers: AuthHeadersSchema,
     body: {
@@ -30,12 +32,12 @@ export const createItemRoute = createRoute({
   },
   responses: {
     201: {
+      description: "Item created successfully",
       content: {
         "application/json": {
           schema: ItemResponseSchema,
         },
       },
-      description: "Item created successfully",
     },
     ...standardErrorResponses,
   },
@@ -45,8 +47,8 @@ export const updateItemRoute = createRoute({
   method: "patch",
   path: "/item/{id}",
   tags: ["Items"],
-  summary: "Update an existing item",
   middlewares: [authMiddleware],
+  summary: "Update an existing item",
   request: {
     headers: AuthHeadersSchema,
     params: ItemParamsSchema,
@@ -60,12 +62,12 @@ export const updateItemRoute = createRoute({
   },
   responses: {
     200: {
+      description: "Item updated successfully",
       content: {
         "application/json": {
           schema: ItemResponseSchema,
         },
       },
-      description: "Item updated successfully",
     },
     ...standardErrorResponses,
   },
@@ -75,20 +77,20 @@ export const getItemRoute = createRoute({
   method: "get",
   path: "/item/{id}",
   tags: ["Items"],
-  summary: "Get a single item",
   middlewares: [authMiddleware],
+  summary: "Get a single item",
   request: {
     headers: AuthHeadersSchema,
     params: ItemParamsSchema,
   },
   responses: {
     200: {
+      description: "Item retrieved successfully",
       content: {
         "application/json": {
           schema: ItemResponseSchema,
         },
       },
-      description: "Item retrieved successfully",
     },
     ...standardErrorResponses,
   },
@@ -98,8 +100,8 @@ export const updateReadingProgressRoute = createRoute({
   method: "patch",
   path: "/item/{id}/reading-progress",
   tags: ["Items"],
-  summary: "Update reading progress of an item",
   middlewares: [authMiddleware],
+  summary: "Update reading progress of an item",
   request: {
     headers: AuthHeadersSchema,
     params: ItemParamsSchema,
@@ -123,8 +125,8 @@ export const deleteItemRoute = createRoute({
   method: "delete",
   path: "/item/{id}",
   tags: ["Items"],
-  summary: "Delete an item",
   middlewares: [authMiddleware],
+  summary: "Delete an item",
   request: {
     headers: AuthHeadersSchema,
     params: ItemParamsSchema,
@@ -141,8 +143,8 @@ export const bulkDeleteItemsRoute = createRoute({
   method: "delete",
   path: "/items",
   tags: ["Items"],
-  summary: "Bulk delete items",
   middlewares: [authMiddleware],
+  summary: "Bulk delete items",
   request: {
     headers: AuthHeadersSchema,
     body: {
@@ -165,19 +167,22 @@ export const listItemsRoute = createRoute({
   method: "get",
   path: "/items",
   tags: ["Items"],
-  summary: "List all items",
   middlewares: [authMiddleware],
+  summary: "List all items",
+  description:
+    "Retrieve a list of items with optional filtering and pagination",
   request: {
     headers: AuthHeadersSchema,
+    query: ListItemsQuerySchema,
   },
   responses: {
     200: {
+      description: "Items retrieved successfully",
       content: {
         "application/json": {
           schema: ItemListResponseSchema,
         },
       },
-      description: "Items retrieved successfully",
     },
     ...standardErrorResponses,
   },
