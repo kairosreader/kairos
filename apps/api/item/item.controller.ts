@@ -1,27 +1,16 @@
-import { SaveItemUseCase, UpdateItemUseCase } from "@core/item/usecases/mod.ts";
-import {
-  UnauthorizedError,
-  ItemNotFoundError,
-} from "@shared/types/errors/mod.ts";
-import { BaseController } from "@api/common/controller/base.controller.ts";
-import {
-  bulkDeleteItemsRoute,
-  createItemRoute,
-  deleteItemRoute,
-  getItemRoute,
-  listItemsRoute,
-  updateItemRoute,
-  updateReadingProgressRoute,
-} from "@api/item/item.routes.ts";
-import {
-  ItemListResponseSchema,
-  ItemResponseSchema,
-} from "@api/item/schema/response/response.schema.ts";
-import { BulkDeleteItemsUseCase } from "@core/item/usecases/bulk-delete-items.usecase.ts";
-import { GetItemUseCase } from "@core/item/usecases/get-item.usecase.ts";
-import { ListItemsUseCase } from "@core/item/usecases/list-item.usecase.ts";
-import { UpdateReadingProgressUseCase } from "@core/item/usecases/update-reading-progress.usecase.ts";
-import { DeleteItemUseCase } from "@core/item/usecases/delete-item.usecase.ts";
+import { BaseController } from "../common/controller/base.controller.ts";
+import type {
+  BulkDeleteItemsUseCase,
+  DeleteItemUseCase,
+  GetItemUseCase,
+  ListItemsUseCase,
+  SaveItemUseCase,
+  UpdateItemUseCase,
+  UpdateReadingProgressUseCase,
+} from "@kairos/core/item/usecases";
+import { bulkDeleteItemsRoute, createItemRoute, deleteItemRoute, getItemRoute, listItemsRoute, updateItemRoute, updateReadingProgressRoute } from "./item.routes.ts";
+import { ItemListResponseSchema, ItemResponseSchema } from "./schema/response/response.schema.ts";
+import { ItemNotFoundError, UnauthorizedError } from "@kairos/shared/types/errors";
 
 export class ItemController extends BaseController {
   constructor(

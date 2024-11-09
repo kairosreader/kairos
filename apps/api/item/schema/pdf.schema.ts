@@ -1,8 +1,8 @@
 import { z } from "@hono/zod-openapi";
-import { dateSchema } from "@api/common/schema/date.schema.ts";
-import { urlSchema } from "@api/common/schema/url.schema.ts";
 import { baseItemFields } from "./item.schema.ts";
-import { ITEM_TYPE } from "@shared/constants/mod.ts";
+import { dateSchema } from "../../common/schema/date.schema.ts";
+import { urlSchema } from "../../common/schema/url.schema.ts";
+import { ITEM_TYPE } from "@kairos/shared/constants";
 
 export const PdfMetadataSchema = z
   .object({

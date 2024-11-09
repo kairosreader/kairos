@@ -3,9 +3,9 @@ import {
   configureContainer,
   TOKENS,
 } from "@kairos/infra/di";
-import { QueueService } from "@kairos/core";
+import type { QueueService } from "@kairos/core";
 import { ITEM_TYPE } from "@kairos/shared";
-import {
+import type {
   ArticleProcessingHandler,
   EmailProcessingHandler,
 } from "@kairos/infra/queue";
