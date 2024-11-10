@@ -8,7 +8,7 @@ import {
   boolean,
   integer,
 } from "drizzle-orm/pg-core";
-import { eq } from "drizzle-orm/sql";
+import { sql } from "drizzle-orm/sql";
 import { users } from "./user.ts";
 import { items } from "./item.ts";
 
@@ -33,10 +33,10 @@ export const collections = pgTable(
     // Indexes for special collections for better query performance
     index("default_collection_idx")
       .on(t.userId, t.isDefault)
-      .where(eq(t.isDefault, true)),
+      .where(sql`${t.isDefault} = true`),
     index("archive_collection_idx")
       .on(t.userId, t.isArchive)
-      .where(eq(t.isArchive, true)),
+      .where(sql`${t.isArchive} = true`),
   ],
 );
 
