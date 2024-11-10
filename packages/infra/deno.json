@@ -2,9 +2,10 @@
   "name": "@kairos/infra",
   "version": "0.0.0",
   "tasks": {
-    "db:generate": "drizzle-kit generate:pg",
-    "db:migrate": "deno run -A ./db/drizzle/migrate.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:node-compat": "deno run -A ./db/drizzle/build-schema.ts",
+    "db:generate": "deno task db:node-compat && drizzle-kit generate --config ./db/drizzle/drizzle.config.ts",
+    "db:migrate": "deno task db:node-compat && drizzle-kit migrate --config ./db/drizzle/drizzle.config.ts",
+    "db:studio": "deno task db:node-compat && drizzle-kit studio --config ./db/drizzle/drizzle.config.ts"
   },
   "imports": {
     "@kairos/core": "../core/mod.ts",

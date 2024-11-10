@@ -4,7 +4,8 @@ import * as schema from "./drizzle/schema/mod.ts";
 
 // Connection URL should come from environment variables
 const connectionString =
-  Deno.env.get("DATABASE_URL") || "postgres://user:password@localhost:5432/db";
+  Deno.env.get("DATABASE_URL") ||
+  "postgres://user:password@localhost:5432/kairos";
 
 // For migrations
 export const migrationClient = postgres(connectionString, { max: 1 });
