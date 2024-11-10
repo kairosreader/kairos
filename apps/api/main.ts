@@ -42,9 +42,9 @@ app.route("/api", itemController.register());
 app.doc("/api", {
   openapi: "3.0.0",
   info: {
-    title: "Reading List API",
-    version: "1.0.0",
-    description: "API for managing reading list items",
+    title: "Kairos",
+    version: "0.0.0",
+    description: "OpenAPI documentation for Kairos API",
   },
   servers: [
     {

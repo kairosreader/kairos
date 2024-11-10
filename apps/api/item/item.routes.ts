@@ -23,7 +23,7 @@ export const createItemRoute = createRoute({
   security: [BearerSecurity],
   middleware: [authMiddleware],
   summary: "Create a new item",
-  description: "Create mid new reading list item with the specified content",
+  description: "Create a new collection item with the specified content",
   request: {
     headers: AuthHeadersSchema,
     body: {
