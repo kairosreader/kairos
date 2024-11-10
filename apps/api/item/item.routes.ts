@@ -1,6 +1,9 @@
 import { createRoute } from "@hono/zod-openapi";
-import { authMiddleware } from "../middleware/auth.midlleware.ts";
-import { AuthHeadersSchema, BearerSecurity } from "../common/schema/auth.schema.ts";
+import { authMiddleware } from "../middleware/auth.middleware.ts";
+import {
+  AuthHeadersSchema,
+  BearerSecurity,
+} from "../common/schema/auth.schema.ts";
 import { CreateItemRequestSchema } from "./schema/request/create.schema.ts";
 import {
   ItemListResponseSchema,
@@ -18,9 +21,9 @@ export const createItemRoute = createRoute({
   path: "/item",
   tags: ["Items"],
   security: [BearerSecurity],
-  middlewares: [authMiddleware],
+  middleware: [authMiddleware],
   summary: "Create a new item",
-  description: "Create a new reading list item with the specified content",
+  description: "Create mid new reading list item with the specified content",
   request: {
     headers: AuthHeadersSchema,
     body: {
@@ -49,7 +52,7 @@ export const updateItemRoute = createRoute({
   path: "/item/{id}",
   tags: ["Items"],
   security: [BearerSecurity],
-  middlewares: [authMiddleware],
+  middleware: [authMiddleware],
   summary: "Update an existing item",
   request: {
     headers: AuthHeadersSchema,
@@ -80,7 +83,7 @@ export const getItemRoute = createRoute({
   path: "/item/{id}",
   tags: ["Items"],
   security: [BearerSecurity],
-  middlewares: [authMiddleware],
+  middleware: [authMiddleware],
   summary: "Get a single item",
   request: {
     headers: AuthHeadersSchema,
@@ -104,7 +107,7 @@ export const updateReadingProgressRoute = createRoute({
   path: "/item/{id}/reading-progress",
   tags: ["Items"],
   security: [BearerSecurity],
-  middlewares: [authMiddleware],
+  middleware: [authMiddleware],
   summary: "Update reading progress of an item",
   request: {
     headers: AuthHeadersSchema,
@@ -130,7 +133,7 @@ export const deleteItemRoute = createRoute({
   path: "/item/{id}",
   tags: ["Items"],
   security: [BearerSecurity],
-  middlewares: [authMiddleware],
+  middleware: [authMiddleware],
   summary: "Delete an item",
   request: {
     headers: AuthHeadersSchema,
@@ -149,7 +152,7 @@ export const bulkDeleteItemsRoute = createRoute({
   path: "/items",
   tags: ["Items"],
   security: [BearerSecurity],
-  middlewares: [authMiddleware],
+  middleware: [authMiddleware],
   summary: "Bulk delete items",
   request: {
     headers: AuthHeadersSchema,
@@ -174,7 +177,7 @@ export const listItemsRoute = createRoute({
   path: "/items",
   tags: ["Items"],
   security: [BearerSecurity],
-  middlewares: [authMiddleware],
+  middleware: [authMiddleware],
   summary: "List all items",
   description:
     "Retrieve a list of items with optional filtering and pagination",

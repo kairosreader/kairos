@@ -11,7 +11,7 @@ export async function authMiddleware(c: Context<AppEnv>, next: Next) {
 
   const token = authHeader.split(" ")[1];
   // TODO: Implement proper JWT verification
-  c.set("userId", "user123");
+  c.set("userId", "123e4567-e89b-12d3-a456-426614174000");
 
   await next();
 }
