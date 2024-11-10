@@ -23,6 +23,9 @@
 *.sqlite3
 *.db
 
+# Generated files
+*.cjs
+
 # Docker
 .docker/data/
 docker-compose.override.yml

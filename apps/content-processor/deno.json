@@ -2,7 +2,7 @@
   "name": "@kairos/content-processor",
   "version": "0.0.0",
   "tasks": {
-    "start": "deno run -A main.ts",
+    "start:processor": "deno run -A --watch main.ts",
     "test": "deno test -A"
   },
   "imports": {

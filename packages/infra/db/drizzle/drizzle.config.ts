@@ -7,8 +7,6 @@ export default defineConfig({
   out: "./db/drizzle/migrations",
   dialect: "postgresql",
   dbCredentials: {
-    url:
-      Deno.env.get("DATABASE_URL") ||
-      "postgres://user:password@localhost:5432/kairos",
+    url: Deno.env.get("DATABASE_URL")!,
   },
 });

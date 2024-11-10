@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: .docker/api/Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+    environment:
+      - DENO_ENV=${DENO_ENV}
+      - PORT=${PORT}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - REDIS_HOST=dragonfly
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW}
+      - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS}
+    depends_on:
+      - db
+      - dragonfly
+    volumes:
+      - .:/app
+      - deno-cache:/deno-dir/deps
+    command: ["deno", "task", "start:api"]
+
+  content-processor:
+    build:
+      context: .
+      dockerfile: .docker/processor/Dockerfile
+    environment:
+      - DENO_ENV=${DENO_ENV}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - REDIS_HOST=dragonfly
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - MAX_CONTENT_SIZE=${MAX_CONTENT_SIZE}
+      - CONTENT_PROCESSING_TIMEOUT=${CONTENT_PROCESSING_TIMEOUT}
+    depends_on:
+      - db
+      - dragonfly
+    volumes:
+      - .:/app
+      - deno-cache:/deno-dir/deps
+    command: ["deno", "task", "start:processor"]
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    ulimits:
+      memlock: -1
+    volumes:
+      - dragonfly-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres-data:
+  dragonfly-data:
+  deno-cache:

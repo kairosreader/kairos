@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      target: development
+    ports:
+      - "${PORT}:${PORT}"
+    volumes:
+      - .:/app:delegated
+      - deno-cache:/deno-dir/deps
+    environment:
+      - DENO_ENV=development
+      - LOG_LEVEL=debug
+    command: ["deno", "task", "start:api"]
+
+  content-processor:
+    build:
+      target: development
+    volumes:
+      - .:/app:delegated
+      - deno-cache:/deno-dir/deps
+    environment:
+      - DENO_ENV=development
+      - LOG_LEVEL=debug
+    command: ["deno", "task", "start:processor"]
+
+  drizzle-studio:
+    build:
+      dockerfile: .docker/api/Dockerfile
+      target: development
+    ports:
+      - "4983:4983"
+    volumes:
+      - .:/app:delegated
+      - deno-cache:/deno-dir/deps
+    environment:
+      - DENO_ENV=development
+      - LOG_LEVEL=debug
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      - REDIS_HOST=dragonfly
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: ["deno", "task", "db:studio"]
+    depends_on:
+      - db
+
+  db:
+    ports:
+      - "5432:5432"
+
+  dragonfly:
+    ports:
+      - "6379:6379"
