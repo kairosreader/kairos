@@ -41,7 +41,13 @@ async function shutdown() {
   Deno.exit(0);
 }
 
-Deno.addSignalListener("SIGINT", shutdown);
-Deno.addSignalListener("SIGTERM", shutdown);
+// Cross-platform signal handling
+if (Deno.build.os === "windows") {
+  Deno.addSignalListener("SIGINT", shutdown);
+  Deno.addSignalListener("SIGBREAK", shutdown);
+} else {
+  Deno.addSignalListener("SIGINT", shutdown);
+  Deno.addSignalListener("SIGTERM", shutdown);
+}
 
 console.log("Content processor is running...");
