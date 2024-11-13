@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import type { Container, QueueService } from "@kairos/core";
 import { type ItemRepository, ItemService } from "@kairos/core/item";
+import type { CollectionRepository } from "@kairos/core/collection";
 import {
   BulkDeleteItemsUseCase,
   DeleteItemUseCase,
@@ -10,8 +11,22 @@ import {
   UpdateItemUseCase,
   UpdateReadingProgressUseCase,
 } from "@kairos/core/item/usecases";
+import {
+  CollectionService,
+  ItemManagementService,
+  SpecialCollectionService,
+} from "@kairos/core/collection";
+import {
+  CreateReadingListUseCase,
+  DeleteReadingListUseCase,
+  AddToReadingListUseCase,
+  ArchiveItemUseCase,
+  BulkArchiveUseCase,
+  MoveItemUseCase,
+} from "@kairos/core/collection/usecases";
 import type { ItemContent } from "@kairos/shared/types/common";
 import { DrizzleItemRepository } from "../repositories/postgres/item.repository.ts";
+import { DrizzleCollectionRepository } from "../repositories/postgres/collection.repository.ts";
 import { TOKENS } from "./tokens.ts";
 import { BullQueueService } from "../queue/bull/bull-queue.service.ts";
 import type { ContentExtractorService } from "@kairos/core/content";
@@ -36,6 +51,12 @@ export function configureContainer(
       return new DrizzleItemRepository();
     },
   );
+  container.registerSingleton<CollectionRepository>(
+    TOKENS.CollectionRepository,
+    () => {
+      return new DrizzleCollectionRepository();
+    },
+  );
 
   // Services
   container.registerSingleton<ItemService<ItemContent>>(
@@ -45,6 +66,46 @@ export function configureContainer(
         TOKENS.ItemRepository,
       );
       return new ItemService(itemRepo);
+    },
+  );
+
+  container.registerSingleton<CollectionService>(
+    TOKENS.CollectionService,
+    () => {
+      const collectionRepo = container.resolve<CollectionRepository>(
+        TOKENS.CollectionRepository,
+      );
+      const itemService = container.resolve<ItemService<ItemContent>>(
+        TOKENS.ItemService,
+      );
+      return new CollectionService(collectionRepo, itemService);
+    },
+  );
+
+  container.registerSingleton<SpecialCollectionService>(
+    TOKENS.SpecialCollectionService,
+    () => {
+      const collectionRepo = container.resolve<CollectionRepository>(
+        TOKENS.CollectionRepository,
+      );
+      return new SpecialCollectionService(collectionRepo);
+    },
+  );
+
+  container.registerSingleton<ItemManagementService>(
+    TOKENS.ItemManagementService,
+    () => {
+      const collectionService = container.resolve<CollectionService>(
+        TOKENS.CollectionService,
+      );
+      const specialCollectionService =
+        container.resolve<SpecialCollectionService>(
+          TOKENS.SpecialCollectionService,
+        );
+      return new ItemManagementService(
+        collectionService,
+        specialCollectionService,
+      );
     },
   );
 
@@ -130,5 +191,47 @@ export function configureContainer(
       TOKENS.ItemService,
     );
     return new BulkDeleteItemsUseCase(itemService);
+  });
+
+  container.registerSingleton(TOKENS.CreateReadingListUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new CreateReadingListUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.DeleteReadingListUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new DeleteReadingListUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.AddToReadingListUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new AddToReadingListUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.MoveItemUseCase, () => {
+    const itemManagementService = container.resolve<ItemManagementService>(
+      TOKENS.ItemManagementService,
+    );
+    return new MoveItemUseCase(itemManagementService);
+  });
+
+  container.registerSingleton(TOKENS.ArchiveItemUseCase, () => {
+    const itemManagementService = container.resolve<ItemManagementService>(
+      TOKENS.ItemManagementService,
+    );
+    return new ArchiveItemUseCase(itemManagementService);
+  });
+
+  container.registerSingleton(TOKENS.BulkArchiveUseCase, () => {
+    const itemManagementService = container.resolve<ItemManagementService>(
+      TOKENS.ItemManagementService,
+    );
+    return new BulkArchiveUseCase(itemManagementService);
   });
 }

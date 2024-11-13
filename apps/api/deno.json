@@ -9,6 +9,7 @@
     "@kairos/infra/di": "../../packages/infra/di/mod.ts",
     "@kairos/shared/constants": "../../packages/shared/constants/mod.ts",
     "@kairos/shared/types/errors": "../../packages/shared/types/errors/mod.ts",
+    "@kairos/shared/utils": "../../packages/shared/utils/mod.ts",
     "@hono/hono": "npm:hono@^4.6.9",
     "@hono/swagger-ui": "npm:@hono/swagger-ui@0.4.1",
     "@hono/zod-openapi": "npm:@hono/zod-openapi@0.16.4",

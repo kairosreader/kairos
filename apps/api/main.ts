@@ -6,6 +6,7 @@ import {
   TOKENS,
 } from "@kairos/infra/di";
 import { ItemController } from "./item/item.controller.ts";
+import { CollectionController } from "./collection/collection.controller.ts";
 import type { AppEnv } from "./common/controller/controller.types.ts";
 
 const container = new TsyringeContainer();
@@ -29,6 +30,16 @@ const itemController = new ItemController(
   container.resolve(TOKENS.BulkDeleteItemsUseCase),
 );
 
+const collectionController = new CollectionController(
+  container.resolve(TOKENS.CreateReadingListUseCase),
+  container.resolve(TOKENS.DeleteReadingListUseCase),
+  container.resolve(TOKENS.CollectionService),
+  container.resolve(TOKENS.AddToReadingListUseCase),
+  container.resolve(TOKENS.MoveItemUseCase),
+  container.resolve(TOKENS.ArchiveItemUseCase),
+  container.resolve(TOKENS.BulkArchiveUseCase),
+);
+
 const app = new OpenAPIHono<AppEnv>();
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
@@ -37,6 +48,7 @@ app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
 
 // Register routes
 app.route("/api", itemController.register());
+app.route("/api", collectionController.register());
 
 // OpenAPI documentation
 app.doc("/api", {
