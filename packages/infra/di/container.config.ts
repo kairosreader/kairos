@@ -17,12 +17,16 @@ import {
   SpecialCollectionService,
 } from "@kairos/core/collection";
 import {
-  CreateReadingListUseCase,
-  DeleteReadingListUseCase,
-  AddToReadingListUseCase,
+  CreateCollectionUseCase,
+  DeleteCollectionUseCase,
+  AddToCollectionUseCase,
   ArchiveItemUseCase,
   BulkArchiveUseCase,
   MoveItemUseCase,
+  RemoveFromCollectionUseCase,
+  UpdateCollectionUseCase,
+  GetCollectionUseCase,
+  ListCollectionsUseCase,
 } from "@kairos/core/collection/usecases";
 import type { ItemContent } from "@kairos/shared/types/common";
 import { DrizzleItemRepository } from "../repositories/postgres/item.repository.ts";
@@ -193,25 +197,53 @@ export function configureContainer(
     return new BulkDeleteItemsUseCase(itemService);
   });
 
-  container.registerSingleton(TOKENS.CreateReadingListUseCase, () => {
+  container.registerSingleton(TOKENS.CreateCollectionUseCase, () => {
     const collectionService = container.resolve<CollectionService>(
       TOKENS.CollectionService,
     );
-    return new CreateReadingListUseCase(collectionService);
+    return new CreateCollectionUseCase(collectionService);
   });
 
-  container.registerSingleton(TOKENS.DeleteReadingListUseCase, () => {
+  container.registerSingleton(TOKENS.UpdateCollectionUseCase, () => {
     const collectionService = container.resolve<CollectionService>(
       TOKENS.CollectionService,
     );
-    return new DeleteReadingListUseCase(collectionService);
+    return new UpdateCollectionUseCase(collectionService);
   });
 
-  container.registerSingleton(TOKENS.AddToReadingListUseCase, () => {
+  container.registerSingleton(TOKENS.GetCollectionUseCase, () => {
     const collectionService = container.resolve<CollectionService>(
       TOKENS.CollectionService,
     );
-    return new AddToReadingListUseCase(collectionService);
+    return new GetCollectionUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.ListCollectionsUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new ListCollectionsUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.DeleteCollectionUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new DeleteCollectionUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.AddToCollectionUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new AddToCollectionUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.RemoveFromCollectionUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new RemoveFromCollectionUseCase(collectionService);
   });
 
   container.registerSingleton(TOKENS.MoveItemUseCase, () => {

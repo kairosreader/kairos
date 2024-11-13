@@ -21,7 +21,7 @@ export class ItemManagementService {
     const { itemInfo, toCollectionId, removeFromOtherCollections } = params;
 
     // Get the collections the item is currently in
-    const currentCollections = await this.collectionService.findByitem(
+    const currentCollections = await this.collectionService.findByItem(
       itemInfo.itemId,
     );
 

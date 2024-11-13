@@ -31,10 +31,13 @@ const itemController = new ItemController(
 );
 
 const collectionController = new CollectionController(
-  container.resolve(TOKENS.CreateReadingListUseCase),
-  container.resolve(TOKENS.DeleteReadingListUseCase),
-  container.resolve(TOKENS.CollectionService),
-  container.resolve(TOKENS.AddToReadingListUseCase),
+  container.resolve(TOKENS.CreateCollectionUseCase),
+  container.resolve(TOKENS.UpdateCollectionUseCase),
+  container.resolve(TOKENS.GetCollectionUseCase),
+  container.resolve(TOKENS.ListCollectionsUseCase),
+  container.resolve(TOKENS.DeleteCollectionUseCase),
+  container.resolve(TOKENS.AddToCollectionUseCase),
+  container.resolve(TOKENS.RemoveFromCollectionUseCase),
   container.resolve(TOKENS.MoveItemUseCase),
   container.resolve(TOKENS.ArchiveItemUseCase),
   container.resolve(TOKENS.BulkArchiveUseCase),

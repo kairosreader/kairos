@@ -1,11 +1,15 @@
 import { BaseController } from "../common/controller/base.controller.ts";
 import type {
-  CreateReadingListUseCase,
-  DeleteReadingListUseCase,
-  AddToReadingListUseCase,
+  CreateCollectionUseCase,
+  DeleteCollectionUseCase,
+  AddToCollectionUseCase,
   ArchiveItemUseCase,
   BulkArchiveUseCase,
   MoveItemUseCase,
+  UpdateCollectionUseCase,
+  ListCollectionsUseCase,
+  RemoveFromCollectionUseCase,
+  GetCollectionUseCase,
 } from "@kairos/core/collection/usecases";
 import {
   createCollectionRoute,
@@ -27,14 +31,16 @@ import {
   CollectionNotFoundError,
   UnauthorizedError,
 } from "@kairos/shared/types/errors";
-import type { CollectionService } from "@kairos/core/collection";
 
 export class CollectionController extends BaseController {
   constructor(
-    private createUseCase: CreateReadingListUseCase,
-    private deleteUseCase: DeleteReadingListUseCase,
-    private collectionService: CollectionService,
-    private addToCollectionUseCase: AddToReadingListUseCase,
+    private createUseCase: CreateCollectionUseCase,
+    private updateUseCase: UpdateCollectionUseCase,
+    private getUseCase: GetCollectionUseCase,
+    private listUseCase: ListCollectionsUseCase,
+    private deleteUseCase: DeleteCollectionUseCase,
+    private addToCollectionUseCase: AddToCollectionUseCase,
+    private removeFromCollectionUseCase: RemoveFromCollectionUseCase,
     private moveItemUseCase: MoveItemUseCase,
     private archiveItemUseCase: ArchiveItemUseCase,
     private bulkArchiveUseCase: BulkArchiveUseCase,
@@ -61,7 +67,7 @@ export class CollectionController extends BaseController {
         const { id } = c.req.valid("param");
         const updates = c.req.valid("json");
 
-        const collection = await this.collectionService.update({
+        const collection = await this.updateUseCase.execute({
           id,
           userId,
           updates,
@@ -74,7 +80,7 @@ export class CollectionController extends BaseController {
         const userId = c.get("userId");
         const { id } = c.req.valid("param");
 
-        const collection = await this.collectionService.findById(id);
+        const collection = await this.getUseCase.execute({ id, userId });
 
         if (!collection) {
           throw new CollectionNotFoundError(id);
@@ -91,7 +97,7 @@ export class CollectionController extends BaseController {
       })
       .openapi(listCollectionsRoute, async (c) => {
         const userId = c.get("userId");
-        const collections = await this.collectionService.findByUser(userId);
+        const collections = await this.listUseCase.execute({ userId });
         const validatedCollections =
           CollectionListResponseSchema.parse(collections);
         return c.json(validatedCollections);
@@ -113,7 +119,11 @@ export class CollectionController extends BaseController {
         const userId = c.get("userId");
         const { id } = c.req.valid("param");
         const { itemInfo } = c.req.valid("json");
-        await this.collectionService.removeItem({ id, userId, itemInfo });
+        await this.removeFromCollectionUseCase.execute({
+          id,
+          userId,
+          itemInfo,
+        });
         return c.json(null, 200);
       })
       .openapi(moveItemRoute, async (c) => {

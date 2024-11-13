@@ -64,7 +64,7 @@ export class CollectionService extends UserScopedService<Collection> {
     await this.collectionRepo.removeItem(params);
   }
 
-  findByitem(itemId: string): Promise<Collection[]> {
+  findByItem(itemId: string): Promise<Collection[]> {
     return this.collectionRepo.findByItem(itemId);
   }
 }

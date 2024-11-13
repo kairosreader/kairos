@@ -1,7 +1,7 @@
 import type { AddToCollectionParams } from "@kairos/shared/types/params";
 import type { CollectionService } from "../../collection.service.ts";
 
-export class AddToReadingListUseCase {
+export class AddToCollectionUseCase {
   constructor(private collectionService: CollectionService) {}
 
   execute(params: AddToCollectionParams): Promise<void> {
