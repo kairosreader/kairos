@@ -3,10 +3,11 @@ import { ITEM_TYPE } from "@kairos/shared/constants";
 import { ArticleContentSchema } from "../article.schema.ts";
 import { EmailContentSchema } from "../email.schema.ts";
 import { PdfContentSchema } from "../pdf.schema.ts";
+import { enumValuesTuple } from "@kairos/shared/utils";
 
 export const CreateItemRequestSchema = z
   .object({
-    type: z.enum([ITEM_TYPE.ARTICLE, ITEM_TYPE.EMAIL, ITEM_TYPE.PDF]),
+    type: z.enum(enumValuesTuple(ITEM_TYPE)),
     content: z.union([
       ArticleContentSchema,
       EmailContentSchema,

@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid, jsonb } from "drizzle-orm/pg-core";
-import { enumValues } from "@kairos/shared/utils";
+import { enumValuesTuple } from "@kairos/shared/utils";
 import { HIGHLIGHT_COLOR } from "@kairos/shared/constants";
 import { items } from "./item.ts";
 import { users } from "./user.ts";
@@ -12,7 +12,7 @@ export const highlights = pgTable("highlights", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
-  color: text("color", { enum: enumValues(HIGHLIGHT_COLOR) }).notNull(),
+  color: text("color", { enum: enumValuesTuple(HIGHLIGHT_COLOR) }).notNull(),
   textSelection: jsonb("text_selection").notNull(),
   note: text("note"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

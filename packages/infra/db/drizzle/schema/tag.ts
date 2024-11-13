@@ -1,5 +1,5 @@
 import { pgTable, unique, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { enumValues } from "@kairos/shared/utils";
+import { enumValuesTuple } from "@kairos/shared/utils";
 import { TAG_COLOR } from "@kairos/shared/constants";
 import { users } from "./user.ts";
 
@@ -11,7 +11,7 @@ export const tags = pgTable(
       .notNull()
       .references(() => users.id),
     name: text("name").notNull(),
-    color: text("color", { enum: enumValues(TAG_COLOR) }),
+    color: text("color", { enum: enumValuesTuple(TAG_COLOR) }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow(),
   },

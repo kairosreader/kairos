@@ -7,7 +7,7 @@ import {
   jsonb,
 } from "drizzle-orm/pg-core";
 import { users } from "./user.ts";
-import { enumValues } from "@kairos/shared/utils";
+import { enumValuesTuple } from "@kairos/shared/utils";
 import { ITEM_STATUS, ITEM_TYPE } from "@kairos/shared/constants";
 import type { ItemContent } from "@kairos/shared/types/common";
 
@@ -16,8 +16,8 @@ export const items = pgTable("items", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
-  type: text("type", { enum: enumValues(ITEM_TYPE) }).notNull(),
-  status: text("status", { enum: enumValues(ITEM_STATUS) }).notNull(),
+  type: text("type", { enum: enumValuesTuple(ITEM_TYPE) }).notNull(),
+  status: text("status", { enum: enumValuesTuple(ITEM_STATUS) }).notNull(),
   title: text("title").notNull(),
   excerpt: text("excerpt"),
   coverImage: text("cover_image"),
