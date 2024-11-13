@@ -12,7 +12,13 @@ import {
 } from "./schema/response/response.schema.ts";
 import { CreateCollectionRequestSchema } from "./schema/request/create.schema.ts";
 import { UpdateCollectionRequestSchema } from "./schema/request/update.schema.ts";
-import { AddToCollectionRequestSchema, ArchiveItemRequestSchema, BulkArchiveRequestSchema, MoveItemRequestSchema, RemoveFromCollectionRequestSchema } from "./schema/request/item-operations.schema.ts";
+import {
+  AddToCollectionRequestSchema,
+  ArchiveItemRequestSchema,
+  BulkArchiveRequestSchema,
+  MoveItemRequestSchema,
+  RemoveFromCollectionRequestSchema,
+} from "./schema/request/item-operations.schema.ts";
 
 export const createCollectionRoute = createRoute({
   method: "post",
@@ -20,6 +26,8 @@ export const createCollectionRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Create a new collection",
+  description: "Create a new collection to organize items",
   request: {
     headers: AuthHeadersSchema,
     body: {
@@ -49,6 +57,7 @@ export const updateCollectionRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Update an existing collection",
   request: {
     headers: AuthHeadersSchema,
     params: CollectionParamsSchema,
@@ -79,6 +88,7 @@ export const getCollectionRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Get a single collection",
   request: {
     headers: AuthHeadersSchema,
     params: CollectionParamsSchema,
@@ -102,6 +112,8 @@ export const listCollectionsRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "List all collections",
+  description: "Retrieve a list of all collections for the authenticated user",
   request: {
     headers: AuthHeadersSchema,
   },
@@ -124,6 +136,7 @@ export const deleteCollectionRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Delete a collection",
   request: {
     headers: AuthHeadersSchema,
     params: CollectionParamsSchema,
@@ -142,6 +155,8 @@ export const addToCollectionRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Add items to a collection",
+  description: "Add one or more items to an existing collection",
   request: {
     headers: AuthHeadersSchema,
     params: CollectionParamsSchema,
@@ -167,6 +182,8 @@ export const removeFromCollectionRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Remove items from a collection",
+  description: "Remove one or more items from an existing collection",
   request: {
     headers: AuthHeadersSchema,
     params: CollectionParamsSchema,
@@ -192,6 +209,8 @@ export const moveItemRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Move items between collections",
+  description: "Move items from one collection to another",
   request: {
     headers: AuthHeadersSchema,
     body: {
@@ -216,6 +235,8 @@ export const archiveItemRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Archive an item",
+  description: "Archive a single item from a collection",
   request: {
     headers: AuthHeadersSchema,
     body: {
@@ -240,6 +261,8 @@ export const bulkArchiveRoute = createRoute({
   tags: ["Collections"],
   security: [BearerSecurity],
   middleware: [authMiddleware],
+  summary: "Bulk archive items",
+  description: "Archive multiple items from collections in a single operation",
   request: {
     headers: AuthHeadersSchema,
     body: {
