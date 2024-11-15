@@ -8,6 +8,7 @@ import {
 import { ItemController } from "./item/item.controller.ts";
 import { CollectionController } from "./collection/collection.controller.ts";
 import type { AppEnv } from "./common/controller/controller.types.ts";
+import { TagController } from "./tag/tag.controller.ts";
 
 const container = new TsyringeContainer();
 // Configure container
@@ -43,6 +44,17 @@ const collectionController = new CollectionController(
   container.resolve(TOKENS.BulkArchiveUseCase),
 );
 
+const tagController = new TagController(
+  container.resolve(TOKENS.CreateTagUseCase),
+  container.resolve(TOKENS.UpdateTagUseCase),
+  container.resolve(TOKENS.GetTagUseCase),
+  container.resolve(TOKENS.ListTagsUseCase),
+  container.resolve(TOKENS.DeleteTagUseCase),
+  container.resolve(TOKENS.TagItemUseCase),
+  container.resolve(TOKENS.BulkTagUseCase),
+  container.resolve(TOKENS.MergeTagsUseCase),
+);
+
 const app = new OpenAPIHono<AppEnv>();
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
@@ -52,6 +64,7 @@ app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
 // Register routes
 app.route("/api", itemController.register());
 app.route("/api", collectionController.register());
+app.route("/api", tagController.register());
 
 // OpenAPI documentation
 app.doc("/api", {

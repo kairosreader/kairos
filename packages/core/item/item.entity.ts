@@ -22,3 +22,13 @@ export interface ReadingProgress {
   lastPosition: number;
   lastReadAt: Date;
 }
+
+export type QueryableItemFields =
+  | "id"
+  | "userId"
+  | "type"
+  | "status"
+  | "title"
+  | "createdAt"
+  | "updatedAt"
+  | "tags";
