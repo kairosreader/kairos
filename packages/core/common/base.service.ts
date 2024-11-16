@@ -43,6 +43,18 @@ export abstract class BaseService<T extends BaseEntity> {
     return resource;
   }
 
+  async tryFindByIds(ids: string[]): Promise<T[]> {
+    const resources = await this.repository.findByIds(ids);
+    if (resources.length !== ids.length) {
+      const missing = ids.filter((id) => !resources.some((r) => r.id === id));
+      throw new BulkOperationError(
+        this.resourceName,
+        missing.map((id) => new NotFoundError(this.resourceName, id)),
+      );
+    }
+    return resources;
+  }
+
   async findByIdsWithReport(ids: string[]): Promise<FindByIdsResult<T>> {
     if (!ids.length) {
       return { found: [], missing: [] };
@@ -67,6 +79,14 @@ export abstract class BaseService<T extends BaseEntity> {
       throw new OperationError(this.resourceName, error);
     }
   }
+
+  async saveMany(entities: T[]): Promise<T[]> {
+    try {
+      return await this.repository.saveMany(entities);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
+    }
+  }
 }
 
 export abstract class NonUserScopedService<
@@ -80,6 +100,17 @@ export abstract class NonUserScopedService<
     await this.tryFindById(id);
     try {
       return await this.repository.save({ id, ...updates } as T);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
+    }
+  }
+
+  async updateMany(ids: string[], updates: Partial<T>): Promise<T[]> {
+    const { found } = await this.findByIdsWithReport(ids);
+    try {
+      return await this.repository.saveMany(
+        found.map((f) => ({ id: f.id, ...updates } as T)),
+      );
     } catch (error) {
       throw new OperationError(this.resourceName, error);
     }
@@ -143,6 +174,19 @@ export abstract class UserScopedService<
     return resource;
   }
 
+  async verifyOwnershipMany(params: ResourceIdentifier[]): Promise<T[]> {
+    const resources = await this.tryFindByIds(params.map((p) => p.id));
+    const invalid = resources.filter(
+      (resource) => resource.userId !== params[0].userId,
+    );
+    if (invalid.length) {
+      throw new UnauthorizedError(
+        `You don't have permission to access these ${this.resourceName.toLowerCase()}`,
+      );
+    }
+    return resources;
+  }
+
   async update(params: UpdateParams<T>): Promise<T> {
     await this.verifyOwnership(params);
     try {
@@ -150,6 +194,22 @@ export abstract class UserScopedService<
         id: params.id,
         ...params.updates,
       } as T);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
+    }
+  }
+
+  async updateMany(params: UpdateParams<T>[]): Promise<T[]> {
+    await this.verifyOwnershipMany(params);
+    try {
+      return await this.repository.saveMany(
+        params.map(
+          (param) => ({
+            id: param.id,
+            ...param.updates,
+          } as T),
+        ),
+      );
     } catch (error) {
       throw new OperationError(this.resourceName, error);
     }

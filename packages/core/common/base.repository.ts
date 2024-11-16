@@ -9,7 +9,9 @@ export interface BaseRepository<T extends BaseEntity> {
   findById(id: string): Promise<T | null>;
   findByIds(ids: string[]): Promise<T[]>;
   save(entity: T): Promise<T>;
+  saveMany(entities: T[]): Promise<T[]>;
   update(id: string, updates: Partial<T>): Promise<T>;
+  updateMany(ids: string[], updates: Partial<T>): Promise<T[]>;
 }
 
 export interface NonUserScopedRepository<T extends BaseEntity>
