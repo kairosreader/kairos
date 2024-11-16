@@ -55,15 +55,78 @@ export const filterOperatorSchema = z
     endsWith: z.string().optional(),
   })
   .openapi({
-    description: "Filter operators",
-    example: { eq: "value" },
+    description: "Filter operator",
   });
 
-export const filterSchema = filterOperatorSchema.openapi({
-  description: "Filter options",
-  example: { eq: "READY" },
-});
+export const createQuerySchema = <
+  TSortFields extends [string, ...string[]],
+  TFilterFields extends [string, ...string[]],
+>({
+  sortFields,
+  filterFields,
+}: {
+  sortFields: TSortFields;
+  filterFields: TFilterFields;
+}) =>
+  z
+    .object({
+      pagination: paginationSchema.optional().default({
+        type: "offset",
+        page: 1,
+        limit: 20,
+      }),
+      sort: z
+        .object({
+          field: z.enum(sortFields).optional().default(sortFields[0]).openapi({
+            description: "Field to sort by",
+            enum: sortFields,
+          }),
+          direction: z
+            .enum(["asc", "desc"])
+            .optional()
+            .default("desc")
+            .openapi({
+              description: "Sort direction",
+              example: "desc",
+            }),
+        })
+        .optional()
+        .default({
+          field: sortFields[0],
+          direction: "desc",
+        }),
+      filter: z
+        .record(z.enum(filterFields), filterOperatorSchema)
+        .optional()
+        .openapi({
+          description: "Filter criteria",
+          enum: filterFields,
+          items: {
+            type: "object",
+            properties: {
+              eq: { type: "string" },
+              neq: { type: "string" },
+              gt: { type: "number" },
+              gte: { type: "number" },
+              lt: { type: "number" },
+              lte: { type: "number" },
+              in: { type: "array", items: { type: "string" } },
+              nin: { type: "array", items: { type: "string" } },
+              contains: { type: "string" },
+              startsWith: { type: "string" },
+              endsWith: { type: "string" },
+            },
+          },
+        }),
+      searchQuery: z.string().optional().openapi({
+        description: "Search query",
+        example: "search term",
+      }),
+    })
+    .openapi({
+      description: "Query parameters for pagination, sorting, and filtering",
+    });
 
 export type PaginationSchema = z.infer<typeof paginationSchema>;
 export type SortSchema = z.infer<typeof sortSchema>;
-export type FilterSchema = z.infer<typeof filterSchema>;
+export type FilterSchema = z.infer<typeof filterOperatorSchema>;

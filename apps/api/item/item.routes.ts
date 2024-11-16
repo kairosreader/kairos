@@ -14,7 +14,7 @@ import { ItemParamsSchema } from "./schema/request/params.schema.ts";
 import { UpdateItemRequestSchema } from "./schema/request/update.schema.ts";
 import { UpdateReadingProgressRequestSchema } from "./schema/request/update-progress.schema.ts";
 import { BulkDeleteRequestSchema } from "./schema/request/bulk-delete.schema.ts";
-import { ListItemsQuerySchema } from "./schema/request/list.schema.ts";
+import { ItemQuerySchema } from "./schema/request/list.schema.ts";
 
 export const createItemRoute = createRoute({
   method: "post",
@@ -183,7 +183,7 @@ export const listItemsRoute = createRoute({
     "Retrieve a list of items with optional filtering and pagination",
   request: {
     headers: AuthHeadersSchema,
-    query: ListItemsQuerySchema,
+    query: ItemQuerySchema,
   },
   responses: {
     200: {

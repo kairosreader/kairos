@@ -19,7 +19,7 @@ import {
   MoveItemRequestSchema,
   RemoveFromCollectionRequestSchema,
 } from "./schema/request/item-operations.schema.ts";
-import { ListCollectionsQuerySchema } from "./schema/request/list.schema.ts";
+import { CollectionQuerySchema } from "./schema/request/list.schema.ts";
 
 export const createCollectionRoute = createRoute({
   method: "post",
@@ -117,7 +117,7 @@ export const listCollectionsRoute = createRoute({
   description: "Retrieve a list of all collections for the authenticated user",
   request: {
     headers: AuthHeadersSchema,
-    query: ListCollectionsQuerySchema,
+    query: CollectionQuerySchema,
   },
   responses: {
     200: {

@@ -6,6 +6,7 @@
     "test": "deno test -A"
   },
   "imports": {
+    "@kairos/core": "../../packages/core/mod.ts",
     "@kairos/infra/di": "../../packages/infra/di/mod.ts",
     "@kairos/shared/constants": "../../packages/shared/constants/mod.ts",
     "@kairos/shared/types": "../../packages/shared/types/mod.ts",
