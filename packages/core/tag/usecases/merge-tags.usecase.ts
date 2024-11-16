@@ -42,14 +42,28 @@ export class MergeTagsUseCase {
     }
 
     // Get all items with source tag
-    const items = await this.itemService.findByUser(params.userId);
-    const itemsWithSourceTag = items.filter((item) =>
-      item.tags.includes(sourceTag.name),
-    );
+    const count = await this.itemService.count(params.userId, {
+      tags: {
+        in: [sourceTag.id],
+      },
+    });
+
+    const paginatedItems = await this.itemService.findByUser(params.userId, {
+      pagination: {
+        type: "offset",
+        page: 1,
+        limit: count,
+      },
+      filter: {
+        tags: {
+          in: [sourceTag.id],
+        },
+      },
+    });
 
     // Replace source tag with target tag
     await Promise.all(
-      itemsWithSourceTag.map((item) => {
+      paginatedItems.items.map((item) => {
         const updatedTags = item.tags
           .filter((id) => id !== sourceTag.name)
           .concat(targetTag.name);
