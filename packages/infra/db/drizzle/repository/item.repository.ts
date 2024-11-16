@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import type {
   Item,
   ItemFilterableFields,
@@ -60,6 +60,19 @@ export class DrizzleItemRepository extends DrizzleUserScopedRepository<
     );
   }
 
+  override async saveMany(
+    entities: Item<ItemContent>[],
+  ): Promise<Item<ItemContent>[]> {
+    const result = await this.db
+      .insert(this.table)
+      .values(entities)
+      .returning();
+
+    return mapArrayNullToUndefined<Item<ItemContent>>(
+      result as DatabaseResult<Item<ItemContent>[]>,
+    );
+  }
+
   override async update(
     id: string,
     updates: Partial<Item<ItemContent>>,
@@ -72,6 +85,21 @@ export class DrizzleItemRepository extends DrizzleUserScopedRepository<
 
     return mapNullToUndefined<Item<ItemContent>>(
       result as DatabaseResult<Item<ItemContent>>,
+    );
+  }
+
+  async updateMany(
+    ids: string[],
+    updates: Partial<Item<ItemContent>>,
+  ): Promise<Item<ItemContent>[]> {
+    const result = await this.db
+      .update(this.table)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(inArray(this.table.id, ids))
+      .returning();
+
+    return mapArrayNullToUndefined<Item<ItemContent>>(
+      result as DatabaseResult<Item<ItemContent>[]>,
     );
   }
 

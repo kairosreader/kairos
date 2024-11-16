@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import type { Collection, CollectionRepository } from "@kairos/core/collection";
 import type { Item } from "@kairos/core/item";
 import type {
@@ -121,6 +121,17 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
     return mapNullToUndefined<Collection>(result as DatabaseResult<Collection>);
   }
 
+  override async saveMany(entities: Collection[]): Promise<Collection[]> {
+    const result = await this.db
+      .insert(collections)
+      .values(entities)
+      .returning();
+
+    return mapArrayNullToUndefined<Collection>(
+      result as DatabaseResult<Collection[]>,
+    );
+  }
+
   override async update(
     id: string,
     updates: Partial<Collection>,
@@ -132,5 +143,20 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
       .returning();
 
     return mapNullToUndefined<Collection>(result as DatabaseResult<Collection>);
+  }
+
+  async updateMany(
+    ids: string[],
+    updates: Partial<Collection>,
+  ): Promise<Collection[]> {
+    const result = await this.db
+      .update(collections)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(inArray(collections.id, ids))
+      .returning();
+
+    return mapArrayNullToUndefined<Collection>(
+      result as DatabaseResult<Collection[]>,
+    );
   }
 }
