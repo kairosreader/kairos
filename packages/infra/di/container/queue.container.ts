@@ -7,6 +7,7 @@ import type { ContentExtractorService } from "@kairos/core/content";
 import { EmailProcessingHandler } from "../../queue/handlers/email.handler.ts";
 import type { QueueService } from "@kairos/core/queue";
 import { BullQueueService } from "../../queue/bull/bull-queue.service.ts";
+import { ReadabilityExtractorService } from "../../content/readability/mod.ts";
 
 export function configureQueueContainer(
   container: Container,
@@ -22,6 +23,12 @@ export function configureQueueContainer(
   container.registerSingleton<QueueService>(TOKENS.QueueService, () => {
     return new BullQueueService(config);
   });
+  container.registerSingleton<ContentExtractorService>(
+    TOKENS.ContentExtractorService,
+    () => {
+      return new ReadabilityExtractorService();
+    },
+  );
 
   // Handlers
   container.registerSingleton<ArticleProcessingHandler>(
