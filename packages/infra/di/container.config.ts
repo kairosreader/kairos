@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import type { Container } from "@kairos/core/di";
+import { configureDbContainer } from "./container/db.container.ts";
 import { configureQueueContainer } from "./container/queue.container.ts";
 import { configureItemContainer } from "./container/item.container.ts";
 import { configureCollectionContainer } from "./container/collection.container.ts";
@@ -15,6 +16,7 @@ export function configureContainer(
   },
 ) {
   // Configure infrastructure services first
+  configureDbContainer(container);
   configureQueueContainer(container, config);
 
   // Configure domain services

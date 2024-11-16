@@ -1,4 +1,7 @@
 export const TOKENS = {
+  // Clients
+  DbClient: "DbClient",
+
   // Repositories
   ItemRepository: "ItemRepository",
   CollectionRepository: "CollectionRepository",

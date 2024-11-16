@@ -10,15 +10,20 @@ import {
   UpdateReadingProgressUseCase,
 } from "@kairos/core/item/usecases";
 import type { ItemContent } from "@kairos/shared/types/common";
-import { DrizzleItemRepository } from "../../repositories/postgres/item.repository.ts";
+
 import type { QueueService } from "@kairos/core/queue";
 import { TOKENS } from "../tokens.ts";
+import { DrizzleItemRepository } from "../../db/drizzle/repository/item.repository.ts";
+import type { Database } from "../../db/connection.ts";
 
 export function configureItemContainer(container: Container) {
   // Repository
   container.registerSingleton<ItemRepository<ItemContent>>(
     TOKENS.ItemRepository,
-    () => new DrizzleItemRepository(),
+    () => {
+      const db = container.resolve<Database>(TOKENS.DbClient);
+      return new DrizzleItemRepository(db);
+    },
   );
 
   // Service

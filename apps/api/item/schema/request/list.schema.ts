@@ -1,47 +1,46 @@
 import { z } from "@hono/zod-openapi";
 import { ITEM_STATUS, ITEM_TYPE } from "@kairos/shared/constants";
 import {
+  filterSchema,
   paginationSchema,
   sortSchema,
 } from "../../../common/schema/pagination.schema.ts";
 
+const itemFilterableFields = [
+  "title",
+  "type",
+  "status",
+  "createdAt",
+  "updatedAt",
+] as const;
+const itemSortableFields = ["title", "createdAt", "updatedAt"] as const;
+
 export const ListItemsQuerySchema = z
   .object({
-    ...paginationSchema.shape,
-    ...sortSchema.shape,
-    sortBy: z.enum(["createdAt", "updatedAt", "title"]).optional().openapi({
-      description: "Field to sort by",
-      example: "createdAt",
+    pagination: paginationSchema.openapi({
+      description: "Pagination options",
     }),
-    collectionId: z.string().optional().openapi({
-      description: "Filter by collection ID",
-      example: "collection-123",
-    }),
-    tags: z
-      .array(z.string())
+    sort: sortSchema
+      .extend({
+        field: z.enum(itemSortableFields),
+      })
       .optional()
       .openapi({
-        description: "Filter by tags",
-        example: ["tech", "programming"],
+        description: "Sort options",
       }),
-    type: z
-      .enum([ITEM_TYPE.ARTICLE, ITEM_TYPE.EMAIL, ITEM_TYPE.PDF])
+    filter: z
+      .record(z.enum(itemFilterableFields), filterSchema)
       .optional()
       .openapi({
-        description: "Filter by item type",
-        example: ITEM_TYPE.ARTICLE,
-      }),
-    status: z
-      .enum([
-        ITEM_STATUS.PENDING,
-        ITEM_STATUS.PROCESSING,
-        ITEM_STATUS.READY,
-        ITEM_STATUS.FAILED,
-      ])
-      .optional()
-      .openapi({
-        description: "Filter by status",
-        example: ITEM_STATUS.READY,
+        description: "Filter options",
+        example: {
+          type: {
+            eq: ITEM_TYPE.ARTICLE,
+          },
+          status: {
+            eq: ITEM_STATUS.READY,
+          },
+        },
       }),
   })
   .openapi("ListItemsQuery");

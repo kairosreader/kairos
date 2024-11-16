@@ -1,10 +1,11 @@
 import type { BaseEntity, UserScoped } from "@kairos/shared/types/common";
 import type {
+  PaginatedResponse,
+  QueryOptions,
   ResourceIdentifier,
   UpdateParams,
-} from "@kairos/shared/types/params";
+} from "@kairos/shared/types";
 import {
-  BaseError,
   BulkOperationError,
   NotFoundError,
   OperationError,
@@ -50,8 +51,7 @@ export abstract class BaseService<T extends BaseEntity> {
     const uniqueIds = [...new Set(ids)];
     const resources = await this.repository.findByIds(uniqueIds);
 
-    // Create a Set of found IDs for efficient lookup
-    const foundIds = new Set(resources.map((resource) => resource.id));
+    const foundIds = new Set(resources.map((r) => r.id));
     const missing = uniqueIds.filter((id) => !foundIds.has(id));
 
     return {
@@ -60,21 +60,12 @@ export abstract class BaseService<T extends BaseEntity> {
     };
   }
 
-  async tryFindByIds(ids: string[]): Promise<T[]> {
-    const { found, missing } = await this.findByIdsWithReport(ids);
-
-    if (missing.length > 0) {
-      throw new NotFoundError(
-        this.resourceName,
-        `Missing ${this.resourceName}(s): ${missing.join(", ")}`,
-      );
+  async save(entity: T): Promise<T> {
+    try {
+      return await this.repository.save(entity);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
     }
-
-    return found;
-  }
-
-  save(entity: T): Promise<T> {
-    return this.repository.save(entity);
   }
 }
 
@@ -86,106 +77,99 @@ export abstract class NonUserScopedService<
   }
 
   async update(id: string, updates: Partial<T>): Promise<T> {
-    // Check if resource exists
-    const resource = await this.tryFindById(id);
-    if (!resource) {
-      throw new NotFoundError(this.resourceName, id);
+    await this.tryFindById(id);
+    try {
+      return await this.repository.save({ id, ...updates } as T);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
     }
-    return this.repository.update(id, updates);
   }
 
   async delete(id: string): Promise<void> {
-    // Check if resource exists
-    const resource = await this.tryFindById(id);
-    if (!resource) {
-      throw new NotFoundError(this.resourceName, id);
+    await this.tryFindById(id);
+    try {
+      await this.repository.delete(id);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
     }
-    await this.repository.delete(id);
   }
 
   async bulkDelete(ids: string[]): Promise<void> {
-    const errors: BaseError[] = [];
+    const { missing } = await this.findByIdsWithReport(ids);
+    if (missing.length) {
+      throw new BulkOperationError(
+        this.resourceName,
+        missing.map((id) => new NotFoundError(this.resourceName, id)),
+      );
+    }
 
-    await Promise.all(
-      ids.map(async (id) => {
-        try {
-          await this.delete(id);
-        } catch (error) {
-          if (error instanceof BaseError) {
-            errors.push(error);
-          } else {
-            errors.push(new OperationError(`Unknown error`, error));
-          }
-        }
-      }),
-    );
-
-    if (errors.length > 0) {
-      throw new BulkOperationError(`Failed to delete some resources`, errors);
+    try {
+      await Promise.all(ids.map((id) => this.repository.delete(id)));
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
     }
   }
 }
 
 export abstract class UserScopedService<
   T extends BaseEntity & UserScoped,
+  TSortable extends string = string,
+  TFilterable extends string = string,
 > extends BaseService<T> {
-  constructor(protected override repository: UserScopedRepository<T>) {
+  constructor(
+    protected override repository: UserScopedRepository<
+      T,
+      TSortable,
+      TFilterable
+    >,
+  ) {
     super(repository);
   }
 
-  findByUser(userId: string): Promise<T[]> {
-    return this.repository.findByUser(userId);
+  findByUser(
+    userId: string,
+    options?: QueryOptions<TSortable, TFilterable>,
+  ): Promise<PaginatedResponse<T>> {
+    return this.repository.findByUser(userId, options);
   }
 
   async verifyOwnership(params: ResourceIdentifier): Promise<T> {
     const resource = await this.tryFindById(params.id);
     if (resource.userId !== params.userId) {
-      throw new UnauthorizedError();
+      throw new UnauthorizedError(
+        `You don't have permission to access this ${this.resourceName.toLowerCase()}`,
+      );
     }
     return resource;
   }
 
   async update(params: UpdateParams<T>): Promise<T> {
-    // Check if resource exists
-    const resource = await this.tryFindById(params.id);
-    if (!resource) {
-      throw new NotFoundError(this.resourceName, params.id);
-    }
-    // Verify ownership
     await this.verifyOwnership(params);
-    return this.repository.update(params.id, params.updates);
+    try {
+      return await this.repository.save({
+        id: params.id,
+        ...params.updates,
+      } as T);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
+    }
   }
 
   async delete(params: ResourceIdentifier): Promise<void> {
-    // Check if resource exists
-    const resource = await this.tryFindById(params.id);
-    if (!resource) {
-      throw new NotFoundError(this.resourceName, params.id);
-    }
-    // Verify ownership
     await this.verifyOwnership(params);
-    await this.repository.delete(params);
+    try {
+      await this.repository.delete(params);
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
+    }
   }
 
   async bulkDelete(params: ResourceIdentifier[]): Promise<void> {
-    const errors: BaseError[] = [];
-
-    await Promise.all(
-      params.map(async (param) => {
-        try {
-          await this.delete(param);
-        } catch (error) {
-          if (error instanceof BaseError) {
-            errors.push(error);
-          } else {
-            errors.push(new OperationError(`Unknown error`, error));
-          }
-        }
-      }),
-    );
-
-    if (errors.length > 0) {
-      throw new BulkOperationError(`Failed to delete some resources`, errors);
+    await Promise.all(params.map((param) => this.verifyOwnership(param)));
+    try {
+      await Promise.all(params.map((param) => this.repository.delete(param)));
+    } catch (error) {
+      throw new OperationError(this.resourceName, error);
     }
   }
 }

@@ -4,9 +4,27 @@ import type {
   EmailContent,
   PdfContent,
 } from "@kairos/shared/types";
+import type { ItemStatus, ItemType } from "@kairos/shared/constants";
+
+export interface ItemContent {
+  title: string;
+  excerpt?: string;
+  content: string;
+  tags: string[];
+}
+
+export interface ItemProgress {
+  progress: number;
+  lastPosition: number;
+}
 
 export interface Item<T = unknown> extends BaseItem {
+  type: ItemType;
+  status: ItemStatus;
+  userId: string;
+  collectionId?: string;
   content: T;
+  progress?: ItemProgress;
 }
 
 export type Article = Item<ArticleContent>;
@@ -23,12 +41,19 @@ export interface ReadingProgress {
   lastReadAt: Date;
 }
 
-export type QueryableItemFields =
-  | "id"
-  | "userId"
-  | "type"
-  | "status"
-  | "title"
-  | "createdAt"
-  | "updatedAt"
-  | "tags";
+export const ITEM_FILTERABLE_FIELDS = [
+  "title",
+  "type",
+  "status",
+  "createdAt",
+  "updatedAt",
+] as const;
+
+export const ITEM_SORTABLE_FIELDS = [
+  "title",
+  "createdAt",
+  "updatedAt",
+] as const;
+
+export type ItemFilterableFields = (typeof ITEM_FILTERABLE_FIELDS)[number];
+export type ItemSortableFields = (typeof ITEM_SORTABLE_FIELDS)[number];

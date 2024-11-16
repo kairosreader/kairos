@@ -1,4 +1,9 @@
-import type { BaseEntity, ResourceIdentifier } from "@kairos/shared";
+import type {
+  BaseEntity,
+  PaginatedResponse,
+  QueryOptions,
+  ResourceIdentifier,
+} from "@kairos/shared";
 
 export interface BaseRepository<T extends BaseEntity> {
   findById(id: string): Promise<T | null>;
@@ -12,8 +17,14 @@ export interface NonUserScopedRepository<T extends BaseEntity>
   delete(id: string): Promise<void>;
 }
 
-export interface UserScopedRepository<T extends BaseEntity>
-  extends BaseRepository<T> {
-  findByUser(userId: string): Promise<T[]>;
+export interface UserScopedRepository<
+  T extends BaseEntity,
+  TSortable extends string,
+  TFilterable extends string,
+> extends BaseRepository<T> {
+  findByUser(
+    userId: string,
+    options?: QueryOptions<TSortable, TFilterable>,
+  ): Promise<PaginatedResponse<T>>;
   delete(params: ResourceIdentifier): Promise<void>;
 }

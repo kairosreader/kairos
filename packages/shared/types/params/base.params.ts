@@ -1,5 +1,3 @@
-import type { ItemType } from "../../constants/item.constants.ts";
-
 // Base interfaces for common patterns
 export interface UserScopedParams {
   userId: string;
@@ -53,21 +51,4 @@ export interface DeleteParams extends ResourceIdentifier {}
 
 export interface BulkDeleteParams extends UserScopedParams {
   ids: string[];
-}
-
-// Common filtering interfaces
-export interface TagFilters {
-  tags?: string[];
-}
-
-export interface TypeFilter {
-  type?: ItemType;
-}
-
-export interface StatusFilter {
-  status?: string;
-}
-
-export interface CollectionFilter {
-  collectionId?: string;
 }
