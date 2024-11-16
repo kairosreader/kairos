@@ -1,27 +1,27 @@
 import { BaseController } from "../common/controller/base.controller.ts";
 import type {
-  CreateCollectionUseCase,
-  DeleteCollectionUseCase,
   AddToCollectionUseCase,
   ArchiveItemUseCase,
   BulkArchiveUseCase,
-  MoveItemUseCase,
-  UpdateCollectionUseCase,
-  ListCollectionsUseCase,
-  RemoveFromCollectionUseCase,
+  CreateCollectionUseCase,
+  DeleteCollectionUseCase,
   GetCollectionUseCase,
+  ListCollectionsUseCase,
+  MoveItemUseCase,
+  RemoveFromCollectionUseCase,
+  UpdateCollectionUseCase,
 } from "@kairos/core/collection/usecases";
 import {
+  addToCollectionRoute,
+  archiveItemRoute,
+  bulkArchiveRoute,
   createCollectionRoute,
   deleteCollectionRoute,
   getCollectionRoute,
   listCollectionsRoute,
-  updateCollectionRoute,
-  addToCollectionRoute,
-  removeFromCollectionRoute,
   moveItemRoute,
-  archiveItemRoute,
-  bulkArchiveRoute,
+  removeFromCollectionRoute,
+  updateCollectionRoute,
 } from "./collection.routes.ts";
 import {
   CollectionListResponseSchema,
@@ -98,8 +98,9 @@ export class CollectionController extends BaseController {
       .openapi(listCollectionsRoute, async (c) => {
         const userId = c.get("userId");
         const collections = await this.listUseCase.execute({ userId });
-        const validatedCollections =
-          CollectionListResponseSchema.parse(collections);
+        const validatedCollections = CollectionListResponseSchema.parse(
+          collections,
+        );
         return c.json(validatedCollections);
       })
       .openapi(deleteCollectionRoute, async (c) => {

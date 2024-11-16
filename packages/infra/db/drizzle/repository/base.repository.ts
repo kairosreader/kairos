@@ -26,9 +26,9 @@ import type {
 import type { BaseRepository } from "@kairos/core";
 import type { Database } from "../../connection.ts";
 import {
+  type DatabaseResult,
   mapArrayNullToUndefined,
   mapNullToUndefined,
-  type DatabaseResult,
 } from "../../utils.ts";
 
 export abstract class DrizzleBaseRepository<
@@ -37,8 +37,7 @@ export abstract class DrizzleBaseRepository<
   TTable extends PgTableWithColumns<T>,
   TSortable extends string = string,
   TFilterable extends string = string,
-> implements BaseRepository<E>
-{
+> implements BaseRepository<E> {
   constructor(
     protected readonly db: Database,
     protected readonly table: TTable,
@@ -85,7 +84,7 @@ export abstract class DrizzleBaseRepository<
 
     const conditions = Object.entries(filter)
       .map(([field, operator]) =>
-        this.buildFilterCondition(field, operator as FilterOperator),
+        this.buildFilterCondition(field, operator as FilterOperator)
       )
       .filter(
         (condition): condition is NonNullable<typeof condition> =>
@@ -168,10 +167,9 @@ export abstract class DrizzleBaseRepository<
       .from(this.table)
       .where(whereClause);
 
-    const hasPreviousPage =
-      options.pagination.type === "offset"
-        ? options.pagination.page > 1
-        : Boolean(options.pagination.cursor);
+    const hasPreviousPage = options.pagination.type === "offset"
+      ? options.pagination.page > 1
+      : Boolean(options.pagination.cursor);
 
     return {
       items,

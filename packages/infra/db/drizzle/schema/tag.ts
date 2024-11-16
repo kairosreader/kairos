@@ -1,4 +1,4 @@
-import { pgTable, unique, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 import { enumValuesTuple } from "@kairos/shared/utils";
 import { TAG_COLOR } from "@kairos/shared/constants";
 import { users } from "./user.ts";

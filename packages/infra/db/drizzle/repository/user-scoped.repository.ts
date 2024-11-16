@@ -22,13 +22,11 @@ export abstract class DrizzleUserScopedRepository<
       ? { ...options.filter, ...userFilter }
       : undefined;
 
-    const pagination = options?.pagination
-      ? options.pagination
-      : ({
-          type: "offset",
-          page: 1,
-          limit: 20,
-        } as OffsetPagination);
+    const pagination = options?.pagination ? options.pagination : ({
+      type: "offset",
+      page: 1,
+      limit: 20,
+    } as OffsetPagination);
 
     return this.find({
       pagination: pagination,

@@ -47,7 +47,7 @@ export class ItemManagementService {
                 id: c.id,
                 userId: c.userId,
                 itemInfo: itemInfo,
-              }),
+              })
             ),
         );
       }
@@ -73,8 +73,8 @@ export class ItemManagementService {
     const { itemInfo, userId } = params;
 
     // Get the archive collection
-    const { archive } =
-      await this.specialCollectionsService.ensureSpecialCollections(userId);
+    const { archive } = await this.specialCollectionsService
+      .ensureSpecialCollections(userId);
 
     // Move the item to the archive collection
     await this.moveItem({
@@ -102,9 +102,11 @@ export class ItemManagementService {
           } else {
             errors.push(
               new CollectionOperationError(
-                `Unknown error archiving item ${itemInfo.itemId}: ${String(
-                  error,
-                )}`,
+                `Unknown error archiving item ${itemInfo.itemId}: ${
+                  String(
+                    error,
+                  )
+                }`,
               ),
             );
           }

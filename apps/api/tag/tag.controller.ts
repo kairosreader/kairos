@@ -1,23 +1,23 @@
 import { BaseController } from "../common/controller/base.controller.ts";
 import type {
+  BulkTagUseCase,
   CreateTagUseCase,
   DeleteTagUseCase,
-  TagItemUseCase,
-  BulkTagUseCase,
-  MergeTagsUseCase,
   GetTagUseCase,
-  UpdateTagUseCase,
   ListTagsUseCase,
+  MergeTagsUseCase,
+  TagItemUseCase,
+  UpdateTagUseCase,
 } from "@kairos/core/tag/usecases";
 import {
+  bulkTagRoute,
   createTagRoute,
   deleteTagRoute,
   getTagRoute,
   listTagsRoute,
-  updateTagRoute,
-  tagItemRoute,
-  bulkTagRoute,
   mergeTagsRoute,
+  tagItemRoute,
+  updateTagRoute,
 } from "./tag.routes.ts";
 import {
   TagListResponseSchema,

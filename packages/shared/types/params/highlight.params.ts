@@ -31,8 +31,7 @@ export interface UpdateHighlightParams
   extends UpdateParams<UpdateHighlightData> {}
 
 export interface ListHighlightsParams
-  extends SortablePaginatedQuery,
-    UserScopedParams {
+  extends SortablePaginatedQuery, UserScopedParams {
   itemId?: string;
   color?: HighlightColor;
   hasNote?: boolean;

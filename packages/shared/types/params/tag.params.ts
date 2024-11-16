@@ -21,8 +21,7 @@ export interface UpdateTagData {
 export interface UpdateTagParams extends UpdateParams<UpdateTagData> {}
 
 export interface ListTagsParams
-  extends SortablePaginatedQuery,
-    UserScopedParams {
+  extends SortablePaginatedQuery, UserScopedParams {
   sortBy?: "name" | "itemCount";
 }
 

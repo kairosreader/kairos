@@ -28,9 +28,11 @@ export class BulkOperationError extends OperationError {
     details?: unknown,
   ) {
     super(
-      `Bulk operation failed: ${message}, ${errors
-        .map((e) => e.message)
-        .join(", ")}`,
+      `Bulk operation failed: ${message}, ${
+        errors
+          .map((e) => e.message)
+          .join(", ")
+      }`,
       details,
     );
   }

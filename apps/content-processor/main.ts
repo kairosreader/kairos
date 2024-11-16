@@ -1,7 +1,7 @@
 import {
-  TsyringeContainer,
   configureContainer,
   TOKENS,
+  TsyringeContainer,
 } from "@kairos/infra/di";
 import type { QueueService } from "@kairos/core";
 import { ITEM_TYPE } from "@kairos/shared";

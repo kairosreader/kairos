@@ -10,8 +10,7 @@ export interface ItemProcessPayload {
 }
 
 export abstract class BaseItemHandler
-  implements QueueHandler<ItemProcessPayload>
-{
+  implements QueueHandler<ItemProcessPayload> {
   constructor(protected itemService: ItemService<ItemContent>) {}
 
   async handle(payload: ItemProcessPayload): Promise<void> {

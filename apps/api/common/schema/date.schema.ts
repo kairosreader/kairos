@@ -10,6 +10,6 @@ export const dateSchema = z
   });
 
 export const serializedDateSchema = dateSchema.transform((date) =>
-  date.toISOString(),
+  date.toISOString()
 );
 export const optionalSerializedDateSchema = serializedDateSchema.optional();

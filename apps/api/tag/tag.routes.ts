@@ -12,7 +12,11 @@ import {
 } from "./schema/response/response.schema.ts";
 import { CreateTagRequestSchema } from "./schema/request/create.schema.ts";
 import { UpdateTagRequestSchema } from "./schema/request/update.schema.ts";
-import { BulkTagRequestSchema, MergeTagsRequestSchema, TagItemRequestSchema } from "./schema/request/tag-operations.schema.ts";
+import {
+  BulkTagRequestSchema,
+  MergeTagsRequestSchema,
+  TagItemRequestSchema,
+} from "./schema/request/tag-operations.schema.ts";
 
 export const createTagRoute = createRoute({
   method: "post",

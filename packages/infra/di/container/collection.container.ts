@@ -8,16 +8,16 @@ import {
   ItemManagementService,
 } from "@kairos/core/collection";
 import {
-  CreateCollectionUseCase,
-  UpdateCollectionUseCase,
-  GetCollectionUseCase,
-  ListCollectionsUseCase,
-  DeleteCollectionUseCase,
   AddToCollectionUseCase,
-  RemoveFromCollectionUseCase,
   ArchiveItemUseCase,
   BulkArchiveUseCase,
+  CreateCollectionUseCase,
+  DeleteCollectionUseCase,
+  GetCollectionUseCase,
+  ListCollectionsUseCase,
   MoveItemUseCase,
+  RemoveFromCollectionUseCase,
+  UpdateCollectionUseCase,
 } from "@kairos/core/collection/usecases";
 import { DrizzleCollectionRepository } from "../../repositories/postgres/collection.repository.ts";
 import { TOKENS } from "../tokens.ts";
@@ -61,10 +61,11 @@ export function configureCollectionContainer(container: Container) {
       const collectionService = container.resolve<CollectionService>(
         TOKENS.CollectionService,
       );
-      const specialCollectionService =
-        container.resolve<SpecialCollectionService>(
-          TOKENS.SpecialCollectionService,
-        );
+      const specialCollectionService = container.resolve<
+        SpecialCollectionService
+      >(
+        TOKENS.SpecialCollectionService,
+      );
       return new ItemManagementService(
         collectionService,
         specialCollectionService,

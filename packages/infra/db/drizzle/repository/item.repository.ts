@@ -2,8 +2,8 @@ import { and, eq } from "drizzle-orm";
 import type {
   Item,
   ItemFilterableFields,
-  ItemSortableFields,
   ItemRepository,
+  ItemSortableFields,
   ReadingProgress,
 } from "@kairos/core/item";
 import type { ItemType } from "@kairos/shared/constants";
@@ -19,16 +19,13 @@ import {
 } from "../../utils.ts";
 import { readingProgress } from "../schema/reading.ts";
 
-export class DrizzleItemRepository
-  extends DrizzleUserScopedRepository<
-    Item<ItemContent>,
-    typeof items._.config,
-    typeof items,
-    ItemSortableFields,
-    ItemFilterableFields
-  >
-  implements ItemRepository<ItemContent>
-{
+export class DrizzleItemRepository extends DrizzleUserScopedRepository<
+  Item<ItemContent>,
+  typeof items._.config,
+  typeof items,
+  ItemSortableFields,
+  ItemFilterableFields
+> implements ItemRepository<ItemContent> {
   constructor(db: Database) {
     super(db, items);
   }

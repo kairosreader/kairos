@@ -1,9 +1,9 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { swaggerUI } from "@hono/swagger-ui";
 import {
-  TsyringeContainer,
   configureContainer,
   TOKENS,
+  TsyringeContainer,
 } from "@kairos/infra/di";
 import { ItemController } from "./item/item.controller.ts";
 import { CollectionController } from "./collection/collection.controller.ts";

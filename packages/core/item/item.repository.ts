@@ -9,8 +9,8 @@ import type {
 import type { ItemType } from "@kairos/shared/constants";
 import {} from "./item.entity.ts";
 
-export interface ItemRepository<T>
-  extends UserScopedRepository<
+export interface ItemRepository<T> extends
+  UserScopedRepository<
     Item<T>,
     ItemSortableFields,
     ItemFilterableFields

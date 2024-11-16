@@ -30,12 +30,11 @@
   "nodeModulesDir": "auto",
   "fmt": {
     "include": ["apps/", "packages/"],
-    "options": {
-      "useTabs": false,
-      "lineWidth": 80,
-      "indentWidth": 2,
-      "singleQuote": false
-    }
+    "exclude": ["**/*.json"],
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "singleQuote": false
   },
   "lint": {
     "include": ["apps/", "packages/"]

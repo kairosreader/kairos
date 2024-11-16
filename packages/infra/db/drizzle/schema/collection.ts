@@ -1,12 +1,12 @@
 import {
-  pgTable,
+  boolean,
   index,
-  uniqueIndex,
+  integer,
+  pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
-  boolean,
-  integer,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm/sql";
 import { users } from "./user.ts";

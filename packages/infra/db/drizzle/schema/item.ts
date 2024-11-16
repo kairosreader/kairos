@@ -1,10 +1,10 @@
 import {
+  integer,
+  jsonb,
   pgTable,
   text,
   timestamp,
   uuid,
-  integer,
-  jsonb,
 } from "drizzle-orm/pg-core";
 import { users } from "./user.ts";
 import { enumValuesTuple } from "@kairos/shared/utils";

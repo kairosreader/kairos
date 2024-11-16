@@ -1,4 +1,4 @@
-import { eq, and, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import type { Tag, TagRepository } from "@kairos/core";
 import type {
   FindTagByNameParams,

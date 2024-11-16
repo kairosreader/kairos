@@ -1,5 +1,5 @@
 // packages/infra/repositories/postgres/collection.repository.ts
-import { eq, and, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import type { Collection, CollectionRepository } from "@kairos/core/collection";
 import type {
   AddToCollectionParams,
@@ -8,14 +8,14 @@ import type {
 } from "@kairos/shared/types/params";
 import { db } from "../../db/connection.ts";
 import {
-  collections,
   collectionItems,
+  collections,
   items,
 } from "../../db/drizzle/schema/mod.ts";
 import {
+  type DatabaseResult,
   mapArrayNullToUndefined,
   mapNullToUndefined,
-  type DatabaseResult,
 } from "../../db/utils.ts";
 import type { Item } from "@kairos/core/item";
 

@@ -2,11 +2,11 @@ import type { Container } from "@kairos/core/di";
 import type { TagRepository } from "@kairos/core/tag";
 import { TagService } from "@kairos/core/tag";
 import {
+  BulkTagUseCase,
   CreateTagUseCase,
   DeleteTagUseCase,
-  TagItemUseCase,
-  BulkTagUseCase,
   MergeTagsUseCase,
+  TagItemUseCase,
 } from "@kairos/core/tag/usecases";
 import { DrizzleTagRepository } from "../../repositories/postgres/tag.repository.ts";
 import { TOKENS } from "../tokens.ts";

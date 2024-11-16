@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, uuid, jsonb } from "drizzle-orm/pg-core";
+import { jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { enumValuesTuple } from "@kairos/shared/utils";
 import { HIGHLIGHT_COLOR } from "@kairos/shared/constants";
 import { items } from "./item.ts";
