@@ -12,6 +12,8 @@ export interface CollectionData {
   description?: string;
   color?: string;
   icon?: string;
+  isDefault?: boolean;
+  isArchive?: boolean;
 }
 
 export interface CreateCollectionParams extends CreateParams<CollectionData> {}

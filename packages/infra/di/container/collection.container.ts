@@ -19,16 +19,20 @@ import {
   RemoveFromCollectionUseCase,
   UpdateCollectionUseCase,
 } from "@kairos/core/collection/usecases";
-import { DrizzleCollectionRepository } from "../../repositories/postgres/collection.repository.ts";
 import { TOKENS } from "../tokens.ts";
 import type { ItemService } from "@kairos/core/item";
 import type { ItemContent } from "@kairos/shared/types/common";
+import type { Database } from "../../db/connection.ts";
+import { DrizzleCollectionRepository } from "../../db/drizzle/repository/collection.repository.ts";
 
 export function configureCollectionContainer(container: Container) {
   // Repository
   container.registerSingleton<CollectionRepository>(
     TOKENS.CollectionRepository,
-    () => new DrizzleCollectionRepository(),
+    () => {
+      const db = container.resolve<Database>(TOKENS.DbClient);
+      return new DrizzleCollectionRepository(db);
+    },
   );
 
   // Services
