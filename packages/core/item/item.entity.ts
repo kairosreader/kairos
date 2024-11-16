@@ -36,6 +36,7 @@ export interface ReadingProgress {
 
 export const ITEM_FILTERABLE_FIELDS = [
   "title",
+  "tags",
   "type",
   "status",
   "createdAt",
