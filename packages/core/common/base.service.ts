@@ -1,4 +1,8 @@
-import type { BaseEntity, UserScoped } from "@kairos/shared/types/common";
+import type {
+  BaseEntity,
+  FilterOptions,
+  UserScoped,
+} from "@kairos/shared/types/common";
 import type {
   PaginatedResponse,
   QueryOptions,
@@ -91,8 +95,16 @@ export abstract class BaseService<T extends BaseEntity> {
 
 export abstract class NonUserScopedService<
   T extends BaseEntity,
+  TSortable extends string = string,
+  TFilterable extends string = string,
 > extends BaseService<T> {
-  constructor(protected override repository: NonUserScopedRepository<T>) {
+  constructor(
+    protected override repository: NonUserScopedRepository<
+      T,
+      TSortable,
+      TFilterable
+    >,
+  ) {
     super(repository);
   }
 
@@ -231,5 +243,9 @@ export abstract class UserScopedService<
     } catch (error) {
       throw new OperationError(this.resourceName, error);
     }
+  }
+
+  count(userId: string, filter?: FilterOptions<TFilterable>): Promise<number> {
+    return this.repository.count(userId, filter);
   }
 }
