@@ -3,4 +3,3 @@ export * from "./di/container.config.ts";
 export * from "./di/tokens.ts";
 export * from "./di/tsyringe/container.ts";
 export * from "./queue/mod.ts";
-export * from "./repositories/postgres/item.repository.ts";

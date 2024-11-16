@@ -6,13 +6,6 @@ import type {
 } from "@kairos/shared/types";
 import type { ItemStatus, ItemType } from "@kairos/shared/constants";
 
-export interface ItemContent {
-  title: string;
-  excerpt?: string;
-  content: string;
-  tags: string[];
-}
-
 export interface ItemProgress {
   progress: number;
   lastPosition: number;
