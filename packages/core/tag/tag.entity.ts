@@ -5,3 +5,20 @@ export interface Tag extends BaseEntity, UserScoped {
   name: string;
   color?: TagColor;
 }
+
+export const TAG_FILTERABLE_FIELDS = [
+  "name",
+  "color",
+  "createdAt",
+  "updatedAt",
+] as const;
+
+export const TAG_SORTABLE_FIELDS = [
+  "name",
+  "color",
+  "createdAt",
+  "updatedAt",
+] as const;
+
+export type TagFilterableFields = typeof TAG_FILTERABLE_FIELDS[number];
+export type TagSortableFields = typeof TAG_SORTABLE_FIELDS[number];

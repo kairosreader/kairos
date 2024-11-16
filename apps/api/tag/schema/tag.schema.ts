@@ -4,6 +4,15 @@ import { idSchema, userIdSchema } from "../../common/schema/id.schema.ts";
 import { enumValuesTuple } from "@kairos/shared/utils";
 import { TAG_COLOR } from "@kairos/shared/constants";
 
+export const TagInfoSchema = z.object({
+  name: z.string().openapi({
+    description: "Name of the tag",
+  }),
+  color: z.enum(enumValuesTuple(TAG_COLOR)).optional().openapi({
+    description: "Color of the tag",
+  }),
+});
+
 export const TagSchema = z
   .object({
     id: idSchema,

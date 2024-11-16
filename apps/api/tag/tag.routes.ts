@@ -17,6 +17,7 @@ import {
   MergeTagsRequestSchema,
   TagItemRequestSchema,
 } from "./schema/request/tag-operations.schema.ts";
+import { TagQuerySchema } from "./schema/request/list.schema.ts";
 
 export const createTagRoute = createRoute({
   method: "post",
@@ -112,9 +113,11 @@ export const listTagsRoute = createRoute({
   security: [BearerSecurity],
   middleware: [authMiddleware],
   summary: "List all tags",
-  description: "Retrieve a list of all tags",
+  description:
+    "Retrieve a paginated list of tags with optional query and sorting",
   request: {
     headers: AuthHeadersSchema,
+    query: TagQuerySchema,
   },
   responses: {
     200: {

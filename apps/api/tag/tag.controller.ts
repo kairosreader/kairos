@@ -103,14 +103,14 @@ export class TagController extends BaseController {
       })
       .openapi(tagItemRoute, async (c) => {
         const userId = c.get("userId");
-        const { itemId, tagIds } = c.req.valid("json");
-        await this.tagItemUseCase.execute({ userId, itemId, tagIds });
+        const { itemId, tagInfos } = c.req.valid("json");
+        await this.tagItemUseCase.execute({ userId, itemId, tagInfos });
         return c.json(null, 200);
       })
       .openapi(bulkTagRoute, async (c) => {
         const userId = c.get("userId");
-        const { itemIds, tagIds } = c.req.valid("json");
-        await this.bulkTagUseCase.execute({ userId, itemIds, tagIds });
+        const { itemIds, tagInfos } = c.req.valid("json");
+        await this.bulkTagUseCase.execute({ userId, itemIds, tagInfos });
         return c.json(null, 200);
       })
       .openapi(mergeTagsRoute, async (c) => {

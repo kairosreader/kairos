@@ -4,6 +4,7 @@ import { configureDbContainer } from "./container/db.container.ts";
 import { configureQueueContainer } from "./container/queue.container.ts";
 import { configureItemContainer } from "./container/item.container.ts";
 import { configureCollectionContainer } from "./container/collection.container.ts";
+import { configureTagContainer } from "./container/tag.container.ts";
 
 export function configureContainer(
   container: Container,
@@ -22,4 +23,5 @@ export function configureContainer(
   // Configure domain services
   configureItemContainer(container);
   configureCollectionContainer(container);
+  configureTagContainer(container);
 }

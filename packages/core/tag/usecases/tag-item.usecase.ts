@@ -5,6 +5,6 @@ export class TagItemUseCase {
   constructor(private tagService: TagService) {}
 
   async execute(params: TagItemOperation): Promise<void> {
-    await this.tagService.addToItem(params);
+    await this.tagService.tagItem(params);
   }
 }

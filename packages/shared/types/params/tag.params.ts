@@ -29,14 +29,18 @@ export interface FindTagByNameParams extends UserScopedParams {
   tagName: string;
 }
 
+export interface FindTagsByNamesParams extends UserScopedParams {
+  tagNames: string[];
+}
+
 export interface TagItemOperation extends UserScopedParams {
   itemId: string;
-  tagIds: string[];
+  tagInfos: TagData[];
 }
 
 export interface BulkTagItemOperation extends UserScopedParams {
   itemIds: string[];
-  tagIds: string[];
+  tagInfos: TagData[];
 }
 
 export interface CreateManyTagsOperation extends UserScopedParams {

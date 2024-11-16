@@ -5,6 +5,6 @@ export class BulkTagUseCase {
   constructor(private tagService: TagService) {}
 
   async execute(params: BulkTagItemOperation): Promise<void> {
-    await this.tagService.bulkAddToItem(params);
+    await this.tagService.bulkTagItems(params);
   }
 }

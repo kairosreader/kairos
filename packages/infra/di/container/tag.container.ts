@@ -8,17 +8,18 @@ import {
   MergeTagsUseCase,
   TagItemUseCase,
 } from "@kairos/core/tag/usecases";
-import { DrizzleTagRepository } from "../../repositories/postgres/tag.repository.ts";
 import { TOKENS } from "../tokens.ts";
 import type { ItemService } from "@kairos/core/item";
 import type { ItemContent } from "@kairos/shared/types/common";
+import { DrizzleTagRepository } from "../../db/drizzle/repository/tag.repository.ts";
+import type { Database } from "../../db/connection.ts";
 
 export function configureTagContainer(container: Container) {
   // Repository
-  container.registerSingleton<TagRepository>(
-    TOKENS.TagRepository,
-    () => new DrizzleTagRepository(),
-  );
+  container.registerSingleton<TagRepository>(TOKENS.TagRepository, () => {
+    const db = container.resolve<Database>(TOKENS.DbClient);
+    return new DrizzleTagRepository(db);
+  });
 
   // Service
   container.registerSingleton<TagService>(TOKENS.TagService, () => {

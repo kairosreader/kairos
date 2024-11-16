@@ -1,14 +1,12 @@
 import { z } from "@hono/zod-openapi";
 import { idSchema } from "../../../common/schema/id.schema.ts";
+import { TagInfoSchema } from "../tag.schema.ts";
 
 export const TagItemRequestSchema = z.object({
   itemId: idSchema.openapi({
     description: "ID of the item to tag",
   }),
-  tagIds: z.array(idSchema).openapi({
-    description: "IDs of the tags to apply",
-    example: ["tag-1", "tag-2"],
-  }),
+  tagInfos: z.array(TagInfoSchema),
 });
 
 export const BulkTagRequestSchema = z.object({
@@ -16,10 +14,7 @@ export const BulkTagRequestSchema = z.object({
     description: "IDs of the items to tag",
     example: ["item-1", "item-2"],
   }),
-  tagIds: z.array(idSchema).openapi({
-    description: "IDs of the tags to apply",
-    example: ["tag-1", "tag-2"],
-  }),
+  tagInfos: z.array(TagInfoSchema),
 });
 
 export const MergeTagsRequestSchema = z.object({
