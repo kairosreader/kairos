@@ -1,5 +1,5 @@
 {
-  "id": "b35bfb28-a966-47c0-9b15-ec30818a4a76",
+  "id": "ae39176c-a3f8-493f-a336-7ef8ef34d407",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -33,12 +33,6 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        },
-        "order": {
-          "name": "order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
         }
       },
       "indexes": {

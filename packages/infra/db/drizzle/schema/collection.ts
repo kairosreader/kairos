@@ -52,7 +52,6 @@ export const collectionItems = pgTable(
       .notNull()
       .references(() => items.id, { onDelete: "cascade" }),
     addedAt: timestamp("added_at").notNull().defaultNow(),
-    order: integer("order").notNull(),
   },
   (t) => [
     // Create indexes for better query performance

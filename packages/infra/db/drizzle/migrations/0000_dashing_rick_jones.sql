@@ -2,8 +2,7 @@ CREATE TABLE IF NOT EXISTS "collection_items" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"collection_id" uuid NOT NULL,
 	"item_id" uuid NOT NULL,
-	"added_at" timestamp DEFAULT now() NOT NULL,
-	"order" integer NOT NULL
+	"added_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "collections" (
