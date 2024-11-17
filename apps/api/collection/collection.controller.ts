@@ -6,11 +6,11 @@ import type {
   CreateCollectionUseCase,
   DeleteCollectionUseCase,
   GetCollectionUseCase,
+  GetItemsInCollectionUseCase,
   ListCollectionsUseCase,
   MoveItemUseCase,
   RemoveFromCollectionUseCase,
   UpdateCollectionUseCase,
-  GetItemsInCollectionUseCase,
 } from "@kairos/core/collection/usecases";
 import {
   addToCollectionRoute,
@@ -100,7 +100,8 @@ export class CollectionController extends BaseController {
       })
       .openapi(listCollectionsRoute, async (c) => {
         const userId = c.get("userId");
-        const collections = await this.listUseCase.execute({ userId });
+        const options = c.req.valid("query");
+        const collections = await this.listUseCase.execute({ userId, options });
         const validatedCollections = CollectionListResponseSchema.parse(
           collections,
         );

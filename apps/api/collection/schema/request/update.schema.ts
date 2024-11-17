@@ -1,20 +1,12 @@
-import { z } from "@hono/zod-openapi";
+import { CreateCollectionRequestSchema } from "./create.schema.ts";
 
-export const UpdateCollectionRequestSchema = z.object({
-  name: z.string().openapi({
-    example: "Updated Reading List",
-    description: "New name for the collection",
-  }),
-  description: z.string().optional().openapi({
-    example: "Updated description",
-    description: "New description for the collection",
-  }),
-  color: z.string().optional().openapi({
-    example: "#00FF00",
-    description: "New color for the collection",
-  }),
-  icon: z.string().optional().openapi({
-    example: "📖",
-    description: "New icon for the collection",
-  }),
-});
+export const UpdateCollectionRequestSchema = CreateCollectionRequestSchema
+  .partial().openapi({
+    example: {
+      name: "Reading List",
+      description: "My main reading list",
+      color: "#FF0000",
+      icon: "📚",
+    },
+    description: "Partial update for the collection",
+  });

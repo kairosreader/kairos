@@ -28,11 +28,6 @@ export interface UpdateCollectionData {
 export interface UpdateCollectionParams
   extends UpdateParams<UpdateCollectionData> {}
 
-export interface ListCollectionsParams
-  extends SortablePaginatedQuery, UserScopedParams {
-  sortBy?: "name" | "createdAt" | "itemCount";
-}
-
 export interface CollectionItemOperation extends ResourceIdentifier {
   itemInfo: ItemInfo;
 }
