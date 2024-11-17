@@ -110,7 +110,8 @@ export class ItemController extends BaseController {
       })
       .openapi(listItemsRoute, async (c) => {
         const userId = c.get("userId");
-        const items = await this.listUseCase.execute({ userId });
+        const options = c.req.valid("query");
+        const items = await this.listUseCase.execute({ userId, options });
         const validatedItems = ItemListResponseSchema.parse(items);
         return c.json(validatedItems);
       })
