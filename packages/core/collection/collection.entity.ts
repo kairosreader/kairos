@@ -15,8 +15,6 @@ export const COLLECTION_FILTERABLE_FIELDS = [
   "description",
   "isDefault",
   "isArchive",
-  "color",
-  "icon",
   "itemCount",
 ] as const;
 
