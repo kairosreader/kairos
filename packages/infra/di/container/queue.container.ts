@@ -7,7 +7,7 @@ import type { ContentExtractorService } from "@kairos/core/content";
 import { EmailProcessingHandler } from "../../queue/handlers/email.handler.ts";
 import type { QueueService } from "@kairos/core/queue";
 import { BullQueueService } from "../../queue/bull/bull-queue.service.ts";
-import { ReadabilityExtractorService } from "../../content/readability/mod.ts";
+import { ReadabilityExtractorService } from "../../content/readability/readability-extractor.service.ts";
 
 export function configureQueueContainer(
   container: Container,
