@@ -26,22 +26,24 @@ services:
     command: ["deno", "task", "start:processor"]
 
   drizzle-studio:
-    build:
-      dockerfile: .docker/api/Dockerfile
-      target: development
+    image: node:18-slim
     ports:
       - "4983:4983"
     volumes:
       - .:/app:delegated
-      - deno-cache:/deno-dir/deps
+    working_dir: /app/packages/infra
     environment:
-      - DENO_ENV=development
-      - LOG_LEVEL=debug
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
-      - REDIS_HOST=dragonfly
-      - REDIS_PORT=${REDIS_PORT}
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-    command: ["deno", "task", "db:studio"]
+    command: >
+      sh -c "
+        echo '============================================================' &&
+        echo '🚀 ACCESS DRIZZLE STUDIO HERE:' &&
+        echo '⭐ https://local.drizzle.studio?port=4983' &&
+        echo '❌ IGNORE the URL that will be output by Drizzle Kit below!' &&
+        echo '============================================================\n' &&
+        cd /app/packages/infra &&
+        npx drizzle-kit studio --verbose --host 0.0.0.0 --port 4983 --config ./db/drizzle/drizzle-env.js
+      "
     depends_on:
       - db
 

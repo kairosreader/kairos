@@ -21,7 +21,7 @@
     "@kairos/shared/utils": "../shared/utils/mod.ts",
     "@mozilla/readability": "npm:@mozilla/readability@0.5.0",
     "bullmq": "npm:bullmq@5.25.0",
-    "drizzle-kit": "npm:drizzle-kit@^0.28.0",
+    "drizzle-kit": "npm:drizzle-kit@^0.28.1",
     "drizzle-orm": "npm:drizzle-orm@^0.36.1",
     "jsdom": "npm:jsdom@25.0.1",
     "postgres": "npm:postgres@^3.4.5",

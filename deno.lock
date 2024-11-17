@@ -8,9 +8,8 @@
     "npm:@types/node@*": "22.5.4",
     "npm:bullmq@5.25.0": "5.25.0",
     "npm:defu@^6.1.4": "6.1.4",
-    "npm:drizzle-kit@*": "0.28.0_esbuild@0.19.12",
-    "npm:drizzle-kit@0.28": "0.28.0_esbuild@0.19.12",
-    "npm:drizzle-kit@0.28.0": "0.28.0_esbuild@0.19.12",
+    "npm:drizzle-kit@0.28.1": "0.28.1_esbuild@0.19.12",
+    "npm:drizzle-kit@~0.28.1": "0.28.1_esbuild@0.19.12",
     "npm:drizzle-orm@~0.36.1": "0.36.1_postgres@3.4.5",
     "npm:esbuild@*": "0.19.12",
     "npm:hono@^4.4.6": "4.6.9",
@@ -319,8 +318,8 @@
     "detect-libc@2.0.3": {
       "integrity": "sha512-bwy0MGW55bG41VqxxypOsdSdGqLwXPI/focwgTYCFMbdUiBAxLg9CFzG08sz2aqzknwiX7Hkl0bQENjg8iLByw=="
     },
-    "drizzle-kit@0.28.0_esbuild@0.19.12": {
-      "integrity": "sha512-KqI+CS2Ga9GYIrXpxpCDUJJrH/AT/k4UY0Pb4oRgQEGkgN1EdCnqp664cXgwPWjDr5RBtTsjZipw8+8C//K63A==",
+    "drizzle-kit@0.28.1_esbuild@0.19.12": {
+      "integrity": "sha512-JimOV+ystXTWMgZkLHYHf2w3oS28hxiH1FR0dkmJLc7GHzdGJoJAQtQS5DRppnabsRZwE2U1F6CuezVBgmsBBQ==",
       "dependencies": [
         "@drizzle-team/brocli",
         "@esbuild-kit/esm-loader",
@@ -752,7 +751,7 @@
         "dependencies": [
           "npm:@mozilla/readability@0.5.0",
           "npm:bullmq@5.25.0",
-          "npm:drizzle-kit@0.28",
+          "npm:drizzle-kit@~0.28.1",
           "npm:drizzle-orm@~0.36.1",
           "npm:jsdom@25.0.1",
           "npm:postgres@^3.4.5",
