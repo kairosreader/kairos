@@ -42,6 +42,23 @@ export const createFilterSchema = (
   return z.object(schema).partial();
 };
 
+// Helper to parse filter key into field and operator
+// Example: "text.contains" -> { field: "text", operator: "contains" }
+const parseFilterKey = (key: string) => {
+  const [field, operator] = key.split(".");
+  return { field, operator } as const;
+};
+
+// Helper to create a filter object for a field
+// Example: { text: { contains: "hello", eq: "world" } }
+const createFieldFilter = (entries: [string, unknown][]): FilterOperator => {
+  return entries.reduce((operators, [key, value]) => {
+    const { operator } = parseFilterKey(key);
+    if (!operator) return operators;
+    return Object.assign(operators, { [operator]: value });
+  }, {} as FilterOperator);
+};
+
 export const createQuerySchema = <
   TSortFields extends [string, ...string[]],
   TFilterFields extends string,
@@ -106,5 +123,82 @@ export const createQuerySchema = <
     })
     .openapi({
       description: "Query parameters for pagination, sorting, and filtering",
+    })
+    .transform((data) => {
+      const {
+        type,
+        page,
+        limit,
+        cursor,
+        sort_field,
+        sort_direction,
+        searchQuery,
+        ...filters
+      } = data;
+
+      // Group filter entries by field
+      // Example: { text: [["text.contains", "hello"], ["text.eq", "world"]] }
+      const filtersByField = Object.entries(filters).reduce<
+        Record<string, [string, unknown][]>
+      >((grouped, [key, value]) => {
+        const { field } = parseFilterKey(key);
+        if (!(field in filterConfig)) return grouped;
+
+        return {
+          ...grouped,
+          [field]: [...(grouped[field] || []), [key, value]],
+        };
+      }, {});
+
+      return {
+        // Transform pagination parameters
+        pagination: type === "offset"
+          ? { type: "offset" as const, page, limit }
+          : { type: "cursor" as const, cursor, limit },
+
+        // Transform sort parameters
+        sort: sort_field && {
+          field: sort_field,
+          direction: sort_direction ?? "desc",
+        },
+
+        // Transform filters
+        filters: Object.entries(filtersByField).reduce<
+          Record<TFilterFields, FilterOperator>
+        >((acc, [field, entries]) => {
+          if (field in filterConfig) {
+            return {
+              ...acc,
+              [field as TFilterFields]: createFieldFilter(entries),
+            };
+          }
+          return acc;
+        }, {} as Record<TFilterFields, FilterOperator>),
+
+        // Pass through search query
+        searchQuery,
+      };
     });
 };
+
+export const PageInfoSchema = z
+  .object({
+    hasNextPage: z.boolean().openapi({
+      description: "Whether there are more items after this page",
+      example: true,
+    }),
+    hasPreviousPage: z.boolean().openapi({
+      description: "Whether there are more items before this page",
+      example: false,
+    }),
+    totalCount: z.number().int().min(0).openapi({
+      description: "Total number of items matching the query",
+      example: 100,
+    }),
+    cursor: z.string().optional().openapi({
+      description:
+        "Cursor for the next page when using cursor-based pagination",
+      example: "eyJpZCI6IjEyMyJ9",
+    }),
+  })
+  .openapi("PageInfo");
