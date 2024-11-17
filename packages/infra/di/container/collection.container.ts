@@ -14,6 +14,7 @@ import {
   CreateCollectionUseCase,
   DeleteCollectionUseCase,
   GetCollectionUseCase,
+  GetItemsInCollectionUseCase,
   ListCollectionsUseCase,
   MoveItemUseCase,
   RemoveFromCollectionUseCase,
@@ -118,6 +119,13 @@ export function configureCollectionContainer(container: Container) {
       TOKENS.CollectionService,
     );
     return new AddToCollectionUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.GetItemsInCollectionUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new GetItemsInCollectionUseCase(collectionService);
   });
 
   container.registerSingleton(TOKENS.RemoveFromCollectionUseCase, () => {

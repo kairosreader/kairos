@@ -10,6 +10,7 @@ import type {
   MoveItemUseCase,
   RemoveFromCollectionUseCase,
   UpdateCollectionUseCase,
+  GetItemsInCollectionUseCase,
 } from "@kairos/core/collection/usecases";
 import {
   addToCollectionRoute,
@@ -18,6 +19,7 @@ import {
   createCollectionRoute,
   deleteCollectionRoute,
   getCollectionRoute,
+  getItemsInCollectionRoute,
   listCollectionsRoute,
   moveItemRoute,
   removeFromCollectionRoute,
@@ -40,6 +42,7 @@ export class CollectionController extends BaseController {
     private listUseCase: ListCollectionsUseCase,
     private deleteUseCase: DeleteCollectionUseCase,
     private addToCollectionUseCase: AddToCollectionUseCase,
+    private getItemsUseCase: GetItemsInCollectionUseCase,
     private removeFromCollectionUseCase: RemoveFromCollectionUseCase,
     private moveItemUseCase: MoveItemUseCase,
     private archiveItemUseCase: ArchiveItemUseCase,
@@ -115,6 +118,12 @@ export class CollectionController extends BaseController {
         const { itemInfo } = c.req.valid("json");
         await this.addToCollectionUseCase.execute({ id, userId, itemInfo });
         return c.json(null, 200);
+      })
+      .openapi(getItemsInCollectionRoute, async (c) => {
+        const userId = c.get("userId");
+        const { id } = c.req.valid("param");
+        const items = await this.getItemsUseCase.execute({ id, userId });
+        return c.json(items);
       })
       .openapi(removeFromCollectionRoute, async (c) => {
         const userId = c.get("userId");

@@ -34,6 +34,7 @@ export const TOKENS = {
   ListCollectionsUseCase: "ListCollectionsUseCase",
   DeleteCollectionUseCase: "DeleteCollectionUseCase",
   AddToCollectionUseCase: "AddToCollectionUseCase",
+  GetItemsInCollectionUseCase: "GetItemsInCollectionUseCase",
   RemoveFromCollectionUseCase: "RemoveFromCollectionUseCase",
   MoveItemUseCase: "MoveItemUseCase",
   ArchiveItemUseCase: "ArchiveItemUseCase",

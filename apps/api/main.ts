@@ -38,6 +38,7 @@ const collectionController = new CollectionController(
   container.resolve(TOKENS.ListCollectionsUseCase),
   container.resolve(TOKENS.DeleteCollectionUseCase),
   container.resolve(TOKENS.AddToCollectionUseCase),
+  container.resolve(TOKENS.GetItemsInCollectionUseCase),
   container.resolve(TOKENS.RemoveFromCollectionUseCase),
   container.resolve(TOKENS.MoveItemUseCase),
   container.resolve(TOKENS.ArchiveItemUseCase),

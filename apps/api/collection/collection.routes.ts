@@ -178,6 +178,26 @@ export const addToCollectionRoute = createRoute({
   },
 });
 
+export const getItemsInCollectionRoute = createRoute({
+  method: "get",
+  path: "/collection/{id}/items",
+  tags: ["Collections"],
+  security: [BearerSecurity],
+  middleware: [authMiddleware],
+  summary: "Get items in a collection",
+  description: "Retrieve a list of items in a collection",
+  request: {
+    headers: AuthHeadersSchema,
+    params: CollectionParamsSchema,
+  },
+  responses: {
+    200: {
+      description: "Items in collection retrieved successfully",
+    },
+    ...standardErrorResponses,
+  },
+});
+
 export const removeFromCollectionRoute = createRoute({
   method: "delete",
   path: "/collection/{id}/items",
