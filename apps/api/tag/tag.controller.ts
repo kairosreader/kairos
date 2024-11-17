@@ -91,7 +91,8 @@ export class TagController extends BaseController {
       })
       .openapi(listTagsRoute, async (c) => {
         const userId = c.get("userId");
-        const tags = await this.listUseCase.execute({ userId });
+        const options = c.req.valid("query");
+        const tags = await this.listUseCase.execute({ userId, options });
         const validatedTags = TagListResponseSchema.parse(tags);
         return c.json(validatedTags);
       })

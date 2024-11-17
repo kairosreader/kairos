@@ -1,14 +1,10 @@
-import { z } from "@hono/zod-openapi";
-import { enumValuesTuple } from "@kairos/shared/utils";
 import { TAG_COLOR } from "@kairos/shared/constants";
+import { CreateTagRequestSchema } from "./create.schema.ts";
 
-export const UpdateTagRequestSchema = z.object({
-  name: z.string().openapi({
-    example: "coding",
-    description: "New name for the tag",
-  }),
-  color: z.enum(enumValuesTuple(TAG_COLOR)).openapi({
-    example: TAG_COLOR.GREEN,
-    description: "New color for the tag",
-  }),
+export const UpdateTagRequestSchema = CreateTagRequestSchema.partial().openapi({
+  example: {
+    name: "programming",
+    color: TAG_COLOR.BLUE,
+  },
+  description: "Partial update for the tag",
 });
