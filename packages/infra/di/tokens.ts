@@ -6,6 +6,7 @@ export const TOKENS = {
   ItemRepository: "ItemRepository",
   CollectionRepository: "CollectionRepository",
   TagRepository: "TagRepository",
+  HighlightRepository: "HighlightRepository",
 
   // Services
   ItemService: "ItemService",
@@ -15,6 +16,7 @@ export const TOKENS = {
   ItemManagementService: "ItemManagementService",
   SpecialCollectionService: "SpecialCollectionService",
   TagService: "TagService",
+  HighlightService: "HighlightService",
 
   // Handlers
   ArticleProcessingHandler: "ArticleProcessingHandler",
@@ -47,4 +49,10 @@ export const TOKENS = {
   TagItemUseCase: "TagItemUseCase",
   BulkTagUseCase: "BulkTagUseCase",
   MergeTagsUseCase: "MergeTagsUseCase",
+  CreateHighlightUseCase: "CreateHighlightUseCase",
+  UpdateHighlightUseCase: "UpdateHighlightUseCase",
+  GetHighlightUseCase: "GetHighlightUseCase",
+  ListHighlightsUseCase: "ListHighlightsUseCase",
+  DeleteHighlightUseCase: "DeleteHighlightUseCase",
+  BulkDeleteHighlightsUseCase: "BulkDeleteHighlightsUseCase",
 } as const;

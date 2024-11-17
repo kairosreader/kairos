@@ -1,8 +1,6 @@
 import type { HighlightColor } from "../../constants/highlight.constants.ts";
-import type { ItemInfo } from "../common/item.types.ts";
 import type {
   CreateParams,
-  SortablePaginatedQuery,
   UpdateParams,
   UserScopedParams,
 } from "./base.params.ts";
@@ -14,7 +12,7 @@ export interface TextSelection {
 }
 
 export interface HighlightData {
-  itemInfo: ItemInfo;
+  itemId: string;
   color?: HighlightColor;
   textSelection: TextSelection;
   note?: string;
@@ -29,14 +27,6 @@ export interface UpdateHighlightData {
 
 export interface UpdateHighlightParams
   extends UpdateParams<UpdateHighlightData> {}
-
-export interface ListHighlightsParams
-  extends SortablePaginatedQuery, UserScopedParams {
-  itemId?: string;
-  color?: HighlightColor;
-  hasNote?: boolean;
-  sortBy?: "createdAt" | "position";
-}
 
 export interface BulkDeleteHighlightsOperation extends UserScopedParams {
   highlightIds: string[];

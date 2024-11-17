@@ -1,11 +1,19 @@
 import type { CreateHighlightParams } from "@kairos/shared/types";
 import { UserScopedService } from "../common/base.service.ts";
-import type { Highlight } from "./highlight.entity.ts";
+import type {
+  Highlight,
+  HighlightFilterableFields,
+  HighlightSortableFields,
+} from "./highlight.entity.ts";
 import type { HighlightRepository } from "./highlight.repository.ts";
 import { generateId } from "@kairos/shared/utils";
 import { HIGHLIGHT_COLOR } from "@kairos/shared/constants";
 
-export class HighlightService extends UserScopedService<Highlight> {
+export class HighlightService extends UserScopedService<
+  Highlight,
+  HighlightSortableFields,
+  HighlightFilterableFields
+> {
   protected override resourceName: string;
   constructor(private highlightRepo: HighlightRepository) {
     super(highlightRepo);
@@ -15,7 +23,7 @@ export class HighlightService extends UserScopedService<Highlight> {
   create(params: CreateHighlightParams): Promise<Highlight> {
     const highlight: Highlight = {
       id: generateId(),
-      itemInfo: params.data.itemInfo,
+      itemId: params.data.itemId,
       userId: params.userId,
       color: params.data.color || HIGHLIGHT_COLOR.YELLOW,
       textSelection: params.data.textSelection,

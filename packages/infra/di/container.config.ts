@@ -5,6 +5,7 @@ import { configureQueueContainer } from "./container/queue.container.ts";
 import { configureItemContainer } from "./container/item.container.ts";
 import { configureCollectionContainer } from "./container/collection.container.ts";
 import { configureTagContainer } from "./container/tag.container.ts";
+import { configureHighlightContainer } from "./container/highlight.container.ts";
 
 export function configureContainer(
   container: Container,
@@ -24,4 +25,5 @@ export function configureContainer(
   configureItemContainer(container);
   configureCollectionContainer(container);
   configureTagContainer(container);
+  configureHighlightContainer(container);
 }
