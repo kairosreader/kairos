@@ -55,7 +55,7 @@ export class CollectionController extends BaseController {
     this.router
       .openapi(createCollectionRoute, async (c) => {
         const data = c.req.valid("json");
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
 
         const collection = await this.createUseCase.execute({
           userId,
@@ -66,7 +66,7 @@ export class CollectionController extends BaseController {
         return c.json(validatedCollection, 201);
       })
       .openapi(updateCollectionRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         const updates = c.req.valid("json");
 
@@ -80,7 +80,7 @@ export class CollectionController extends BaseController {
         return c.json(validatedCollection);
       })
       .openapi(getCollectionRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
 
         const collection = await this.getUseCase.execute({ id, userId });
@@ -99,7 +99,7 @@ export class CollectionController extends BaseController {
         return c.json(validatedCollection);
       })
       .openapi(listCollectionsRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const options = c.req.valid("query");
         const collections = await this.listUseCase.execute({ userId, options });
         const validatedCollections = CollectionListResponseSchema.parse(
@@ -108,26 +108,26 @@ export class CollectionController extends BaseController {
         return c.json(validatedCollections);
       })
       .openapi(deleteCollectionRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         await this.deleteUseCase.execute({ id, userId });
         return c.json(null, 204);
       })
       .openapi(addToCollectionRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         const { itemInfo } = c.req.valid("json");
         await this.addToCollectionUseCase.execute({ id, userId, itemInfo });
         return c.json(null, 200);
       })
       .openapi(getItemsInCollectionRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         const items = await this.getItemsUseCase.execute({ id, userId });
         return c.json(items);
       })
       .openapi(removeFromCollectionRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         const { itemInfo } = c.req.valid("json");
         await this.removeFromCollectionUseCase.execute({
@@ -138,7 +138,7 @@ export class CollectionController extends BaseController {
         return c.json(null, 200);
       })
       .openapi(moveItemRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const data = c.req.valid("json");
         await this.moveItemUseCase.execute({
           userId,
@@ -149,13 +149,13 @@ export class CollectionController extends BaseController {
         return c.json(null, 200);
       })
       .openapi(archiveItemRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { itemInfo } = c.req.valid("json");
         await this.archiveItemUseCase.execute({ userId, itemInfo });
         return c.json(null, 200);
       })
       .openapi(bulkArchiveRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { itemInfos } = c.req.valid("json");
         await this.bulkArchiveUseCase.execute({ userId, itemInfos });
         return c.json(null, 204);

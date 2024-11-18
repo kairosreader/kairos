@@ -30,20 +30,20 @@ export class HighlightController extends BaseController {
     this.router
       .openapi(createHighlightRoute, async (c) => {
         const data = c.req.valid("json");
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const highlight = await this.createUseCase.execute({ userId, data });
         return c.json(highlight);
       })
       .openapi(getHighlightRoute, async (c) => {
         const id = c.req.param("id");
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const highlight = await this.getUseCase.execute({ userId, id });
         return c.json(highlight);
       })
       .openapi(updateHighlightRoute, async (c) => {
         const id = c.req.param("id");
         const updates = c.req.valid("json");
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const highlight = await this.updateUseCase.execute({
           userId,
           id,
@@ -53,12 +53,12 @@ export class HighlightController extends BaseController {
       })
       .openapi(deleteHighlightRoute, async (c) => {
         const id = c.req.param("id");
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         await this.deleteUseCase.execute({ userId, id });
         return c.json(null, 204);
       })
       .openapi(listHighlightsRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const options = c.req.valid("query");
         const highlights = await this.listUseCase.execute({ userId, options });
         const validatedHighlights = HighlightListResponseSchema.parse(

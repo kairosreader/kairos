@@ -43,7 +43,7 @@ export class ItemController extends BaseController {
     this.router
       .openapi(createItemRoute, async (c) => {
         const data = c.req.valid("json");
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
 
         const item = await this.saveUseCase.execute({
           type: data.type,
@@ -56,7 +56,7 @@ export class ItemController extends BaseController {
         return c.json(validatedItem, 201);
       })
       .openapi(updateItemRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         const updates = c.req.valid("json");
 
@@ -75,7 +75,7 @@ export class ItemController extends BaseController {
         return c.json(validatedItem);
       })
       .openapi(getItemRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
 
         const item = await this.getItemUseCase.execute({
@@ -97,7 +97,7 @@ export class ItemController extends BaseController {
         return c.json(validatedItem);
       })
       .openapi(updateReadingProgressRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         const { progress, lastPosition } = c.req.valid("json");
         await this.updateReadingProgressUseCase.execute({
@@ -109,20 +109,20 @@ export class ItemController extends BaseController {
         return c.json(null);
       })
       .openapi(listItemsRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const options = c.req.valid("query");
         const items = await this.listUseCase.execute({ userId, options });
         const validatedItems = ItemListResponseSchema.parse(items);
         return c.json(validatedItems);
       })
       .openapi(deleteItemRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         await this.deleteUseCase.execute({ id, userId });
         return c.json(null, 204);
       })
       .openapi(bulkDeleteItemsRoute, async (c) => {
-        const userId = c.get("userId");
+        const { id: userId } = c.get("user");
         const { ids } = c.req.valid("json");
         await this.bulkDeleteUseCase.execute({ ids, userId });
         return c.json(null, 204);
