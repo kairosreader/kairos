@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 import {
-  AuthHeadersSchema,
+  AuthHeadersBearerSchema,
   BearerSecurity,
 } from "../common/schema/auth.schema.ts";
 import { standardErrorResponses } from "../common/schema/error.schema.ts";
@@ -30,7 +30,7 @@ export const createCollectionRoute = createRoute({
   summary: "Create a new collection",
   description: "Create a new collection to organize items",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -60,7 +60,7 @@ export const updateCollectionRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Update an existing collection",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: CollectionParamsSchema,
     body: {
       content: {
@@ -91,7 +91,7 @@ export const getCollectionRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Get a single collection",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: CollectionParamsSchema,
   },
   responses: {
@@ -116,7 +116,7 @@ export const listCollectionsRoute = createRoute({
   summary: "List all collections",
   description: "Retrieve a list of all collections for the authenticated user",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     query: CollectionQuerySchema,
   },
   responses: {
@@ -140,7 +140,7 @@ export const deleteCollectionRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Delete a collection",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: CollectionParamsSchema,
   },
   responses: {
@@ -160,7 +160,7 @@ export const addToCollectionRoute = createRoute({
   summary: "Add items to a collection",
   description: "Add one or more items to an existing collection",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: CollectionParamsSchema,
     body: {
       content: {
@@ -187,7 +187,7 @@ export const getItemsInCollectionRoute = createRoute({
   summary: "Get items in a collection",
   description: "Retrieve a list of items in a collection",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: CollectionParamsSchema,
   },
   responses: {
@@ -207,7 +207,7 @@ export const removeFromCollectionRoute = createRoute({
   summary: "Remove items from a collection",
   description: "Remove one or more items from an existing collection",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: CollectionParamsSchema,
     body: {
       content: {
@@ -234,7 +234,7 @@ export const moveItemRoute = createRoute({
   summary: "Move items between collections",
   description: "Move items from one collection to another",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -260,7 +260,7 @@ export const archiveItemRoute = createRoute({
   summary: "Archive an item",
   description: "Archive a single item from a collection",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -286,7 +286,7 @@ export const bulkArchiveRoute = createRoute({
   summary: "Bulk archive items",
   description: "Archive multiple items from collections in a single operation",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {

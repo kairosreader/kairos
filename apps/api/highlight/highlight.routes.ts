@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 import {
-  AuthHeadersSchema,
+  AuthHeadersBearerSchema,
   BearerSecurity,
 } from "../common/schema/auth.schema.ts";
 import { standardErrorResponses } from "../common/schema/error.schema.ts";
@@ -22,7 +22,7 @@ export const createHighlightRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Create a new highlight",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -52,7 +52,7 @@ export const getHighlightRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Get a single highlight",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: HighlightParamsSchema,
   },
   responses: {
@@ -76,7 +76,7 @@ export const updateHighlightRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Update an existing highlight",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: HighlightParamsSchema,
     body: {
       content: {
@@ -107,7 +107,7 @@ export const deleteHighlightRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Delete a highlight",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: HighlightParamsSchema,
   },
   responses: {
@@ -128,7 +128,7 @@ export const listHighlightsRoute = createRoute({
   description:
     "Retrieve a paginated list of highlights with optional query and sorting",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     query: HighlightQuerySchema,
   },
   responses: {

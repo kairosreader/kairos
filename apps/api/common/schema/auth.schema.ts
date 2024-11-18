@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
 
-export const AuthHeadersSchema = z.object({
+export const AuthHeadersBearerSchema = z.object({
   authorization: z.string().openapi({
     param: {
       name: "authorization",

@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 import {
-  AuthHeadersSchema,
+  AuthHeadersBearerSchema,
   BearerSecurity,
 } from "../common/schema/auth.schema.ts";
 import { standardErrorResponses } from "../common/schema/error.schema.ts";
@@ -28,7 +28,7 @@ export const createTagRoute = createRoute({
   summary: "Create a new tag",
   description: "Create a new tag with the specified name and color",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -59,7 +59,7 @@ export const updateTagRoute = createRoute({
   summary: "Update an existing tag",
   description: "Update the name or color of an existing tag",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: TagParamsSchema,
     body: {
       content: {
@@ -90,7 +90,7 @@ export const getTagRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Get a single tag",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: TagParamsSchema,
   },
   responses: {
@@ -116,7 +116,7 @@ export const listTagsRoute = createRoute({
   description:
     "Retrieve a paginated list of tags with optional query and sorting",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     query: TagQuerySchema,
   },
   responses: {
@@ -140,7 +140,7 @@ export const deleteTagRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Delete a tag",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: TagParamsSchema,
   },
   responses: {
@@ -159,7 +159,7 @@ export const tagItemRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Apply tags to an item",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -184,7 +184,7 @@ export const bulkTagRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Apply tags to multiple items",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -209,7 +209,7 @@ export const mergeTagsRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Merge tags",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {

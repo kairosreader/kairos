@@ -1,7 +1,7 @@
 import { createRoute } from "@hono/zod-openapi";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
 import {
-  AuthHeadersSchema,
+  AuthHeadersBearerSchema,
   BearerSecurity,
 } from "../common/schema/auth.schema.ts";
 import { CreateItemRequestSchema } from "./schema/request/create.schema.ts";
@@ -25,7 +25,7 @@ export const createItemRoute = createRoute({
   summary: "Create a new item",
   description: "Create a new collection item with the specified content",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -55,7 +55,7 @@ export const updateItemRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Update an existing item",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: ItemParamsSchema,
     body: {
       content: {
@@ -86,7 +86,7 @@ export const getItemRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Get a single item",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: ItemParamsSchema,
   },
   responses: {
@@ -110,7 +110,7 @@ export const updateReadingProgressRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Update reading progress of an item",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: ItemParamsSchema,
     body: {
       content: {
@@ -136,7 +136,7 @@ export const deleteItemRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Delete an item",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     params: ItemParamsSchema,
   },
   responses: {
@@ -155,7 +155,7 @@ export const bulkDeleteItemsRoute = createRoute({
   middleware: [authMiddleware],
   summary: "Bulk delete items",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -182,7 +182,7 @@ export const listItemsRoute = createRoute({
   description:
     "Retrieve a list of items with optional filtering and pagination",
   request: {
-    headers: AuthHeadersSchema,
+    headers: AuthHeadersBearerSchema,
     query: ItemQuerySchema,
   },
   responses: {
