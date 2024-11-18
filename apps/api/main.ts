@@ -10,6 +10,7 @@ import { CollectionController } from "./collection/collection.controller.ts";
 import type { AppEnv } from "./common/controller/controller.types.ts";
 import { TagController } from "./tag/tag.controller.ts";
 import { HighlightController } from "./highlight/highlight.controller.ts";
+import { UserController } from "./user/user.controller.ts";
 
 const container = new TsyringeContainer();
 // Configure container
@@ -65,10 +66,19 @@ const highlightController = new HighlightController(
   container.resolve(TOKENS.DeleteHighlightUseCase),
 );
 
+const userController = new UserController(
+  container.resolve(TOKENS.CreateUserUseCase),
+);
+
 const app = new OpenAPIHono<AppEnv>();
 app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
   type: "http",
   scheme: "bearer",
+});
+app.openAPIRegistry.registerComponent("securitySchemes", "InternalAPIKey", {
+  type: "apiKey",
+  in: "header",
+  name: "authorization",
 });
 
 // Register routes
@@ -76,6 +86,7 @@ app.route("/api", itemController.register());
 app.route("/api", collectionController.register());
 app.route("/api", tagController.register());
 app.route("/api", highlightController.register());
+app.route("/api", userController.register());
 
 // OpenAPI documentation
 app.doc("/api", {

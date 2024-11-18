@@ -1,4 +1,4 @@
-import type { HighlightColor } from "@kairos/shared/constants";
+import type { UserPreferences } from "@kairos/shared/types";
 
 export interface User {
   id: string;
@@ -9,12 +9,19 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface UserPreferences {
-  theme: "light" | "dark" | "system";
-  fontSize: number;
-  lineSpacing: number;
-  syncEnabled: boolean;
-  notificationsEnabled: boolean;
-  defaultHighlightColor: HighlightColor;
-  defaultReadingListId?: string;
-}
+export const USER_FILTERABLE_FIELDS = [
+  "email",
+  "name",
+  "createdAt",
+  "updatedAt",
+] as const;
+
+export const USER_SORTABLE_FIELDS = [
+  "email",
+  "name",
+  "createdAt",
+  "updatedAt",
+] as const;
+
+export type UserFilterableFields = (typeof USER_FILTERABLE_FIELDS)[number];
+export type UserSortableFields = (typeof USER_SORTABLE_FIELDS)[number];
