@@ -37,6 +37,7 @@
     "singleQuote": false
   },
   "lint": {
-    "include": ["apps/", "packages/"]
+    "include": ["apps/", "packages/"],
+    "exclude": ["**/*.js", "**/*.cjs", "**/*.json"]
   }
 }
