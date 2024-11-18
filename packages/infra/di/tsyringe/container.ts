@@ -1,5 +1,5 @@
 import { container, instanceCachingFactory, singleton } from "tsyringe";
-import { Container } from "@kairos/core";
+import type { Container } from "@kairos/core";
 
 @singleton()
 export class TsyringeContainer implements Container {
