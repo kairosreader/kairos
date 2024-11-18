@@ -1,0 +1,128 @@
+version: v1.0.0
+
+dsn: ${DSN}
+
+serve:
+  public:
+    base_url: ${AUTH_PUBLIC_URL}
+    cors:
+      enabled: true
+      allowed_origins:
+        - ${AUTH_UI_URL}
+      allowed_methods:
+        - POST
+        - GET
+        - PUT
+        - PATCH
+        - DELETE
+      allowed_headers:
+        - Authorization
+        - Cookie
+        - Content-Type
+      exposed_headers:
+        - Content-Type
+        - Set-Cookie
+      allow_credentials: true
+      debug: ${KRATOS_DEBUG_MODE}
+  admin:
+    base_url: ${AUTH_ADMIN_URL}
+
+identity:
+  default_schema_id: default
+  schemas:
+    - id: default
+      url: file:///etc/config/kratos/identity.schema.json
+
+selfservice:
+  default_browser_return_url: ${AUTH_UI_URL}/welcome
+  allowed_return_urls:
+    - ${AUTH_UI_URL}
+    - ${AUTH_UI_URL}/**
+
+  methods:
+    password:
+      enabled: true
+    totp:
+      enabled: true
+      config:
+        issuer: Kairos
+    lookup_secret:
+      enabled: true
+    link:
+      enabled: true
+    code:
+      enabled: true
+
+  flows:
+    error:
+      ui_url: ${AUTH_UI_URL}/error
+
+    settings:
+      ui_url: ${AUTH_UI_URL}/settings
+      privileged_session_max_age: 15m
+      required_aal: highest_available
+
+    recovery:
+      enabled: true
+      ui_url: ${AUTH_UI_URL}/recovery
+      use: code
+
+    verification:
+      enabled: true
+      ui_url: ${AUTH_UI_URL}/verification
+      use: code
+      after:
+        default_browser_return_url: ${AUTH_UI_URL}/welcome
+
+    logout:
+      after:
+        default_browser_return_url: ${AUTH_UI_URL}/login
+
+    login:
+      ui_url: ${AUTH_UI_URL}/login
+      lifespan: 10m
+
+    registration:
+      lifespan: 10m
+      ui_url: ${AUTH_UI_URL}/registration
+      after:
+        password:
+          hooks:
+            - hook: session
+            - hook: show_verification_ui
+            - hook: web_hook
+              config:
+                url: ${API_URL}/api/internal/user
+                method: POST
+                body: file:///etc/config/kratos/webhook-body.jsonnet
+                auth:
+                  type: api_key
+                  config:
+                    name: X-API-Key
+                    value: ${INTERNAL_API_KEY}
+                    in: header
+
+log:
+  level: ${LOG_LEVEL:-debug}
+  format: text
+  leak_sensitive_values: ${KRATOS_DEBUG_MODE}
+
+secrets:
+  cookie:
+    - PLEASE-CHANGE-ME-I-AM-VERY-INSECURE
+  cipher:
+    - 32-LONG-SECRET-NOT-SECURE-AT-ALL
+
+ciphers:
+  algorithm: xchacha20-poly1305
+
+hashers:
+  algorithm: bcrypt
+  bcrypt:
+    cost: 8
+
+courier:
+  smtp:
+    connection_uri: ${SMTP_URI}
+    from_address: ${SMTP_FROM_ADDRESS}
+    from_name: ${SMTP_FROM_NAME}

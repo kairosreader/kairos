@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   api:
@@ -19,6 +19,7 @@ services:
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
       - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW}
       - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
     depends_on:
       - db
       - dragonfly
@@ -73,6 +74,51 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  auth-migrate:
+    image: oryd/kratos:v1.3.1
+    environment:
+      - DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
+    volumes:
+      - ./config/kratos:/etc/config/kratos
+    command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
+    depends_on:
+      - db
+
+  auth:
+    build:
+      context: .
+      dockerfile: .docker/auth/Dockerfile
+    ports:
+      - "${AUTH_PUBLIC_PORT:-4433}:4433"
+      - "${AUTH_ADMIN_PORT:-4434}:4434"
+    environment:
+      - DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - AUTH_PUBLIC_URL=${AUTH_PUBLIC_URL:-http://127.0.0.1:4433}
+      - AUTH_ADMIN_URL=${AUTH_ADMIN_URL:-http://auth:4434}
+      - AUTH_UI_URL=${AUTH_UI_URL:-http://127.0.0.1:4455}
+      - API_URL=${API_URL:-http://api:8000}
+      - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+      - SMTP_HOST=${SMTP_HOST:-mailslurper}
+      - SMTP_PORT=${SMTP_PORT:-1025}
+      - SMTP_USER=${SMTP_USER:-test}
+      - SMTP_PASS=${SMTP_PASS:-test}
+      - SMTP_FROM=${SMTP_FROM:-no-reply@kairos.local}
+      - SMTP_SECURE=${SMTP_SECURE:-false}
+    depends_on:
+      - auth-migrate
+      - mailslurper
+    networks:
+      - default
+
+  mailslurper:
+    image: oryd/mailslurper:latest-smtps
+    ports:
+      - "4436:4436"
+      - "4437:4437"
+    networks:
+      - default
 
 volumes:
   postgres-data:

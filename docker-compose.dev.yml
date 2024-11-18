@@ -12,6 +12,7 @@ services:
     environment:
       - DENO_ENV=development
       - LOG_LEVEL=debug
+      - AUTH_URL=http://auth:4433
     command: ["deno", "task", "start:api"]
 
   content-processor:
@@ -50,6 +51,33 @@ services:
   db:
     ports:
       - "5432:5432"
+
+  auth:
+    command: ["kratos", "serve", "-c", "/etc/config/kratos/kratos.yml", "--watch-courier", "--dev"]
+    environment:
+      - LOG_LEVEL=trace
+
+  auth-selfservice-ui-node:
+    image: oryd/kratos-selfservice-ui-node:v1.3.1
+    ports:
+      - "4455:4455"
+    environment:
+      - KRATOS_PUBLIC_URL=http://auth:4433/
+      - KRATOS_BROWSER_URL=http://127.0.0.1:4433/
+      - COOKIE_SECRET=changeme
+      - CSRF_COOKIE_NAME=ory_csrf_ui
+      - CSRF_COOKIE_SECRET=changeme
+      - PORT=4455
+      - SECURITY_MODE=
+
+  auth-admin-ui:
+    image: ghcr.io/dfoxg/kratos-admin-ui:v2.5.0
+    ports:
+      - '8080:8080'
+    restart: unless-stopped
+    environment:
+      - KRATOS_ADMIN_URL=http://auth:4434
+      - KRATOS_PUBLIC_URL=http://auth:4433
 
   dragonfly:
     ports:
