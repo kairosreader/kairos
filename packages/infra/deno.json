@@ -33,10 +33,13 @@
     "./content": "./content/readability/mod.ts",
     "./db": "./db/mod.ts",
     "./db/connection": "./db/mod.ts",
-    "./db/drizzle": "./db/drizzle/mod.ts",
-    "./db/drizzle/schema": "./db/drizzle/schema/mod.ts",
     "./di": "./di/mod.ts",
     "./queue": "./queue/mod.ts",
     "./queue/handlers": "./queue/handlers/mod.ts"
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-slow-types"]
+    }
   }
 }
