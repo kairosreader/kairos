@@ -11,6 +11,15 @@ export abstract class BaseController {
       type: "http",
       scheme: "bearer",
     });
+    this.router.openAPIRegistry.registerComponent(
+      "securitySchemes",
+      "InternalAPIKey",
+      {
+        type: "apiKey",
+        in: "header",
+        name: "x-api-key",
+      },
+    );
     this.register = this.register.bind(this);
   }
 

@@ -17,9 +17,9 @@ export const BearerSecurity = {
 };
 
 export const AuthHeadersInternalAPIKeySchema = z.object({
-  authorization: z.string().openapi({
+  "x-api-key": z.string().openapi({
     param: {
-      name: "authorization",
+      name: "x-api-key",
       in: "header",
       required: true,
       description: "Internal API key for authentication",

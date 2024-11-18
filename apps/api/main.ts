@@ -71,15 +71,6 @@ const userController = new UserController(
 );
 
 const app = new OpenAPIHono<AppEnv>();
-app.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
-  type: "http",
-  scheme: "bearer",
-});
-app.openAPIRegistry.registerComponent("securitySchemes", "InternalAPIKey", {
-  type: "apiKey",
-  in: "header",
-  name: "authorization",
-});
 
 // Register routes
 app.route("/api", itemController.register());
