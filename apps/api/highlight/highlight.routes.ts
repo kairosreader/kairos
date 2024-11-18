@@ -1,9 +1,6 @@
 import { createRoute } from "@hono/zod-openapi";
 import { authMiddleware } from "../middleware/auth.middleware.ts";
-import {
-  AuthHeadersBearerSchema,
-  BearerSecurity,
-} from "../common/schema/auth.schema.ts";
+import { SessionSecurity } from "../common/schema/auth.schema.ts";
 import { standardErrorResponses } from "../common/schema/error.schema.ts";
 import { HighlightParamsSchema } from "./schema/request/params.schema.ts";
 import {
@@ -18,11 +15,10 @@ export const createHighlightRoute = createRoute({
   method: "post",
   path: "/highlight",
   tags: ["Highlights"],
-  security: [BearerSecurity],
+  security: [SessionSecurity],
   middleware: [authMiddleware],
   summary: "Create a new highlight",
   request: {
-    headers: AuthHeadersBearerSchema,
     body: {
       content: {
         "application/json": {
@@ -48,11 +44,10 @@ export const getHighlightRoute = createRoute({
   method: "get",
   path: "/highlights/{id}",
   tags: ["Highlights"],
-  security: [BearerSecurity],
+  security: [SessionSecurity],
   middleware: [authMiddleware],
   summary: "Get a single highlight",
   request: {
-    headers: AuthHeadersBearerSchema,
     params: HighlightParamsSchema,
   },
   responses: {
@@ -72,11 +67,10 @@ export const updateHighlightRoute = createRoute({
   method: "patch",
   path: "/highlights/{id}",
   tags: ["Highlights"],
-  security: [BearerSecurity],
+  security: [SessionSecurity],
   middleware: [authMiddleware],
   summary: "Update an existing highlight",
   request: {
-    headers: AuthHeadersBearerSchema,
     params: HighlightParamsSchema,
     body: {
       content: {
@@ -103,11 +97,10 @@ export const deleteHighlightRoute = createRoute({
   method: "delete",
   path: "/highlights/{id}",
   tags: ["Highlights"],
-  security: [BearerSecurity],
+  security: [SessionSecurity],
   middleware: [authMiddleware],
   summary: "Delete a highlight",
   request: {
-    headers: AuthHeadersBearerSchema,
     params: HighlightParamsSchema,
   },
   responses: {
@@ -122,13 +115,12 @@ export const listHighlightsRoute = createRoute({
   method: "get",
   path: "/highlights",
   tags: ["Highlights"],
-  security: [BearerSecurity],
+  security: [SessionSecurity],
   middleware: [authMiddleware],
   summary: "List all highlights",
   description:
     "Retrieve a paginated list of highlights with optional query and sorting",
   request: {
-    headers: AuthHeadersBearerSchema,
     query: HighlightQuerySchema,
   },
   responses: {

@@ -7,10 +7,19 @@ export abstract class BaseController {
 
   constructor() {
     this.router = createRouter();
-    this.router.openAPIRegistry.registerComponent("securitySchemes", "Bearer", {
-      type: "http",
-      scheme: "bearer",
-    });
+
+    // Register security schemes
+    this.router.openAPIRegistry.registerComponent(
+      "securitySchemes",
+      "Session",
+      {
+        type: "apiKey",
+        in: "cookie",
+        name: "ory_kratos_session",
+        description: "Ory Kratos session cookie",
+      },
+    );
+
     this.router.openAPIRegistry.registerComponent(
       "securitySchemes",
       "InternalAPIKey",
@@ -18,8 +27,10 @@ export abstract class BaseController {
         type: "apiKey",
         in: "header",
         name: "x-api-key",
+        description: "Internal API key for service-to-service communication",
       },
     );
+
     this.register = this.register.bind(this);
   }
 

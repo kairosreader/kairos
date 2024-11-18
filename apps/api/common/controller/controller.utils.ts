@@ -1,4 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
+import { cors } from "@hono/hono/cors";
 import type { AppEnv } from "./controller.types.ts";
 import { errorHandler } from "../../middleware/error.middleware.ts";
 import { pinoLogger } from "../../middleware/pino-logger.middleware.ts";
@@ -11,6 +12,17 @@ export function createRouter() {
       }
     },
   });
+
+  router.use(
+    "*",
+    cors({
+      origin: ["http://localhost:3000", "http://localhost:8000"],
+      credentials: true,
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowHeaders: ["Content-Type", "Authorization", "Cookie"],
+      exposeHeaders: ["Set-Cookie"],
+    }),
+  );
 
   router.onError(errorHandler);
   router.use("*", pinoLogger());
