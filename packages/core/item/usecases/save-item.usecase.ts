@@ -9,14 +9,26 @@ import type { ItemService } from "../item.service.ts";
 import type { QueueService } from "../../queue/queue.service.ts";
 import type { Item } from "../item.entity.ts";
 import { ITEM_STATUS } from "@kairos/shared/constants";
+import type { TagService } from "../../tag/tag.service.ts";
 
 export class SaveItemUseCase {
   constructor(
     private itemService: ItemService<ItemContent>,
+    private tagService: TagService,
     private queueService: QueueService,
   ) {}
 
   async execute(params: CreateItemParams): Promise<Item<ItemContent>> {
+    // Verify tags exist for the user
+    if (params.tags) {
+      await this.tagService.verifyOwnershipMany(
+        params.tags.map((tag) => ({
+          id: tag,
+          userId: params.userId,
+        })),
+      );
+    }
+
     const item: Item<ItemContent> = {
       id: crypto.randomUUID(),
       type: params.type,
