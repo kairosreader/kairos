@@ -81,13 +81,13 @@ services:
       context: .
       dockerfile: .docker/auth/Dockerfile
     ports:
-      - "${AUTH_PUBLIC_PORT:-4433}:4433"
+      - "${AUTH_PUBLIC_PORT}:4433"
     environment:
       - DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
       - LOG_LEVEL=${LOG_LEVEL:-info}
-      - AUTH_PUBLIC_URL=${AUTH_PUBLIC_URL:-http://127.0.0.1:4433}
-      - AUTH_ADMIN_URL=${AUTH_ADMIN_URL:-http://auth:4434}
-      - AUTH_UI_URL=${AUTH_UI_URL:-http://127.0.0.1:4455}
+      - AUTH_PUBLIC_URL=${AUTH_PUBLIC_URL}
+      - AUTH_ADMIN_URL=${AUTH_ADMIN_URL}
+      - AUTH_UI_URL=${AUTH_UI_URL}
       - API_URL=${API_URL:-http://api:8000}
       - INTERNAL_API_KEY=${INTERNAL_API_KEY}
       - SMTP_HOST=${SMTP_HOST:-mailslurper}
