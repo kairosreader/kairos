@@ -9,9 +9,8 @@ export async function authMiddleware(c: Context<AppEnv>, next: Next) {
   const sessionTokenHeader = c.req.header("x-session-token");
 
   // Try to get session token from header first, then fallback to cookie
-  const sessionToken =
-    sessionTokenHeader || cookies?.match(/ory_kratos_session=([^;]+)/)?.[1];
-  console.log("Extracted session token:", sessionToken);
+  const sessionToken = sessionTokenHeader ||
+    cookies?.match(/ory_kratos_session=([^;]+)/)?.[1];
 
   if (!sessionToken) {
     throw new UnauthorizedError("No session found");
