@@ -6,10 +6,10 @@ export const readingProgress = pgTable("reading_progress", {
   id: uuid("id").primaryKey().defaultRandom(),
   itemId: uuid("item_id")
     .notNull()
-    .references(() => items.id),
+    .references(() => items.id, { onDelete: "cascade" }),
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   progress: integer("progress").notNull(),
   lastPosition: integer("last_position").notNull(),
   lastReadAt: timestamp("last_read_at").notNull(),

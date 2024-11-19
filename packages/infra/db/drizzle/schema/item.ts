@@ -15,7 +15,7 @@ export const items = pgTable("items", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   type: text("type", { enum: enumValuesTuple(ITEM_TYPE) }).notNull(),
   status: text("status", { enum: enumValuesTuple(ITEM_STATUS) }).notNull(),
   title: text("title").notNull(),

@@ -8,10 +8,10 @@ export const highlights = pgTable("highlights", {
   id: uuid("id").primaryKey().defaultRandom(),
   itemId: uuid("item_id")
     .notNull()
-    .references(() => items.id),
+    .references(() => items.id, { onDelete: "cascade" }),
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id),
+    .references(() => users.id, { onDelete: "cascade" }),
   color: text("color", { enum: enumValuesTuple(HIGHLIGHT_COLOR) }).notNull(),
   textSelection: jsonb("text_selection").notNull(),
   note: text("note"),

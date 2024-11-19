@@ -9,7 +9,7 @@ export const tags = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     userId: uuid("user_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => users.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     color: text("color", { enum: enumValuesTuple(TAG_COLOR) }),
     createdAt: timestamp("created_at").notNull().defaultNow(),
