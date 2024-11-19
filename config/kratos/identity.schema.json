@@ -32,7 +32,7 @@
           "minLength": 3
         }
       },
-      "required": ["email"],
+      "required": ["email", "name"],
       "additionalProperties": false
     }
   }

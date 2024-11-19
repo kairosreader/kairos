@@ -8,9 +8,6 @@ function(ctx) {
   },
   id: identity.id,
   email: identity.traits.email,
-  name: std.join(" ", [
-    identity.traits.name.first,
-    identity.traits.name.last
-  ]),
+  name: identity.traits.name,
   preferences: defaultPreferences
 }
