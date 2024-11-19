@@ -2,13 +2,15 @@ import type { Context, Next } from "@hono/hono";
 import { UnauthorizedError } from "@kairos/shared/types/errors";
 import type { AppEnv } from "../common/controller/controller.types.ts";
 
-const AUTH_URL = Deno.env.get("AUTH_URL")!;
+const AUTH_PUBLIC_URL = Deno.env.get("AUTH_PUBLIC_URL")!;
 
 export async function authMiddleware(c: Context<AppEnv>, next: Next) {
   const cookies = c.req.header("cookie");
-  console.log("Received cookies:", cookies);
+  const sessionTokenHeader = c.req.header("x-session-token");
 
-  const sessionToken = cookies?.match(/ory_kratos_session=([^;]+)/)?.[1];
+  // Try to get session token from header first, then fallback to cookie
+  const sessionToken =
+    sessionTokenHeader || cookies?.match(/ory_kratos_session=([^;]+)/)?.[1];
   console.log("Extracted session token:", sessionToken);
 
   if (!sessionToken) {
@@ -16,7 +18,7 @@ export async function authMiddleware(c: Context<AppEnv>, next: Next) {
   }
 
   try {
-    const response = await fetch(`${AUTH_URL}/sessions/whoami`, {
+    const response = await fetch(`${AUTH_PUBLIC_URL}/sessions/whoami`, {
       method: "GET",
       headers: {
         Cookie: `ory_kratos_session=${sessionToken}`,

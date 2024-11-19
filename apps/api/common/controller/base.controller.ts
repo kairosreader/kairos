@@ -14,9 +14,9 @@ export abstract class BaseController {
       "Session",
       {
         type: "apiKey",
-        in: "cookie",
-        name: "ory_kratos_session",
-        description: "Ory Kratos session cookie",
+        in: "header",
+        name: "X-Session-Token",
+        description: "Ory Kratos session token",
       },
     );
 
