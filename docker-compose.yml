@@ -76,21 +76,6 @@ services:
       timeout: 5s
       retries: 5
 
-  auth-migrate:
-    build:
-      context: .
-      dockerfile: .docker/auth/migrate.Dockerfile
-    environment:
-      - DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable
-      - LOG_LEVEL=${LOG_LEVEL:-info}
-    volumes:
-      - ./config/kratos/generate-config.sh:/usr/local/bin/generate-config.sh
-      - ./config/kratos/kratos.template.yml:/etc/config/kratos/kratos.template.yml
-      - ./config/kratos/identity.schema.json:/etc/config/kratos/identity.schema.json
-      - ./config/kratos/webhook-body.jsonnet:/etc/config/kratos/webhook-body.jsonnet
-    depends_on:
-      - db
-
   auth:
     build:
       context: .
@@ -113,7 +98,7 @@ services:
       - SMTP_FROM=${SMTP_FROM:-no-reply@kairos.local}
       - SMTP_SECURE=${SMTP_SECURE:-false}
     depends_on:
-      - auth-migrate
+      - db
       - mailslurper
     networks:
       - default
