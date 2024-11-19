@@ -38,8 +38,7 @@ export async function authMiddleware(c: Context<AppEnv>, next: Next) {
     c.set("user", {
       id: session.identity.id,
       email: session.identity.traits.email,
-      firstName: session.identity.traits.name?.first,
-      lastName: session.identity.traits.name?.last,
+      name: session.identity.traits.name,
     });
 
     await next();

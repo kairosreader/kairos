@@ -27,17 +27,9 @@
           }
         },
         "name": {
-          "type": "object",
-          "properties": {
-            "first": {
-              "title": "First Name",
-              "type": "string"
-            },
-            "last": {
-              "title": "Last Name",
-              "type": "string"
-            }
-          }
+          "type": "string",
+          "title": "Name",
+          "minLength": 3
         }
       },
       "required": ["email"],
