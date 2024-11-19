@@ -1,6 +1,7 @@
 import {
   type Container,
   CreateUserUseCase,
+  type SpecialCollectionService,
   type UserRepository,
   UserService,
 } from "@kairos/core";
@@ -26,6 +27,10 @@ export function configureUserUseCases(container: Container) {
   // Use Cases
   container.registerSingleton(TOKENS.CreateUserUseCase, () => {
     const userService = container.resolve<UserService>(TOKENS.UserService);
-    return new CreateUserUseCase(userService);
+    const specialCollectionsService =
+      container.resolve<SpecialCollectionService>(
+        TOKENS.SpecialCollectionService,
+      );
+    return new CreateUserUseCase(userService, specialCollectionsService);
   });
 }
