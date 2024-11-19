@@ -2,11 +2,26 @@ import "reflect-metadata";
 import type { Container } from "@kairos/core/di";
 import { configureDbContainer } from "./container/db.container.ts";
 import { configureQueueContainer } from "./container/queue.container.ts";
-import { configureItemContainer } from "./container/item.container.ts";
-import { configureCollectionContainer } from "./container/collection.container.ts";
-import { configureTagContainer } from "./container/tag.container.ts";
-import { configureHighlightContainer } from "./container/highlight.container.ts";
-import { configureUserContainer } from "./container/user.container.ts";
+import {
+  configureItemBasicServices,
+  configureItemUseCases,
+} from "./container/item.container.ts";
+import {
+  configureTagBasicServices,
+  configureTagUseCases,
+} from "./container/tag.container.ts";
+import {
+  configureCollectionBasicServices,
+  configureCollectionUseCases,
+} from "./container/collection.container.ts";
+import {
+  configureHighlightBasicServices,
+  configureHighlightUseCases,
+} from "./container/highlight.container.ts";
+import {
+  configureUserBasicServices,
+  configureUserUseCases,
+} from "./container/user.container.ts";
 
 export function configureContainer(
   container: Container,
@@ -22,10 +37,17 @@ export function configureContainer(
   configureDbContainer(container);
   configureQueueContainer(container, config);
 
-  // Configure domain services
-  configureItemContainer(container);
-  configureCollectionContainer(container);
-  configureTagContainer(container);
-  configureHighlightContainer(container);
-  configureUserContainer(container);
+  // Configure all basic services first
+  configureItemBasicServices(container);
+  configureTagBasicServices(container);
+  configureCollectionBasicServices(container);
+  configureHighlightBasicServices(container);
+  configureUserBasicServices(container);
+
+  // Configure all use cases after services are registered
+  configureItemUseCases(container);
+  configureTagUseCases(container);
+  configureCollectionUseCases(container);
+  configureHighlightUseCases(container);
+  configureUserUseCases(container);
 }

@@ -26,7 +26,7 @@ import type { ItemContent } from "@kairos/shared/types/common";
 import type { Database } from "../../db/connection.ts";
 import { DrizzleCollectionRepository } from "../../db/drizzle/repository/collection.repository.ts";
 
-export function configureCollectionContainer(container: Container) {
+export function configureCollectionBasicServices(container: Container) {
   // Repository
   container.registerSingleton<CollectionRepository>(
     TOKENS.CollectionRepository,
@@ -53,10 +53,10 @@ export function configureCollectionContainer(container: Container) {
   container.registerSingleton<SpecialCollectionService>(
     TOKENS.SpecialCollectionService,
     () => {
-      const collectionRepo = container.resolve<CollectionRepository>(
+      const collectionRepository = container.resolve<CollectionRepository>(
         TOKENS.CollectionRepository,
       );
-      return new SpecialCollectionService(collectionRepo);
+      return new SpecialCollectionService(collectionRepository);
     },
   );
 
@@ -66,31 +66,25 @@ export function configureCollectionContainer(container: Container) {
       const collectionService = container.resolve<CollectionService>(
         TOKENS.CollectionService,
       );
-      const specialCollectionService = container.resolve<
-        SpecialCollectionService
-      >(
-        TOKENS.SpecialCollectionService,
-      );
+      const specialCollectionService =
+        container.resolve<SpecialCollectionService>(
+          TOKENS.SpecialCollectionService,
+        );
       return new ItemManagementService(
         collectionService,
         specialCollectionService,
       );
     },
   );
+}
 
+export function configureCollectionUseCases(container: Container) {
   // Use Cases
   container.registerSingleton(TOKENS.CreateCollectionUseCase, () => {
     const collectionService = container.resolve<CollectionService>(
       TOKENS.CollectionService,
     );
     return new CreateCollectionUseCase(collectionService);
-  });
-
-  container.registerSingleton(TOKENS.UpdateCollectionUseCase, () => {
-    const collectionService = container.resolve<CollectionService>(
-      TOKENS.CollectionService,
-    );
-    return new UpdateCollectionUseCase(collectionService);
   });
 
   container.registerSingleton(TOKENS.GetCollectionUseCase, () => {
@@ -100,11 +94,11 @@ export function configureCollectionContainer(container: Container) {
     return new GetCollectionUseCase(collectionService);
   });
 
-  container.registerSingleton(TOKENS.ListCollectionsUseCase, () => {
+  container.registerSingleton(TOKENS.UpdateCollectionUseCase, () => {
     const collectionService = container.resolve<CollectionService>(
       TOKENS.CollectionService,
     );
-    return new ListCollectionsUseCase(collectionService);
+    return new UpdateCollectionUseCase(collectionService);
   });
 
   container.registerSingleton(TOKENS.DeleteCollectionUseCase, () => {
@@ -114,11 +108,11 @@ export function configureCollectionContainer(container: Container) {
     return new DeleteCollectionUseCase(collectionService);
   });
 
-  container.registerSingleton(TOKENS.AddToCollectionUseCase, () => {
+  container.registerSingleton(TOKENS.ListCollectionsUseCase, () => {
     const collectionService = container.resolve<CollectionService>(
       TOKENS.CollectionService,
     );
-    return new AddToCollectionUseCase(collectionService);
+    return new ListCollectionsUseCase(collectionService);
   });
 
   container.registerSingleton(TOKENS.GetItemsInCollectionUseCase, () => {
@@ -126,6 +120,13 @@ export function configureCollectionContainer(container: Container) {
       TOKENS.CollectionService,
     );
     return new GetItemsInCollectionUseCase(collectionService);
+  });
+
+  container.registerSingleton(TOKENS.AddToCollectionUseCase, () => {
+    const collectionService = container.resolve<CollectionService>(
+      TOKENS.CollectionService,
+    );
+    return new AddToCollectionUseCase(collectionService);
   });
 
   container.registerSingleton(TOKENS.RemoveFromCollectionUseCase, () => {

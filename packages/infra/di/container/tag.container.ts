@@ -14,7 +14,7 @@ import type { ItemContent } from "@kairos/shared/types/common";
 import { DrizzleTagRepository } from "../../db/drizzle/repository/tag.repository.ts";
 import type { Database } from "../../db/connection.ts";
 
-export function configureTagContainer(container: Container) {
+export function configureTagBasicServices(container: Container) {
   // Repository
   container.registerSingleton<TagRepository>(TOKENS.TagRepository, () => {
     const db = container.resolve<Database>(TOKENS.DbClient);
@@ -29,7 +29,9 @@ export function configureTagContainer(container: Container) {
     );
     return new TagService(tagRepo, itemService);
   });
+}
 
+export function configureTagUseCases(container: Container) {
   // Use Cases
   container.registerSingleton(TOKENS.CreateTagUseCase, () => {
     const tagService = container.resolve<TagService>(TOKENS.TagService);

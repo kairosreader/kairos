@@ -12,7 +12,7 @@ import { TOKENS } from "../tokens.ts";
 import type { Database } from "../../db/connection.ts";
 import { DrizzleHighlightRepository } from "../../db/drizzle/repository/highlight.repository.ts";
 
-export function configureHighlightContainer(container: Container) {
+export function configureHighlightBasicServices(container: Container) {
   // Repository
   container.registerSingleton<HighlightRepository>(
     TOKENS.HighlightRepository,
@@ -29,7 +29,9 @@ export function configureHighlightContainer(container: Container) {
     );
     return new HighlightService(highlightRepo);
   });
+}
 
+export function configureHighlightUseCases(container: Container) {
   // Use Cases
   container.registerSingleton(TOKENS.CreateHighlightUseCase, () => {
     const highlightService = container.resolve<HighlightService>(
