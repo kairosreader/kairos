@@ -16,7 +16,7 @@ export function createRouter() {
   router.use(
     "*",
     cors({
-      origin: ["http://localhost:3000", "http://localhost:8000"],
+      origin: [`http://localhost:${Deno.env.get("PORT")}`],
       credentials: true,
       allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       allowHeaders: ["Content-Type", "Authorization", "Cookie"],

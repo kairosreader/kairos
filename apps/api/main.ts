@@ -90,7 +90,7 @@ app.doc("/api", {
   },
   servers: [
     {
-      url: "http://localhost:8000",
+      url: `http://localhost:${Deno.env.get("PORT")}`,
       description: "Local development server",
     },
   ],

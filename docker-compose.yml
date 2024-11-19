@@ -88,7 +88,7 @@ services:
       - AUTH_PUBLIC_URL=${AUTH_PUBLIC_URL}
       - AUTH_ADMIN_URL=${AUTH_ADMIN_URL}
       - AUTH_UI_URL=${AUTH_UI_URL}
-      - API_URL=${API_URL:-http://api:8000}
+      - API_URL=${API_URL}
       - INTERNAL_API_KEY=${INTERNAL_API_KEY}
       - SMTP_HOST=${SMTP_HOST:-mailslurper}
       - SMTP_PORT=${SMTP_PORT:-1025}
