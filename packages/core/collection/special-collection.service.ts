@@ -20,12 +20,12 @@ export class SpecialCollectionService {
     return { recent, archive };
   }
 
-  private getCollectionByType(type: SpecialCollection) {
+  private getCollectionByType(userId: string, type: SpecialCollection) {
     switch (type) {
       case SPECIAL_COLLECTION.RECENT:
-        return this.collectionRepo.findDefault(type);
+        return this.collectionRepo.findDefault(userId);
       case SPECIAL_COLLECTION.ARCHIVE:
-        return this.collectionRepo.findArchive(type);
+        return this.collectionRepo.findArchive(userId);
     }
   }
 
@@ -33,16 +33,14 @@ export class SpecialCollectionService {
     userId: string,
     type: SpecialCollection,
   ): Promise<Collection> {
-    const existingList = await this.getCollectionByType(type);
+    const existingList = await this.getCollectionByType(userId, type);
 
-    if (existingList) {
-      return existingList;
-    }
+    if (existingList) return existingList;
 
     return this.collectionRepo.save({
       id: crypto.randomUUID(),
       userId,
-      name: type === "recent" ? "Reading List" : "Archive",
+      name: type === "recent" ? "Recent" : "Archive",
       isDefault: type === SPECIAL_COLLECTION.RECENT,
       isArchive: type === SPECIAL_COLLECTION.ARCHIVE,
       itemCount: 0,

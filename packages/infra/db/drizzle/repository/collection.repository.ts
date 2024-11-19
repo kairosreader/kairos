@@ -16,11 +16,14 @@ import {
 } from "../../utils.ts";
 import type { ItemContent } from "@kairos/shared/types/common";
 
-export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
-  Collection,
-  typeof collections._.config,
-  typeof collections
-> implements CollectionRepository {
+export class DrizzleCollectionRepository
+  extends DrizzleUserScopedRepository<
+    Collection,
+    typeof collections._.config,
+    typeof collections
+  >
+  implements CollectionRepository
+{
   constructor(db: Database) {
     super(db, collections);
   }
@@ -40,28 +43,26 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
     );
   }
 
-  async findDefault(userId: string): Promise<Collection> {
-    const [result] = await this.db
-      .select()
-      .from(collections)
-      .where(
-        and(eq(collections.userId, userId), eq(collections.isDefault, true)),
-      )
-      .limit(1);
+  async findDefault(userId: string): Promise<Collection | null> {
+    const result = await this.findOne({
+      userId: { eq: userId },
+      isDefault: { eq: true },
+    });
 
-    return mapNullToUndefined<Collection>(result as DatabaseResult<Collection>);
+    if (!result) return null;
+
+    return mapNullToUndefined<Collection>(result);
   }
 
-  async findArchive(userId: string): Promise<Collection> {
-    const [result] = await this.db
-      .select()
-      .from(collections)
-      .where(
-        and(eq(collections.userId, userId), eq(collections.isArchive, true)),
-      )
-      .limit(1);
+  async findArchive(userId: string): Promise<Collection | null> {
+    const result = await this.findOne({
+      userId: { eq: userId },
+      isArchive: { eq: true },
+    });
 
-    return mapNullToUndefined<Collection>(result as DatabaseResult<Collection>);
+    if (!result) return null;
+
+    return mapNullToUndefined<Collection>(result);
   }
 
   async addItem(params: AddToCollectionParams): Promise<void> {

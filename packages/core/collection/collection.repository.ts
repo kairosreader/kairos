@@ -18,8 +18,8 @@ export interface CollectionRepository extends
     CollectionFilterableFields
   > {
   findByItem(itemId: string): Promise<Collection[]>;
-  findDefault(userId: string): Promise<Collection>;
-  findArchive(userId: string): Promise<Collection>;
+  findDefault(userId: string): Promise<Collection | null>;
+  findArchive(userId: string): Promise<Collection | null>;
 
   // Collection items
   addItem(params: AddToCollectionParams): Promise<void>;
