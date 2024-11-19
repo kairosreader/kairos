@@ -66,10 +66,11 @@ export function configureCollectionBasicServices(container: Container) {
       const collectionService = container.resolve<CollectionService>(
         TOKENS.CollectionService,
       );
-      const specialCollectionService =
-        container.resolve<SpecialCollectionService>(
-          TOKENS.SpecialCollectionService,
-        );
+      const specialCollectionService = container.resolve<
+        SpecialCollectionService
+      >(
+        TOKENS.SpecialCollectionService,
+      );
       return new ItemManagementService(
         collectionService,
         specialCollectionService,

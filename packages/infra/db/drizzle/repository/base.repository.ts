@@ -214,7 +214,7 @@ export abstract class DrizzleBaseRepository<
       .limit(1);
 
     if (!item) return null;
-    
+
     return mapNullToUndefined<E>(item as DatabaseResult<E>);
   }
 

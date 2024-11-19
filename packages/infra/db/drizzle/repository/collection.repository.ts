@@ -16,14 +16,11 @@ import {
 } from "../../utils.ts";
 import type { ItemContent } from "@kairos/shared/types/common";
 
-export class DrizzleCollectionRepository
-  extends DrizzleUserScopedRepository<
-    Collection,
-    typeof collections._.config,
-    typeof collections
-  >
-  implements CollectionRepository
-{
+export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
+  Collection,
+  typeof collections._.config,
+  typeof collections
+> implements CollectionRepository {
   constructor(db: Database) {
     super(db, collections);
   }
