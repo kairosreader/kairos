@@ -213,7 +213,9 @@ export abstract class DrizzleBaseRepository<
       .where(whereClause)
       .limit(1);
 
-    return mapNullToUndefined<E>(item as DatabaseResult<E>) || null;
+    if (!item) return null;
+    
+    return mapNullToUndefined<E>(item as DatabaseResult<E>);
   }
 
   abstract save(entity: E): Promise<E>;
