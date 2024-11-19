@@ -17,8 +17,8 @@ export const CreateItemRequestSchema = z
       .array(z.string())
       .optional()
       .openapi({
-        example: ["tech", "programming"],
-        description: "Optional tags for the item",
+        example: ["b7a0d715-3960-4335-98f8-39808c5b3a14"],
+        description: "Optional tag ids for the item",
       }),
   })
   .openapi("CreateItemRequest");
