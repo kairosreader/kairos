@@ -1,3 +1,4 @@
+export * from "./auth/mod.ts";
 export * from "./collection/mod.ts";
 export * from "./collection/usecases/mod.ts";
 export * from "./common/mod.ts";

@@ -19,6 +19,7 @@ export const TOKENS = {
   TagService: "TagService",
   HighlightService: "HighlightService",
   UserService: "UserService",
+  IdentityService: "IdentityService",
 
   // Handlers
   ArticleProcessingHandler: "ArticleProcessingHandler",

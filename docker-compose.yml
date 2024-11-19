@@ -20,6 +20,7 @@ services:
       - RATE_LIMIT_WINDOW=${RATE_LIMIT_WINDOW}
       - RATE_LIMIT_MAX_REQUESTS=${RATE_LIMIT_MAX_REQUESTS}
       - INTERNAL_API_KEY=${INTERNAL_API_KEY}
+      - AUTH_ADMIN_URL=${AUTH_ADMIN_URL}
     depends_on:
       - db
       - dragonfly
