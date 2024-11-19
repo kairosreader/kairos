@@ -1,6 +1,7 @@
 import {
   type Container,
   CreateUserUseCase,
+  DeleteUserUseCase,
   type SpecialCollectionService,
   type UserRepository,
   UserService,
@@ -32,5 +33,10 @@ export function configureUserUseCases(container: Container) {
         TOKENS.SpecialCollectionService,
       );
     return new CreateUserUseCase(userService, specialCollectionsService);
+  });
+
+  container.registerSingleton(TOKENS.DeleteUserUseCase, () => {
+    const userService = container.resolve<UserService>(TOKENS.UserService);
+    return new DeleteUserUseCase(userService);
   });
 }

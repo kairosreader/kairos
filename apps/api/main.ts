@@ -68,6 +68,7 @@ const highlightController = new HighlightController(
 
 const userController = new UserController(
   container.resolve(TOKENS.CreateUserUseCase),
+  container.resolve(TOKENS.DeleteUserUseCase),
 );
 
 const app = new OpenAPIHono<AppEnv>();

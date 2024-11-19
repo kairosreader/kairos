@@ -6,6 +6,7 @@ import { UserResponseSchema } from "./schema/response/response.schema.ts";
 import {
   AuthHeadersInternalAPIKeySchema,
   InternalAPISecurity,
+  SessionSecurity,
 } from "../common/schema/auth.schema.ts";
 
 export const createUserRoute = createRoute({
@@ -33,6 +34,21 @@ export const createUserRoute = createRoute({
         },
       },
       description: "User created successfully",
+    },
+    ...standardErrorResponses,
+  },
+});
+
+export const deleteUserRoute = createRoute({
+  method: "delete",
+  path: "/user",
+  tags: ["User"],
+  security: [SessionSecurity],
+  middleware: [],
+  summary: "Delete the currently authenticated user",
+  responses: {
+    204: {
+      description: "User deleted successfully",
     },
     ...standardErrorResponses,
   },

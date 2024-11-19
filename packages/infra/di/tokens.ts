@@ -58,4 +58,5 @@ export const TOKENS = {
   DeleteHighlightUseCase: "DeleteHighlightUseCase",
   BulkDeleteHighlightsUseCase: "BulkDeleteHighlightsUseCase",
   CreateUserUseCase: "CreateUserUseCase",
+  DeleteUserUseCase: "DeleteUserUseCase",
 } as const;
