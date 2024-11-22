@@ -11,25 +11,53 @@ import {
   lte,
   ne,
   notInArray,
+  type SQL,
   sql,
 } from "drizzle-orm";
-import type { PgTableWithColumns, TableConfig } from "drizzle-orm/pg-core";
+import type {
+  PgColumn,
+  PgTableWithColumns,
+  TableConfig,
+} from "drizzle-orm/pg-core";
 import type {
   BaseEntity,
+  FilterConfig,
+  FilterFieldConfig,
   FilterOperator,
-  FilterOptions,
   PaginatedResponse,
   PaginationOptions,
   QueryOptions,
-  SortOptions,
+  SortDirection,
 } from "@kairos/shared/types/common";
-import type { BaseRepository } from "@kairos/core";
 import type { Database } from "../../connection.ts";
 import {
   type DatabaseResult,
   mapArrayNullToUndefined,
   mapNullToUndefined,
 } from "../../utils.ts";
+import type { BaseRepository } from "@kairos/core";
+import { toSnakeCase } from "@kairos/shared/utils";
+
+type OperatorFunction = {
+  <TColumn extends PgColumn>(
+    column: TColumn,
+    value: TColumn["_"]["data"] | SQL | unknown[],
+  ): SQL;
+};
+
+const filterOperatorMap: Record<FilterOperator, OperatorFunction> = {
+  eq: eq,
+  neq: ne,
+  gt: gt,
+  gte: gte,
+  lt: lt,
+  lte: lte,
+  in: inArray,
+  nin: notInArray,
+  contains: (column, value) => ilike(column, `%${value}%`),
+  startsWith: (column, value) => ilike(column, `${value}%`),
+  endsWith: (column, value) => ilike(column, `%${value}`),
+};
 
 export abstract class DrizzleBaseRepository<
   E extends BaseEntity,
@@ -42,67 +70,61 @@ export abstract class DrizzleBaseRepository<
     protected readonly db: Database,
     protected readonly table: TTable,
   ) {}
-  protected buildFilterCondition(field: string, operator: FilterOperator) {
-    const column = this.table[field as keyof TTable];
+
+  protected buildFilterCondition(
+    field: TFilterable,
+    operators: FilterFieldConfig,
+  ): SQL | undefined {
+    const column = this.table[toSnakeCase(field) as keyof TTable];
     if (!column) return undefined;
 
-    const entries = Object.entries(operator);
-    if (entries.length === 0) return undefined;
+    const conditions = Object.entries(operators)
+      .map(([op, value]) => {
+        const operatorFn = filterOperatorMap[op as FilterOperator];
+        return operatorFn ? operatorFn(column, value) : undefined;
+      })
+      .filter(
+        (condition): condition is NonNullable<typeof condition> =>
+          condition !== undefined,
+      );
 
-    const [op, value] = entries[0];
-
-    switch (op) {
-      case "eq":
-        return eq(column, value);
-      case "neq":
-        return ne(column, value);
-      case "gt":
-        return gt(column, value);
-      case "gte":
-        return gte(column, value);
-      case "lt":
-        return lt(column, value);
-      case "lte":
-        return lte(column, value);
-      case "in":
-        return inArray(column, value);
-      case "nin":
-        return notInArray(column, value);
-      case "contains":
-        return ilike(column, `%${value}%`);
-      case "startsWith":
-        return ilike(column, `${value}%`);
-      case "endsWith":
-        return ilike(column, `%${value}`);
-      default:
-        return undefined;
-    }
+    return conditions.length === 1
+      ? conditions[0]
+      : conditions.length > 1
+      ? and(...conditions)
+      : undefined;
   }
 
-  protected buildWhereClause(filter?: FilterOptions<TFilterable>) {
+  protected buildWhereClause(filter?: FilterConfig<TFilterable>) {
     if (!filter) return undefined;
 
     const conditions = Object.entries(filter)
-      .map(([field, operator]) =>
-        this.buildFilterCondition(field, operator as FilterOperator)
+      .map(([field, operators]) =>
+        this.buildFilterCondition(field as TFilterable, operators || {})
       )
       .filter(
         (condition): condition is NonNullable<typeof condition> =>
           condition !== undefined,
       );
 
-    return conditions.length > 0 ? and(...conditions) : undefined;
+    return conditions.length === 1
+      ? conditions[0]
+      : conditions.length > 1
+      ? and(...conditions)
+      : undefined;
   }
 
-  protected buildOrderBy(sort?: SortOptions<TSortable>) {
-    // Default to createdAt
-    const defaultSort = desc(this.table.createdAt);
-    if (!sort) return defaultSort;
+  protected buildOrderBy(
+    sort?: { field: TSortable; direction: SortDirection }[],
+  ) {
+    if (!sort || sort.length === 0) {
+      return [this.table.id];
+    }
 
-    const column = this.table[sort.field as keyof TTable];
-    if (!column) return defaultSort;
-
-    return sort.direction === "asc" ? asc(column) : desc(column);
+    return sort.map(({ field, direction }) => {
+      const column = this.table[toSnakeCase(field) as keyof TTable];
+      return direction === "desc" ? desc(column) : asc(column);
+    });
   }
 
   protected buildPaginationQuery(
@@ -111,12 +133,12 @@ export abstract class DrizzleBaseRepository<
   ) {
     if (pagination.type === "offset") {
       return {
-        limit: pagination.limit,
-        offset: (pagination.page - 1) * pagination.limit,
+        limit: pagination.pageSize,
+        offset: (pagination.page - 1) * pagination.pageSize,
       };
     }
 
-    const limit = pagination.limit;
+    const limit = pagination.pageSize;
     if (!pagination.cursor) {
       return { limit, offset: 0 };
     }
@@ -139,7 +161,7 @@ export abstract class DrizzleBaseRepository<
   async find(
     options: QueryOptions<TSortable, TFilterable>,
   ): Promise<PaginatedResponse<E>> {
-    const whereClause = this.buildWhereClause(options.filter);
+    const whereClause = this.buildWhereClause(options.filters);
     const orderBy = this.buildOrderBy(options.sort);
     const { limit, offset, where } = this.buildPaginationQuery(
       options.pagination,
@@ -148,14 +170,15 @@ export abstract class DrizzleBaseRepository<
 
     const finalWhereClause = where || whereClause;
 
-    // Get one extra item to determine if there's a next page
-    const items = (await this.db
+    const query = this.db
       .select()
       .from(this.table)
       .where(finalWhereClause)
-      .orderBy(orderBy)
-      .limit(limit + 1)
-      .offset(offset)) as E[];
+      .orderBy(...orderBy)
+      .limit(limit + 1) // Get one extra item to determine if there's a next page
+      .offset(offset);
+
+    const items = (await query) as E[];
 
     const hasNextPage = items.length > limit;
     if (hasNextPage) {
@@ -203,7 +226,7 @@ export abstract class DrizzleBaseRepository<
     return mapArrayNullToUndefined<E>(query as DatabaseResult<E>[]);
   }
 
-  async findOne(filter: FilterOptions<TFilterable>): Promise<E | null> {
+  async findOne(filter: FilterConfig<TFilterable>): Promise<E | null> {
     const whereClause = this.buildWhereClause(filter);
     if (!whereClause) return null;
 

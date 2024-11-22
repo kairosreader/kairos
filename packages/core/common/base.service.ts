@@ -1,6 +1,6 @@
 import type {
   BaseEntity,
-  FilterOptions,
+  FilterConfig,
   UserScoped,
 } from "@kairos/shared/types/common";
 import type {
@@ -245,7 +245,7 @@ export abstract class UserScopedService<
     }
   }
 
-  count(userId: string, filter?: FilterOptions<TFilterable>): Promise<number> {
+  count(userId: string, filter?: FilterConfig<TFilterable>): Promise<number> {
     return this.repository.count(userId, filter);
   }
 }

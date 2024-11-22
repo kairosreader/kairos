@@ -2,7 +2,7 @@ import { and, eq, sql } from "drizzle-orm";
 import type { PgTableWithColumns, TableConfig } from "drizzle-orm/pg-core";
 import type {
   BaseEntity,
-  FilterOptions,
+  FilterConfig,
   OffsetPagination,
   PaginatedResponse,
   QueryOptions,
@@ -23,21 +23,21 @@ export abstract class DrizzleUserScopedRepository<
     userId: string,
     options?: QueryOptions<TSortable, TFilterable>,
   ): Promise<PaginatedResponse<E>> {
-    const userFilter = { userId: { eq: userId } } as FilterOptions<TFilterable>;
-    const filter = options?.filter
-      ? { ...options.filter, ...userFilter }
+    const userFilter = { userId: { eq: userId } } as FilterConfig<TFilterable>;
+    const filters = options?.filters
+      ? { ...options.filters, ...userFilter }
       : undefined;
 
     const pagination = options?.pagination ? options.pagination : ({
       type: "offset",
       page: 1,
-      limit: 20,
+      pageSize: 20,
     } as OffsetPagination);
 
     return this.find({
       pagination: pagination,
       sort: options?.sort,
-      filter,
+      filters,
     });
   }
 
@@ -49,7 +49,7 @@ export abstract class DrizzleUserScopedRepository<
 
   async count(
     userId: string,
-    filter?: FilterOptions<TFilterable>,
+    filter?: FilterConfig<TFilterable>,
   ): Promise<number> {
     const whereClause = this.buildWhereClause(filter);
     const where = and(whereClause, eq(this.table.userId, userId));

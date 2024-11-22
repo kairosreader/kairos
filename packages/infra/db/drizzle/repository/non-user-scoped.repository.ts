@@ -1,7 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import type { NonUserScopedRepository } from "@kairos/core";
 import type { PgTableWithColumns, TableConfig } from "drizzle-orm/pg-core";
-import type { BaseEntity, FilterOptions } from "@kairos/shared/types/common";
+import type { BaseEntity, FilterConfig } from "@kairos/shared/types/common";
 import { DrizzleBaseRepository } from "./base.repository.ts";
 
 export abstract class DrizzleNonUserScopedRepository<
@@ -16,7 +16,7 @@ export abstract class DrizzleNonUserScopedRepository<
     await this.db.delete(this.table).where(eq(this.table.id, id));
   }
 
-  async count(filter?: FilterOptions<TFilterable>): Promise<number> {
+  async count(filter?: FilterConfig<TFilterable>): Promise<number> {
     const whereClause = this.buildWhereClause(filter);
 
     const [{ count }] = await this.db

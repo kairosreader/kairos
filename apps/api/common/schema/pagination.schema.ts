@@ -1,4 +1,10 @@
 import { z } from "@hono/zod-openapi";
+import type {
+  FilterConfig,
+  FilterOperator,
+  PaginationOptions,
+  QueryOptions,
+} from "@kairos/shared/types";
 
 // Filter operator types
 export const filterOperators = {
@@ -13,9 +19,7 @@ export const filterOperators = {
   contains: z.string().optional(),
   startsWith: z.string().optional(),
   endsWith: z.string().optional(),
-} as const;
-
-export type FilterOperator = keyof typeof filterOperators;
+} as const satisfies Record<FilterOperator, z.ZodType>;
 
 export type FilterFieldConfig = {
   operators: FilterOperator[];
@@ -25,6 +29,21 @@ export type FilterFieldConfig = {
 export type FilterFieldsConfig<T extends string> = {
   [K in T]: FilterFieldConfig;
 };
+
+// Filter operator mapping for query parameter syntax
+const filterOperatorMap = {
+  eq: "equals",
+  neq: "not",
+  gt: "gt",
+  gte: "gte",
+  lt: "lt",
+  lte: "lte",
+  in: "in",
+  nin: "not-in",
+  contains: "contains",
+  startsWith: "starts-with",
+  endsWith: "ends-with",
+} as const;
 
 export const createFilterSchema = (
   field: string,
@@ -42,22 +61,82 @@ export const createFilterSchema = (
   return z.object(schema).partial();
 };
 
-// Helper to parse filter key into field and operator
-// Example: "text.contains" -> { field: "text", operator: "contains" }
-const parseFilterKey = (key: string) => {
-  const [field, operator] = key.split(".");
-  return { field, operator } as const;
-};
-
-// Helper to create a filter object for a field
-// Example: { text: { contains: "hello", eq: "world" } }
-const createFieldFilter = (entries: [string, unknown][]): FilterOperator => {
-  return entries.reduce((operators, [key, value]) => {
-    const { operator } = parseFilterKey(key);
-    if (!operator) return operators;
-    return Object.assign(operators, { [operator]: value });
-  }, {} as FilterOperator);
-};
+export const PageInfoSchema = z.discriminatedUnion("type", [
+  z
+    .object({
+      type: z.literal("offset"),
+      total: z.number().int().min(0).openapi({
+        description: "Total number of items matching the query",
+        example: 100,
+      }),
+      page: z.number().int().min(1).openapi({
+        description: "Current page number",
+        example: 1,
+      }),
+      pageSize: z.number().int().min(1).openapi({
+        description: "Number of items per page",
+        example: 20,
+      }),
+      totalPages: z.number().int().min(1).openapi({
+        description: "Total number of pages",
+        example: 5,
+      }),
+      links: z
+        .object({
+          self: z.string().url().openapi({
+            description: "URL of the current page",
+            example: "/api/items?page=2&per_page=20",
+          }),
+          first: z.string().url().openapi({
+            description: "URL of the first page",
+            example: "/api/items?page=1&per_page=20",
+          }),
+          prev: z.string().url().optional().openapi({
+            description: "URL of the previous page",
+            example: "/api/items?page=1&per_page=20",
+          }),
+          next: z.string().url().optional().openapi({
+            description: "URL of the next page",
+            example: "/api/items?page=3&per_page=20",
+          }),
+          last: z.string().url().openapi({
+            description: "URL of the last page",
+            example: "/api/items?page=5&per_page=20",
+          }),
+        })
+        .openapi({
+          description: "HATEOAS navigation links for offset-based pagination",
+        }),
+    })
+    .openapi("OffsetPageInfo"),
+  z
+    .object({
+      type: z.literal("cursor"),
+      pageSize: z.number().int().min(1).openapi({
+        description: "Number of items per page",
+        example: 20,
+      }),
+      links: z
+        .object({
+          self: z.string().url().openapi({
+            description: "URL of the current page",
+            example: "/api/items?cursor=eyJpZCI6MTAwfQ&per_page=20",
+          }),
+          prev: z.string().url().optional().openapi({
+            description: "URL of the previous page",
+            example: "/api/items?cursor=eyJpZCI6ODB9&per_page=20",
+          }),
+          next: z.string().url().optional().openapi({
+            description: "URL of the next page",
+            example: "/api/items?cursor=eyJpZCI6MTIwfQ&per_page=20",
+          }),
+        })
+        .openapi({
+          description: "HATEOAS navigation links for cursor-based pagination",
+        }),
+    })
+    .openapi("CursorPageInfo"),
+]);
 
 export const createQuerySchema = <
   TSortFields extends [string, ...string[]],
@@ -69,136 +148,115 @@ export const createQuerySchema = <
   sortFields: TSortFields;
   filterConfig: FilterFieldsConfig<TFilterFields>;
 }) => {
-  // Create filter schema by combining all field filters
-  const filterSchema = Object.entries(filterConfig).reduce(
-    (acc, [field, config]) => {
-      return acc.merge(createFilterSchema(field, config as FilterFieldConfig));
-    },
-    z.object({}),
-  );
+  // Create dynamic filter schemas for each field
+  const filterSchemas = Object.entries(filterConfig).reduce<
+    Record<string, z.ZodType>
+  >((acc, [field, config]) => {
+    const fieldSchema: Record<string, z.ZodType> = {};
+    const typedConfig = config as FilterFieldConfig;
+
+    typedConfig.operators.forEach((operator: FilterOperator) => {
+      const paramKey = `${field}[${filterOperatorMap[operator]}]`;
+      const baseValidator = typedConfig.type || filterOperators[operator];
+      fieldSchema[paramKey] = baseValidator.optional();
+    });
+    return { ...acc, ...fieldSchema };
+  }, {});
 
   return z
     .object({
       // Pagination parameters
-      page: z.number().int().min(1).optional().default(1).openapi({
-        description: "Page number",
+      page: z.number().int().min(1).optional().openapi({
+        description: "Page number (1-based) for offset pagination",
         example: 1,
       }),
-      limit: z.number().int().min(1).max(100).optional().default(20).openapi({
-        description: "Items per page",
-        example: 20,
-      }),
       cursor: z.string().optional().openapi({
-        description: "Cursor for pagination",
-        example: "eyJpZCI6IjEyMyJ9",
+        description: "Cursor for cursor-based pagination",
+        example: "eyJpZCI6MTAwfQ",
       }),
-      type: z.enum(["offset", "cursor"]).default("offset").openapi({
-        description: "Pagination type",
-        example: "offset",
-      }),
-
-      // Sorting parameters
-      sort_field: z.enum(sortFields).optional().default(sortFields[0]).openapi({
-        description: "Field to sort by",
-        enum: sortFields,
-      }),
-      sort_direction: z
-        .enum(["asc", "desc"])
+      per_page: z
+        .number()
+        .int()
+        .min(1)
+        .max(100)
         .optional()
-        .default("desc")
+        .default(20)
         .openapi({
-          description: "Sort direction",
-          example: "desc",
+          description: "Number of items per page",
+          example: 20,
         }),
 
-      // Filtering
-      ...filterSchema.shape,
-
-      // Search
-      searchQuery: z.string().optional().openapi({
-        description: "Search query",
-        example: "search term",
-        "x-tagGroups": "Search",
+      // Sorting using comma-separated values
+      sort: z.string().optional().openapi({
+        description:
+          "Comma-separated list of sort fields (prefix with - for desc)",
+        example: "-created_at,title",
       }),
+
+      // Full-text search
+      q: z.string().optional().openapi({
+        description: "Full-text search query",
+        example: "search term",
+      }),
+
+      // Dynamic filter fields
+      ...filterSchemas,
     })
     .openapi({
-      description: "Query parameters for pagination, sorting, and filtering",
+      description: "Query parameters for pagination, filtering, and sorting",
     })
     .transform((data) => {
-      const {
-        type,
-        page,
-        limit,
-        cursor,
-        sort_field,
-        sort_direction,
-        searchQuery,
-        ...filters
-      } = data;
+      const { page, cursor, per_page, sort, q, ...filterParams } = data;
 
-      // Group filter entries by field
-      // Example: { text: [["text.contains", "hello"], ["text.eq", "world"]] }
-      const filtersByField = Object.entries(filters).reduce<
-        Record<string, [string, unknown][]>
-      >((grouped, [key, value]) => {
-        const { field } = parseFilterKey(key);
-        if (!(field in filterConfig)) return grouped;
+      // Parse sort parameter
+      const sortParams = sort?.split(",").map((field) => {
+        if (field.startsWith("-")) {
+          return { field: field.slice(1), direction: "desc" as const };
+        }
+        return { field, direction: "asc" as const };
+      });
 
-        return {
-          ...grouped,
-          [field]: [...(grouped[field] || []), [key, value]],
-        };
-      }, {});
+      // Validate sort fields
+      const validSortParams = sortParams?.filter(({ field }) =>
+        sortFields.includes(field as TSortFields[number])
+      );
+
+      // Parse filter parameters from bracket notation
+      const parsedFilters: FilterConfig<TFilterFields> = {};
+      Object.entries(filterParams).forEach(([key, value]) => {
+        const matches = key.match(/^([^[]+)\[([^\]]+)\]$/);
+        if (matches) {
+          const [, field, operator] = matches;
+          const fieldKey = field as TFilterFields;
+
+          if (field in filterConfig) {
+            const config = filterConfig[fieldKey];
+            const operatorKey = Object.entries(filterOperatorMap).find(
+              ([, v]) => v === operator,
+            )?.[0] as FilterOperator | undefined;
+
+            if (operatorKey && config.operators.includes(operatorKey)) {
+              if (!parsedFilters[fieldKey]) {
+                parsedFilters[fieldKey] = {};
+              }
+              parsedFilters[fieldKey]![operatorKey] =
+                operator === "in" || operator === "not-in"
+                  ? String(value).split(",")
+                  : value;
+            }
+          }
+        }
+      });
+
+      const pagination: PaginationOptions = cursor
+        ? { type: "cursor", cursor, pageSize: per_page }
+        : { type: "offset", page: page ?? 1, pageSize: per_page };
 
       return {
-        // Transform pagination parameters
-        pagination: type === "offset"
-          ? { type: "offset" as const, page, limit }
-          : { type: "cursor" as const, cursor, limit },
-
-        // Transform sort parameters
-        sort: sort_field && {
-          field: sort_field,
-          direction: sort_direction ?? "desc",
-        },
-
-        // Transform filters
-        filters: Object.entries(filtersByField).reduce<
-          Record<TFilterFields, FilterOperator>
-        >((acc, [field, entries]) => {
-          if (field in filterConfig) {
-            return {
-              ...acc,
-              [field as TFilterFields]: createFieldFilter(entries),
-            };
-          }
-          return acc;
-        }, {} as Record<TFilterFields, FilterOperator>),
-
-        // Pass through search query
-        searchQuery,
-      };
+        pagination,
+        sort: validSortParams,
+        filters: parsedFilters,
+        search: q,
+      } satisfies QueryOptions<TSortFields[number], TFilterFields>;
     });
 };
-
-export const PageInfoSchema = z
-  .object({
-    hasNextPage: z.boolean().openapi({
-      description: "Whether there are more items after this page",
-      example: true,
-    }),
-    hasPreviousPage: z.boolean().openapi({
-      description: "Whether there are more items before this page",
-      example: false,
-    }),
-    totalCount: z.number().int().min(0).openapi({
-      description: "Total number of items matching the query",
-      example: 100,
-    }),
-    cursor: z.string().optional().openapi({
-      description:
-        "Cursor for the next page when using cursor-based pagination",
-      example: "eyJpZCI6IjEyMyJ9",
-    }),
-  })
-  .openapi("PageInfo");

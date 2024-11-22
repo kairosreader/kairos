@@ -1,50 +1,17 @@
-export type SortDirection = "asc" | "desc";
-
-export interface SortOptions<T extends string> {
-  field: T;
-  direction: SortDirection;
-}
-
+// Pagination Types
 export interface OffsetPagination {
   type: "offset";
   page: number;
-  limit: number;
+  pageSize: number;
 }
 
 export interface CursorPagination {
   type: "cursor";
   cursor?: string;
-  limit: number;
+  pageSize: number;
 }
 
 export type PaginationOptions = OffsetPagination | CursorPagination;
-
-export interface FilterOperator {
-  eq?: unknown;
-  neq?: unknown;
-  gt?: number | Date;
-  gte?: number | Date;
-  lt?: number | Date;
-  lte?: number | Date;
-  in?: unknown[];
-  nin?: unknown[];
-  contains?: string;
-  startsWith?: string;
-  endsWith?: string;
-}
-
-export type FilterOptions<T extends string> = Partial<
-  Record<T, FilterOperator>
->;
-
-export interface QueryOptions<
-  TSortable extends string,
-  TFilterable extends string,
-> {
-  pagination: PaginationOptions;
-  sort?: SortOptions<TSortable>;
-  filter?: FilterOptions<TFilterable>;
-}
 
 export interface PageInfo {
   hasNextPage: boolean;

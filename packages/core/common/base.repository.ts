@@ -1,6 +1,6 @@
 import type {
   BaseEntity,
-  FilterOptions,
+  FilterConfig,
   PaginatedResponse,
   QueryOptions,
   ResourceIdentifier,
@@ -28,7 +28,7 @@ export interface NonUserScopedRepository<
   TFilterable extends string,
 > extends BaseRepository<T, TSortable, TFilterable> {
   delete(id: string): Promise<void>;
-  count(filter?: FilterOptions<TFilterable>): Promise<number>;
+  count(filter?: FilterConfig<TFilterable>): Promise<number>;
 }
 
 export interface UserScopedRepository<
@@ -41,5 +41,5 @@ export interface UserScopedRepository<
     options?: QueryOptions<TSortable, TFilterable>,
   ): Promise<PaginatedResponse<T>>;
   delete(params: ResourceIdentifier): Promise<void>;
-  count(userId: string, filter?: FilterOptions<TFilterable>): Promise<number>;
+  count(userId: string, filter?: FilterConfig<TFilterable>): Promise<number>;
 }
