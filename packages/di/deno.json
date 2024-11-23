@@ -1,0 +1,12 @@
+{
+  "name": "@kairos/di",
+  "version": "0.0.0",
+  "imports": {
+    "tsyringe": "npm:tsyringe@4.8.0",
+    "reflect-metadata": "npm:reflect-metadata@0.2.2"
+  },
+  "exports": {
+    ".": "./mod.ts",
+    "./tokens": "./tokens/mod.ts"
+  }
+}

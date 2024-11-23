@@ -1,19 +1,13 @@
-import {
-  configureContainer,
-  TOKENS,
-  TsyringeContainer,
-} from "@kairos/infra/di";
-import type { QueueService } from "@kairos/core";
-import { ITEM_TYPE } from "@kairos/shared";
 import type {
   ArticleProcessingHandler,
   EmailProcessingHandler,
-} from "@kairos/infra/queue";
+  QueueService,
+} from "@kairos/core";
+import { ITEM_TYPE } from "@kairos/shared";
+import { configureContainer } from "./container.config.ts";
+import { QUEUE_TOKENS } from "@kairos/di";
 
-const container = new TsyringeContainer();
-
-// Configure container
-configureContainer(container, {
+const container = configureContainer({
   redis: {
     host: Deno.env.get("REDIS_HOST") || "localhost",
     port: parseInt(Deno.env.get("REDIS_PORT") || "6379"),
@@ -22,12 +16,12 @@ configureContainer(container, {
 });
 
 // Get services
-const queueService = container.resolve<QueueService>(TOKENS.QueueService);
+const queueService = container.resolve<QueueService>(QUEUE_TOKENS.QueueService);
 const articleHandler = container.resolve<ArticleProcessingHandler>(
-  TOKENS.ArticleProcessingHandler,
+  QUEUE_TOKENS.Handlers.ArticleHandler,
 );
 const emailHandler = container.resolve<EmailProcessingHandler>(
-  TOKENS.EmailProcessingHandler,
+  QUEUE_TOKENS.Handlers.EmailHandler,
 );
 
 // Register handlers

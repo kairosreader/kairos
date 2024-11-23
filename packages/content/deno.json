@@ -1,0 +1,13 @@
+{
+  "name": "@kairos/content",
+  "version": "0.0.0",
+  "imports": {
+    "@kairos/core": "../core/mod.ts",
+    "@kairos/di": "../di/mod.ts",
+    "@mozilla/readability": "npm:@mozilla/readability@0.5.0",
+    "jsdom": "npm:jsdom@25.0.1"
+  },
+  "exports": {
+    ".": "./mod.ts"
+  }
+}

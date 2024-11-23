@@ -6,10 +6,12 @@
     "test": "deno test -A"
   },
   "imports": {
+    "@kairos/content": "../../packages/content/mod.ts",
     "@kairos/core": "../../packages/core/mod.ts",
-    "@kairos/infra/di": "../../packages/infra/di/mod.ts",
-    "@kairos/infra/queue": "../../packages/infra/queue/mod.ts",
-    "@kairos/shared": "../../packages/shared/mod.ts"
+    "@kairos/di": "../../packages/di/mod.ts",
+    "@kairos/queue": "../../packages/queue/mod.ts",
+    "@kairos/shared": "../../packages/shared/mod.ts",
+    "@kairos/db": "../../packages/db/mod.ts"
   },
   "exports": {
     ".": "./main.ts"

@@ -2,43 +2,41 @@ FROM denoland/deno:2.0.5 as base
 
 WORKDIR /app
 
-# Install minimal dependencies required for jsdom
-RUN apt-get update && apt-get install -y \
-    libnss3 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    && rm -rf /var/lib/apt/lists/*
-
 # Copy all deno configuration files and env
 COPY deno.json deno.lock .env.example ./
-COPY apps/api/deno.json apps/api/deno.lock ./apps/api/
+COPY apps/api/deno.json ./apps/api/
 COPY packages/core/deno.json ./packages/core/
-COPY packages/infra/deno.json ./packages/infra/
 COPY packages/shared/deno.json ./packages/shared/
+COPY packages/di/deno.json ./packages/di/
+COPY packages/db/deno.json ./packages/db/
+COPY packages/queue/deno.json ./packages/queue/
+COPY packages/content/deno.json ./packages/content/
+COPY packages/auth/deno.json ./packages/auth/
 
 # Create a minimal root deno.json for the API
 RUN echo '{\
-    "tasks": {\
-    "start": "deno run -A main.ts",\
-    "dev": "deno run -A --watch main.ts"\
-    },\
     "workspace": [\
     "./apps/api",\
     "./packages/core",\
-    "./packages/infra",\
-    "./packages/shared"\
+    "./packages/shared",\
+    "./packages/di",\
+    "./packages/db",\
+    "./packages/queue",\
+    "./packages/content",\
+    "./packages/auth",\
+    "./packages/usecases"\
     ]\
     }' > deno.json
 
 # Copy source files
 COPY packages/shared ./packages/shared
 COPY packages/core ./packages/core
-COPY packages/infra ./packages/infra
+COPY packages/di ./packages/di
+COPY packages/db ./packages/db
+COPY packages/queue ./packages/queue
+COPY packages/content ./packages/content
+COPY packages/auth ./packages/auth
+COPY packages/usecases ./packages/usecases
 COPY apps/api ./apps/api
 
 # Cache dependencies
@@ -56,7 +54,7 @@ FROM base as development
 WORKDIR /app/apps/api
 EXPOSE ${PORT}
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["deno", "task", "start:api"]
+CMD ["deno", "task", "start:api:dev"]
 
 FROM base as production
 WORKDIR /app/apps/api

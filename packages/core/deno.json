@@ -2,20 +2,14 @@
   "name": "@kairos/core",
   "version": "0.0.0",
   "imports": {
-    "@kairos/shared": "../shared/mod.ts",
-    "@kairos/shared/constants": "../shared/constants/mod.ts",
-    "@kairos/shared/types": "../shared/types/mod.ts",
-    "@kairos/shared/types/common": "../shared/types/common/mod.ts",
-    "@kairos/shared/types/params": "../shared/types/params/mod.ts",
-    "@kairos/shared/types/errors": "../shared/types/errors/mod.ts",
-    "@kairos/shared/utils": "../shared/utils/mod.ts"
+    "@kairos/shared": "../shared/mod.ts"
   },
   "exports": {
     ".": "./mod.ts",
+    "./auth": "./auth/mod.ts",
     "./collection": "./collection/mod.ts",
     "./collection/usecases": "./collection/usecases/mod.ts",
     "./content": "./content/mod.ts",
-    "./di": "./di/mod.ts",
     "./highlight": "./highlight/mod.ts",
     "./highlight/usecases": "./highlight/usecases/mod.ts",
     "./item": "./item/mod.ts",

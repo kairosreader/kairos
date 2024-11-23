@@ -1,0 +1,11 @@
+{
+  "name": "@kairos/queue",
+  "version": "0.0.0",
+  "imports": {
+    "@kairos/core": "../core/mod.ts",
+    "bullmq": "npm:bullmq@5.25.0"
+  },
+  "exports": {
+    ".": "./mod.ts"
+  }
+}

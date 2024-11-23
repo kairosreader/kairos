@@ -1,5 +1,6 @@
 import { BaseController } from "../common/controller/base.controller.ts";
 import type {
+  BulkDeleteHighlightsUseCase,
   CreateHighlightUseCase,
   DeleteHighlightUseCase,
   GetHighlightUseCase,
@@ -22,6 +23,7 @@ export class HighlightController extends BaseController {
     private getUseCase: GetHighlightUseCase,
     private listUseCase: ListHighlightsUseCase,
     private deleteUseCase: DeleteHighlightUseCase,
+    private bulkDeleteUseCase: BulkDeleteHighlightsUseCase,
   ) {
     super();
   }

@@ -209,7 +209,9 @@ export const createQuerySchema = <
       });
 
       // Validate sort fields
-      const validSortParams = sortParams?.filter((param): param is SortOptions<TSortFields[number]> => 
+      const validSortParams = sortParams?.filter((
+        param,
+      ): param is SortOptions<TSortFields[number]> =>
         sortFields.includes(param.field as TSortFields[number])
       );
 

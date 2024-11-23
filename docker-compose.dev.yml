@@ -31,7 +31,7 @@ services:
       - "4983:4983"
     volumes:
       - .:/app:delegated
-    working_dir: /app/packages/infra
+    working_dir: /app/packages/db
     environment:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     command: >
@@ -41,8 +41,8 @@ services:
         echo '⭐ https://local.drizzle.studio?port=4983' &&
         echo '❌ IGNORE the URL that will be output by Drizzle Kit below!' &&
         echo '============================================================\n' &&
-        cd /app/packages/infra &&
-        npx drizzle-kit studio --verbose --host 0.0.0.0 --port 4983 --config ./db/drizzle/drizzle-env.js
+        cd /app/packages/db &&
+        npx drizzle-kit studio --verbose --host 0.0.0.0 --port 4983 --config ./drizzle/drizzle-env.js
       "
     depends_on:
       - db

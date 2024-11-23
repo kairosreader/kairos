@@ -1,0 +1,14 @@
+{
+    "name": "@kairos/usecases",
+    "version": "0.0.0",
+    "imports": {
+        "@kairos/auth": "../auth/mod.ts",
+        "@kairos/content": "../content/mod.ts",
+        "@kairos/core": "../core/mod.ts",
+        "@kairos/db": "../db/mod.ts",
+        "@kairos/queue": "../queue/mod.ts"
+    },
+    "exports": {
+        ".": "./mod.ts"
+    }
+}

@@ -1,11 +1,12 @@
 {
   "tasks": {
-    "start:api": "deno run -A --watch apps/api/main.ts",
-    "start:processor": "deno run -A --watch apps/content-processor/main.ts",
-    "dev": "deno task start:api & deno task start:processor",
-    "db:generate": "cd packages/infra/db/drizzle && deno task db:generate",
-    "db:migrate": "cd packages/infra/db/drizzle && deno task db:migrate",
-    "db:studio": "cd packages/infra/db/drizzle && deno task db:studio",
+    "start:api": "deno run -A apps/api/main.ts",
+    "start:api:dev": "deno run --watch -A apps/api/main.ts",
+    "start:processor": "deno run -A apps/content-processor/main.ts",
+    "start:processor:dev": "deno run --watch -A apps/content-processor/main.ts",
+    "db:generate": "cd packages/db && deno task db:generate",
+    "db:migrate": "cd packages/db && deno task db:migrate",
+    "db:studio": "cd packages/db && deno task db:studio",
     "docker": "docker compose -f docker-compose.yml -f docker-compose.dev.yml",
     "docker:build": "deno task docker up --build",
     "lint": "deno lint",
@@ -19,9 +20,14 @@
   "workspace": [
     "./apps/api",
     "./apps/content-processor",
+    "./packages/auth",
+    "./packages/content",
     "./packages/core",
-    "./packages/infra",
-    "./packages/shared"
+    "./packages/db",
+    "./packages/di",
+    "./packages/queue",
+    "./packages/shared",
+    "./packages/usecases"
   ],
   "compilerOptions": {
     "strict": true,

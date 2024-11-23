@@ -1,0 +1,11 @@
+{
+  "name": "@kairos/auth",
+  "version": "0.0.0",
+  "imports": {
+    "@kairos/core": "../core/mod.ts",
+    "@kairos/di": "../di/mod.ts"
+  },
+  "exports": {
+    ".": "./mod.ts"
+  }
+}
