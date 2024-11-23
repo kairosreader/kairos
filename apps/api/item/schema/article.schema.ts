@@ -9,7 +9,7 @@ export const ArticleContentSchema = z
     url: urlSchema,
     content: z.string(),
     author: z.string().optional(),
-    publishedAt: dateSchema,
+    publishedAt: dateSchema.optional(),
   })
   .openapi("ArticleContent");
 
