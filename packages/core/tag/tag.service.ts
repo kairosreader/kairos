@@ -4,6 +4,7 @@ import type {
   CreateManyTagsOperation,
   CreateTagParams,
   FindTagByNameParams,
+  ResourceIdentifier,
   TagItemOperation,
 } from "@kairos/shared/types/params";
 import { generateId } from "@kairos/shared/utils";
@@ -150,40 +151,13 @@ export class TagService extends UserScopedService<Tag> {
     const tagIds = tags.map((tag) => tag.id);
 
     // Update item tags
-    await this.itemService.updateMany(
-      itemIds.map((itemId) => ({
-        id: itemId,
-        userId,
-        updates: {
-          tags: tagIds,
-        },
-      })),
-    );
-  }
-
-  async bulkUntagItems(params: BulkTagItemOperation): Promise<void> {
-    const { userId, itemIds, tagInfos } = params;
-
-    // Check if items exists
-    const items = await this.itemService.tryFindByIds(itemIds);
-
-    // Find the tags to remove
-    const tags = await this.tagRepo.findByNames({
+    await this.itemService.updateMany({
       userId,
-      tagNames: tagInfos.map((tag) => tag.name),
+      ids: itemIds,
+      updates: {
+        tags: tagIds,
+      },
     });
-    const tagIds = tags.map((tag) => tag.id);
-
-    // Remove tag from items
-    await this.itemService.updateMany(
-      items.map((item) => ({
-        id: item.id,
-        userId,
-        updates: {
-          tags: item.tags.filter((tagId) => !tagIds.includes(tagId)),
-        },
-      })),
-    );
   }
 
   createMany(params: CreateManyTagsOperation): Promise<Tag[]> {
@@ -199,5 +173,34 @@ export class TagService extends UserScopedService<Tag> {
     }));
 
     return this.tagRepo.saveMany(tags);
+  }
+
+  override async delete(params: ResourceIdentifier): Promise<void> {
+    const { id: tagId, userId } = params;
+
+    // Verify tag ownership
+    await this.verifyOwnership({
+      id: tagId,
+      userId,
+    });
+
+    // Find all items with this tag
+    const itemIds = await this.findItemsByTag(userId, tagId);
+
+    if (itemIds.length > 0) {
+      // Update all items to remove this tag
+      await this.itemService.removeTagsFromItems(itemIds, [tagId]);
+    }
+
+    // Now delete the tag
+    await super.delete(params);
+  }
+
+  private async findItemsByTag(
+    userId: string,
+    tagId: string,
+  ): Promise<string[]> {
+    const items = await this.itemService.findByUserAndTag(userId, tagId);
+    return items.map((item) => item.id);
   }
 }

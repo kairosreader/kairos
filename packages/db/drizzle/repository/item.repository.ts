@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, arrayContains, eq, inArray, sql } from "drizzle-orm";
 import type {
   Item,
   ItemFilterableFields,
@@ -7,7 +7,7 @@ import type {
   ReadingProgress,
 } from "@kairos/core/item";
 import type { ItemType } from "@kairos/shared/constants";
-import type { ItemContent } from "@kairos/shared/types/common";
+import type { ItemContent, UserScoped } from "@kairos/shared/types/common";
 import type { ResourceIdentifier } from "@kairos/shared/types/params";
 import { DrizzleUserScopedRepository } from "./user-scoped.repository.ts";
 import { items } from "../schema/item.ts";
@@ -47,6 +47,34 @@ export class DrizzleItemRepository extends DrizzleUserScopedRepository<
     return mapArrayNullToUndefined<Item<ItemContent>>(
       result as DatabaseResult<Item<ItemContent>[]>,
     );
+  }
+
+  async findByUserAndTag(
+    params: UserScoped & { tagId: string },
+  ): Promise<Item<ItemContent>[]> {
+    const result = await this.db
+      .select()
+      .from(this.table)
+      .where(
+        and(
+          eq(this.table.userId, params.userId),
+          arrayContains(this.table.tags, [params.tagId]),
+        ),
+      );
+
+    return mapArrayNullToUndefined<Item<ItemContent>>(
+      result as DatabaseResult<Item<ItemContent>[]>,
+    );
+  }
+
+  async removeTagsFromItems(ids: string[], tagIds: string[]): Promise<void> {
+    await this.db
+      .update(this.table)
+      .set({
+        tags: sql`${this.table.tags} - array[${sql.join(tagIds)}]::text[]`,
+        updatedAt: new Date(),
+      })
+      .where(inArray(this.table.id, ids));
   }
 
   override async save(entity: Item<ItemContent>): Promise<Item<ItemContent>> {

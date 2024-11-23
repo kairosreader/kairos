@@ -17,4 +17,12 @@ export class ItemService<T> extends UserScopedService<
     super(itemRepo);
     this.resourceName = "Item";
   }
+
+  findByUserAndTag(userId: string, tagId: string): Promise<Item<T>[]> {
+    return this.itemRepo.findByUserAndTag({ userId, tagId });
+  }
+
+  removeTagsFromItems(ids: string[], tagId: string[]): Promise<void> {
+    return this.itemRepo.removeTagsFromItems(ids, tagId);
+  }
 }

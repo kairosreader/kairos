@@ -1,4 +1,4 @@
-import type { ResourceIdentifier } from "@kairos/shared/types";
+import type { ResourceIdentifier, UserScoped } from "@kairos/shared/types";
 import type { UserScopedRepository } from "../common/base.repository.ts";
 import type {
   Item,
@@ -7,7 +7,6 @@ import type {
   ReadingProgress,
 } from "./item.entity.ts";
 import type { ItemType } from "@kairos/shared/constants";
-import {} from "./item.entity.ts";
 
 export interface ItemRepository<T> extends
   UserScopedRepository<
@@ -18,5 +17,7 @@ export interface ItemRepository<T> extends
   findByUserAndType(
     params: ResourceIdentifier & { type?: ItemType },
   ): Promise<Item<T>[]>;
+  findByUserAndTag(params: UserScoped & { tagId: string }): Promise<Item<T>[]>;
+  removeTagsFromItems(ids: string[], tagId: string[]): Promise<void>;
   updateReadingProgress(id: string, progress: ReadingProgress): Promise<void>;
 }
