@@ -37,7 +37,13 @@ export interface SortablePaginatedQuery extends PaginatedQuery {
 }
 
 // Base CRUD interfaces
+
 export interface UpdateParams<T> extends ResourceIdentifier {
+  updates: Partial<T>;
+}
+
+export interface UpdateManyParams<T> extends UserScopedParams {
+  ids: string[];
   updates: Partial<T>;
 }
 

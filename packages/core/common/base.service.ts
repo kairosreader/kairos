@@ -7,6 +7,7 @@ import type {
   PaginatedResponse,
   QueryOptions,
   ResourceIdentifier,
+  UpdateManyParams,
   UpdateParams,
 } from "@kairos/shared/types";
 import {
@@ -214,26 +215,18 @@ export abstract class UserScopedService<
   async update(params: UpdateParams<T>): Promise<T> {
     await this.verifyOwnership(params);
     try {
-      return await this.repository.save({
-        id: params.id,
-        ...params.updates,
-      } as T);
+      return await this.repository.update(params.id, params.updates);
     } catch (error) {
       throw new OperationError(this.resourceName, error);
     }
   }
 
-  async updateMany(params: UpdateParams<T>[]): Promise<T[]> {
-    await this.verifyOwnershipMany(params);
+  async updateMany(params: UpdateManyParams<T>): Promise<T[]> {
+    await this.verifyOwnershipMany(
+      params.ids.map((id) => ({ id, userId: params.userId })),
+    );
     try {
-      return await this.repository.saveMany(
-        params.map(
-          (param) => ({
-            id: param.id,
-            ...param.updates,
-          } as T),
-        ),
-      );
+      return await this.repository.updateMany(params.ids, params.updates);
     } catch (error) {
       throw new OperationError(this.resourceName, error);
     }
