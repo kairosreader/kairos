@@ -17,6 +17,6 @@ await build({
       "../../shared/constants/mod.ts",
     ),
     "@kairos/shared/utils": join(__dirname, "../../shared/utils/mod.ts"),
-    "@kairos/shared/types": join(__dirname, "../../shared/types/mod.ts")
+    "@kairos/shared/types": join(__dirname, "../../shared/types/mod.ts"),
   },
 });

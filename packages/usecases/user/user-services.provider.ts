@@ -1,5 +1,5 @@
 import type { Container, Module } from "@kairos/di";
-import { USECASES_TOKENS, DB_TOKENS } from "@kairos/di/tokens";
+import { DB_TOKENS, USECASES_TOKENS } from "@kairos/di/tokens";
 import type { UserRepository } from "@kairos/core/user";
 import { UserService } from "@kairos/core/user";
 
