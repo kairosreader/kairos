@@ -12,7 +12,7 @@ services:
     environment:
       - DENO_ENV=development
       - LOG_LEVEL=debug
-    command: ["deno", "task", "start:api"]
+    command: ["deno", "task", "start:api:dev"]
 
   content-processor:
     build:
@@ -23,7 +23,7 @@ services:
     environment:
       - DENO_ENV=development
       - LOG_LEVEL=debug
-    command: ["deno", "task", "start:processor"]
+    command: ["deno", "task", "start:processor:dev"]
 
   drizzle-studio:
     image: node:18-slim
