@@ -85,7 +85,10 @@ export class TagService extends UserScopedService<Tag> {
     const { userId, itemId, tagInfos } = params;
 
     // Check if item exists
-    await this.itemService.tryFindById(itemId);
+    await this.itemService.tryFindById({
+      id: itemId,
+      userId,
+    });
 
     // Get or create the tag
     const tags = await this.getOrCreateMany({
@@ -109,7 +112,10 @@ export class TagService extends UserScopedService<Tag> {
     const { userId, itemId, tagInfos } = params;
 
     // Check if item exists
-    const item = await this.itemService.tryFindById(itemId);
+    const item = await this.itemService.tryFindById({
+      id: itemId,
+      userId,
+    });
 
     // Find the tags to remove
     const tags = await this.tagRepo.findByNames({

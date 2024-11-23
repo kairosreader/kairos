@@ -31,20 +31,8 @@ export abstract class BaseService<T extends BaseEntity> {
 
   constructor(protected repository: BaseRepository<T>) {}
 
-  findById(id: string): Promise<T | null> {
-    return this.repository.findById(id);
-  }
-
   findByIds(ids: string[]): Promise<T[]> {
     return this.repository.findByIds(ids);
-  }
-
-  async tryFindById(id: string): Promise<T> {
-    const resource = await this.repository.findById(id);
-    if (!resource) {
-      throw new NotFoundError(this.resourceName, id);
-    }
-    return resource;
   }
 
   async tryFindByIds(ids: string[]): Promise<T[]> {
@@ -108,6 +96,18 @@ export abstract class NonUserScopedService<
     super(repository);
   }
 
+  findById(id: string): Promise<T | null> {
+    return this.repository.findById(id);
+  }
+
+  async tryFindById(id: string): Promise<T> {
+    const resource = await this.repository.findById(id);
+    if (!resource) {
+      throw new NotFoundError(this.resourceName, id);
+    }
+    return resource;
+  }
+
   async update(id: string, updates: Partial<T>): Promise<T> {
     await this.tryFindById(id);
     try {
@@ -169,6 +169,10 @@ export abstract class UserScopedService<
     super(repository);
   }
 
+  findById(params: ResourceIdentifier): Promise<T | null> {
+    return this.repository.findById(params);
+  }
+
   findByUser(
     userId: string,
     options?: QueryOptions<TSortable, TFilterable>,
@@ -176,8 +180,16 @@ export abstract class UserScopedService<
     return this.repository.findByUser(userId, options);
   }
 
+  async tryFindById(params: ResourceIdentifier): Promise<T> {
+    const resource = await this.repository.findById(params);
+    if (!resource) {
+      throw new NotFoundError(this.resourceName, params.id);
+    }
+    return resource;
+  }
+
   async verifyOwnership(params: ResourceIdentifier): Promise<T> {
-    const resource = await this.tryFindById(params.id);
+    const resource = await this.tryFindById(params);
     if (resource.userId !== params.userId) {
       throw new UnauthorizedError(
         `You don't have permission to access this ${this.resourceName.toLowerCase()}`,

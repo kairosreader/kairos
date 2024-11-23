@@ -207,16 +207,6 @@ export abstract class DrizzleBaseRepository<
     };
   }
 
-  async findById(id: string): Promise<E | null> {
-    const [item] = await this.db
-      .select()
-      .from(this.table)
-      .where(eq(this.table.id, id))
-      .limit(1);
-
-    return mapNullToUndefined<E>(item as DatabaseResult<E>) || null;
-  }
-
   async findByIds(ids: string[]): Promise<E[]> {
     const query = await this.db
       .select()

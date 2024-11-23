@@ -14,7 +14,6 @@ export interface BaseRepository<
   find(
     options: QueryOptions<TSortable, TFilterable>,
   ): Promise<PaginatedResponse<T>>;
-  findById(id: string): Promise<T | null>;
   findByIds(ids: string[]): Promise<T[]>;
   save(entity: T): Promise<T>;
   saveMany(entities: T[]): Promise<T[]>;
@@ -27,6 +26,7 @@ export interface NonUserScopedRepository<
   TSortable extends string,
   TFilterable extends string,
 > extends BaseRepository<T, TSortable, TFilterable> {
+  findById(id: string): Promise<T | null>;
   delete(id: string): Promise<void>;
   count(filter?: FilterConfig<TFilterable>): Promise<number>;
 }
@@ -36,6 +36,7 @@ export interface UserScopedRepository<
   TSortable extends string,
   TFilterable extends string,
 > extends BaseRepository<T, TSortable, TFilterable> {
+  findById(params: ResourceIdentifier): Promise<T | null>;
   findByUser(
     userId: string,
     options?: QueryOptions<TSortable, TFilterable>,

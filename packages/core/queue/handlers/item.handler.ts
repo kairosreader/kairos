@@ -17,7 +17,10 @@ export abstract class BaseItemHandler
     const { itemId, userId } = payload;
 
     try {
-      const item = await this.itemService.tryFindById(itemId);
+      const item = await this.itemService.tryFindById({
+        id: itemId,
+        userId,
+      });
 
       await this.itemService.update({
         id: itemId,
