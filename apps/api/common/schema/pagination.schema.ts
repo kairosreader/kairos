@@ -4,6 +4,7 @@ import type {
   FilterOperator,
   PaginationOptions,
   QueryOptions,
+  SortOptions,
 } from "@kairos/shared/types";
 
 // Filter operator types
@@ -45,22 +46,7 @@ const filterOperatorMap = {
   endsWith: "ends-with",
 } as const;
 
-export const createFilterSchema = (
-  field: string,
-  config: FilterFieldConfig,
-) => {
-  const schema: Record<string, z.ZodType> = {};
-
-  config.operators.forEach((operator) => {
-    const baseValidator = config.type || filterOperators[operator];
-    schema[`${field}.${operator}`] = baseValidator.openapi({
-      description: `${operator} operator for ${field}`,
-    });
-  });
-
-  return z.object(schema).partial();
-};
-
+// PageInfo schema for offset and cursor pagination
 export const PageInfoSchema = z.discriminatedUnion("type", [
   z
     .object({
@@ -211,14 +197,20 @@ export const createQuerySchema = <
       // Parse sort parameter
       const sortParams = sort?.split(",").map((field) => {
         if (field.startsWith("-")) {
-          return { field: field.slice(1), direction: "desc" as const };
+          return {
+            field: field.slice(1),
+            direction: "desc" as const,
+          } satisfies SortOptions<TSortFields[number]>;
         }
-        return { field, direction: "asc" as const };
+        return {
+          field,
+          direction: "asc" as const,
+        } satisfies SortOptions<TSortFields[number]>;
       });
 
       // Validate sort fields
-      const validSortParams = sortParams?.filter(({ field }) =>
-        sortFields.includes(field as TSortFields[number])
+      const validSortParams = sortParams?.filter((param): param is SortOptions<TSortFields[number]> => 
+        sortFields.includes(param.field as TSortFields[number])
       );
 
       // Parse filter parameters from bracket notation
