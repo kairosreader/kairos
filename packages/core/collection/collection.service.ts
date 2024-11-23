@@ -40,26 +40,32 @@ export class CollectionService extends UserScopedService<Collection> {
   }
 
   async addItem(params: AddToCollectionParams): Promise<void> {
-    const { id, itemInfo } = params;
+    const { id, userId, itemInfo } = params;
 
     // Check if item exists
-    await this.itemRepo.tryFindById(itemInfo.itemId);
+    await this.itemRepo.tryFindById({
+      id: itemInfo.itemId,
+      userId: userId,
+    });
 
     // Check if target list exists
-    await this.tryFindById(id);
+    await this.tryFindById({ id, userId });
 
     // Add the new item
     await this.collectionRepo.addItem(params);
   }
 
   async removeItem(params: RemoveFromCollectionParams): Promise<void> {
-    const { id, itemInfo } = params;
+    const { id, userId, itemInfo } = params;
 
     // Check if item exists
-    await this.itemRepo.tryFindById(itemInfo.itemId);
+    await this.itemRepo.tryFindById({
+      id: itemInfo.itemId,
+      userId: userId,
+    });
 
     // Check if target collection exists
-    await this.tryFindById(id);
+    await this.tryFindById({ id, userId });
 
     await this.collectionRepo.removeItem(params);
   }
@@ -101,8 +107,9 @@ export class CollectionService extends UserScopedService<Collection> {
   }
 
   async getItems(params: ResourceIdentifier): Promise<Item<ItemContent>[]> {
+    const { id, userId } = params;
     // Check if collection exists
-    await this.tryFindById(params.id);
+    await this.tryFindById({ id, userId });
 
     return this.collectionRepo.getItems(params.id);
   }
