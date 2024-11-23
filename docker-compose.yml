@@ -71,6 +71,7 @@ services:
       memlock: -1
     volumes:
       - dragonfly-data:/data
+    command: ["--cluster_mode=emulated", "--lock_on_hashtags"]
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

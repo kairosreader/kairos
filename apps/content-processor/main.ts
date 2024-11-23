@@ -3,7 +3,7 @@ import type {
   EmailProcessingHandler,
   QueueService,
 } from "@kairos/core";
-import { ITEM_TYPE } from "@kairos/shared";
+import { QUEUE_NAMES } from "@kairos/shared";
 import { configureContainer } from "./container.config.ts";
 import { QUEUE_TOKENS } from "@kairos/di";
 
@@ -25,8 +25,8 @@ const emailHandler = container.resolve<EmailProcessingHandler>(
 );
 
 // Register handlers
-queueService.registerHandler(`${ITEM_TYPE.ARTICLE}.process`, articleHandler);
-queueService.registerHandler(`${ITEM_TYPE.EMAIL}.process`, emailHandler);
+queueService.registerHandler(QUEUE_NAMES.ARTICLE_PROCESSING, articleHandler);
+queueService.registerHandler(QUEUE_NAMES.EMAIL_PROCESSING, emailHandler);
 
 // Graceful shutdown
 async function shutdown() {

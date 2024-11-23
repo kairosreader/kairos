@@ -24,8 +24,9 @@ export class BullQueueService implements QueueService {
   }
 
   registerHandler<T>(queueName: string, handler: QueueHandler<T>): void {
+    const wrappedName = this.getWrappedQueueName(queueName);
     const worker = new Bull.Worker<T>(
-      queueName,
+      wrappedName,
       async (job: Bull.Job) => {
         try {
           await handler.handle(job.data);
@@ -42,7 +43,7 @@ export class BullQueueService implements QueueService {
       },
     );
 
-    this.workers.set(queueName, worker);
+    this.workers.set(wrappedName, worker);
 
     worker.on("completed", (job) => {
       console.log(`Job ${job.id} completed in queue ${queueName}`);
@@ -53,13 +54,21 @@ export class BullQueueService implements QueueService {
     });
   }
 
+  // The queue needs to be wrapped in curly brackets for DragonflyDB optimization.
+  // Each queue gets its own hashtag for better thread distribution
+  // See https://www.dragonflydb.io/docs/integrations/bullmq
+  private getWrappedQueueName(queueName: string): string {
+    return `{${queueName}}`;
+  }
+
   private getQueue(queueName: string): Bull.Queue {
-    let queue = this.queues.get(queueName);
+    const wrappedName = this.getWrappedQueueName(queueName);
+    let queue = this.queues.get(wrappedName);
     if (!queue) {
-      queue = new Bull.Queue(queueName, {
+      queue = new Bull.Queue(wrappedName, {
         connection: this.config.redis,
       });
-      this.queues.set(queueName, queue);
+      this.queues.set(wrappedName, queue);
     }
     return queue;
   }

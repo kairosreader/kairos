@@ -8,7 +8,7 @@ import type { CreateItemParams } from "@kairos/shared/types/params";
 import type { ItemService } from "../item.service.ts";
 import type { QueueService } from "../../queue/queue.service.ts";
 import type { Item } from "../item.entity.ts";
-import { ITEM_STATUS } from "@kairos/shared/constants";
+import { ITEM_STATUS, ITEM_TYPE, QUEUE_NAMES } from "@kairos/shared/constants";
 import type { TagService } from "../../tag/tag.service.ts";
 
 export class SaveItemUseCase {
@@ -44,7 +44,13 @@ export class SaveItemUseCase {
     const savedItem = await this.itemService.save(item);
 
     // Queue type-specific processing
-    await this.queueService.enqueue(`${params.type}.process`, {
+    const QUEUE_TYPE_MAP = {
+      [ITEM_TYPE.ARTICLE]: QUEUE_NAMES.ARTICLE_PROCESSING,
+      [ITEM_TYPE.EMAIL]: QUEUE_NAMES.EMAIL_PROCESSING,
+      [ITEM_TYPE.PDF]: QUEUE_NAMES.PDF_PROCESSING,
+    } as const;
+
+    await this.queueService.enqueue(QUEUE_TYPE_MAP[params.type], {
       itemId: item.id,
       userId: params.userId,
     });
