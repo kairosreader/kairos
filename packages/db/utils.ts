@@ -19,6 +19,22 @@ export function mapNullToUndefined<T extends object>(
     if (result[key] === null) {
       // @ts-expect-error: Dynamic assignment
       result[key] = undefined;
+    } else if (Array.isArray(result[key])) {
+      // Handle arrays recursively
+      // @ts-expect-error: Dynamic assignment
+      result[key] = result[key].map((item) =>
+        typeof item === "object" && item !== null
+          ? mapNullToUndefined(item)
+          : item
+      );
+    } else if (typeof result[key] === "object" && result[key] !== null) {
+      if (result[key] instanceof Date) {
+        // Keep Date objects as is
+        continue;
+      }
+      // Recursively handle nested objects
+      // @ts-expect-error: Dynamic assignment
+      result[key] = mapNullToUndefined(result[key]);
     }
   }
 

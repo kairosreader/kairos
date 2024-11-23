@@ -145,7 +145,11 @@ export abstract class DrizzleBaseRepository<
 
     const decodedCursor = JSON.parse(atob(pagination.cursor));
     const cursorColumn = this.table.id;
-    const cursorCondition = gt(cursorColumn, decodedCursor.id);
+    // Ensure proper type comparison for UUID fields
+    const cursorValue = typeof decodedCursor.id === "number"
+      ? sql`gen_random_uuid()` // Generate a new UUID for numeric cursors
+      : decodedCursor.id;
+    const cursorCondition = gt(cursorColumn, cursorValue);
 
     return {
       limit,
@@ -178,7 +182,8 @@ export abstract class DrizzleBaseRepository<
       .limit(limit + 1) // Get one extra item to determine if there's a next page
       .offset(offset);
 
-    const items = (await query) as E[];
+    const rawItems = (await query) as DatabaseResult<E>[];
+    const items = mapArrayNullToUndefined(rawItems);
 
     const hasNextPage = items.length > limit;
     if (hasNextPage) {

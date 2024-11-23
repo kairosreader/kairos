@@ -47,82 +47,26 @@ const filterOperatorMap = {
 } as const;
 
 // PageInfo schema for offset and cursor pagination
-export const PageInfoSchema = z.discriminatedUnion("type", [
-  z
-    .object({
-      type: z.literal("offset"),
-      total: z.number().int().min(0).openapi({
-        description: "Total number of items matching the query",
-        example: 100,
-      }),
-      page: z.number().int().min(1).openapi({
-        description: "Current page number",
-        example: 1,
-      }),
-      pageSize: z.number().int().min(1).openapi({
-        description: "Number of items per page",
-        example: 20,
-      }),
-      totalPages: z.number().int().min(1).openapi({
-        description: "Total number of pages",
-        example: 5,
-      }),
-      links: z
-        .object({
-          self: z.string().url().openapi({
-            description: "URL of the current page",
-            example: "/api/items?page=2&per_page=20",
-          }),
-          first: z.string().url().openapi({
-            description: "URL of the first page",
-            example: "/api/items?page=1&per_page=20",
-          }),
-          prev: z.string().url().optional().openapi({
-            description: "URL of the previous page",
-            example: "/api/items?page=1&per_page=20",
-          }),
-          next: z.string().url().optional().openapi({
-            description: "URL of the next page",
-            example: "/api/items?page=3&per_page=20",
-          }),
-          last: z.string().url().openapi({
-            description: "URL of the last page",
-            example: "/api/items?page=5&per_page=20",
-          }),
-        })
-        .openapi({
-          description: "HATEOAS navigation links for offset-based pagination",
-        }),
-    })
-    .openapi("OffsetPageInfo"),
-  z
-    .object({
-      type: z.literal("cursor"),
-      pageSize: z.number().int().min(1).openapi({
-        description: "Number of items per page",
-        example: 20,
-      }),
-      links: z
-        .object({
-          self: z.string().url().openapi({
-            description: "URL of the current page",
-            example: "/api/items?cursor=eyJpZCI6MTAwfQ&per_page=20",
-          }),
-          prev: z.string().url().optional().openapi({
-            description: "URL of the previous page",
-            example: "/api/items?cursor=eyJpZCI6ODB9&per_page=20",
-          }),
-          next: z.string().url().optional().openapi({
-            description: "URL of the next page",
-            example: "/api/items?cursor=eyJpZCI6MTIwfQ&per_page=20",
-          }),
-        })
-        .openapi({
-          description: "HATEOAS navigation links for cursor-based pagination",
-        }),
-    })
-    .openapi("CursorPageInfo"),
-]);
+export const PageInfoSchema = z
+  .object({
+    hasNextPage: z.boolean().openapi({
+      description: "Whether there are more items after the current page",
+      example: true,
+    }),
+    hasPreviousPage: z.boolean().openapi({
+      description: "Whether there are items before the current page",
+      example: false,
+    }),
+    totalCount: z.number().int().min(0).openapi({
+      description: "Total number of items matching the query",
+      example: 100,
+    }),
+    cursor: z.string().optional().openapi({
+      description: "Cursor for the next page of items",
+      example: "eyJpZCI6MTAwfQ",
+    }),
+  })
+  .openapi("PageInfo");
 
 export const createQuerySchema = <
   TSortFields extends [string, ...string[]],
@@ -152,7 +96,7 @@ export const createQuerySchema = <
   return z
     .object({
       // Pagination parameters
-      page: z.number().int().min(1).optional().openapi({
+      page: z.coerce.number().int().min(1).optional().openapi({
         description: "Page number (1-based) for offset pagination",
         example: 1,
       }),
@@ -160,7 +104,7 @@ export const createQuerySchema = <
         description: "Cursor for cursor-based pagination",
         example: "eyJpZCI6MTAwfQ",
       }),
-      per_page: z
+      per_page: z.coerce
         .number()
         .int()
         .min(1)
@@ -209,10 +153,9 @@ export const createQuerySchema = <
       });
 
       // Validate sort fields
-      const validSortParams = sortParams?.filter((
-        param,
-      ): param is SortOptions<TSortFields[number]> =>
-        sortFields.includes(param.field as TSortFields[number])
+      const validSortParams = sortParams?.filter(
+        (param): param is SortOptions<TSortFields[number]> =>
+          sortFields.includes(param.field as TSortFields[number]),
       );
 
       // Parse filter parameters from bracket notation
