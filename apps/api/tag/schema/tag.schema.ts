@@ -8,9 +8,13 @@ export const TagInfoSchema = z.object({
   name: z.string().openapi({
     description: "Name of the tag",
   }),
-  color: z.enum(enumValuesTuple(TAG_COLOR)).optional().openapi({
-    description: "Color of the tag",
-  }),
+  color: z
+    .enum(enumValuesTuple(TAG_COLOR))
+    .nullish()
+    .transform((val) => val || null)
+    .openapi({
+      description: "Color of the tag",
+    }),
 });
 
 export const TagSchema = z
@@ -18,7 +22,10 @@ export const TagSchema = z
     id: idSchema,
     userId: userIdSchema,
     name: z.string(),
-    color: z.enum(enumValuesTuple(TAG_COLOR)).optional(),
+    color: z
+      .enum(enumValuesTuple(TAG_COLOR))
+      .nullish()
+      .transform((val) => val || null),
     createdAt: dateSchema,
     updatedAt: dateSchema,
   })

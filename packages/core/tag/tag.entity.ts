@@ -7,7 +7,7 @@ import type { TagColor } from "@kairos/shared/constants";
 
 export interface Tag extends BaseEntity, UserScoped {
   name: string;
-  color?: TagColor;
+  color: TagColor | null;
 }
 
 export const TAG_FILTERABLE_FIELDS = [

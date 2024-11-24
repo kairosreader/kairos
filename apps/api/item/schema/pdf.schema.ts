@@ -6,11 +6,11 @@ import { ITEM_TYPE } from "@kairos/shared/constants";
 
 export const PdfMetadataSchema = z
   .object({
-    author: z.string().optional(),
+    author: z.string().nullish().transform((val) => val || null),
     createdAt: dateSchema,
-    title: z.string().optional(),
+    title: z.string().nullish().transform((val) => val || null),
   })
-  .optional();
+  .openapi("PdfMetadata");
 
 export const PdfContentSchema = z
   .object({

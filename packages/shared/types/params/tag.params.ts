@@ -7,14 +7,14 @@ import type {
 
 export interface TagData {
   name: string;
-  color?: TagColor;
+  color: TagColor | null;
 }
 
 export interface CreateTagParams extends CreateParams<TagData> {}
 
 export interface UpdateTagData {
-  name: string;
-  color: TagColor;
+  name?: string;
+  color?: TagColor;
 }
 
 export interface UpdateTagParams extends UpdateParams<UpdateTagData> {}

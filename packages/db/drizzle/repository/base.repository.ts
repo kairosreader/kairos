@@ -30,11 +30,6 @@ import type {
   SortDirection,
 } from "@kairos/shared/types/common";
 import type { Database } from "../../connection.ts";
-import {
-  type DatabaseResult,
-  mapArrayNullToUndefined,
-  mapNullToUndefined,
-} from "../../utils.ts";
 import type { BaseRepository } from "@kairos/core";
 import { toSnakeCase } from "@kairos/shared/utils";
 
@@ -174,7 +169,7 @@ export abstract class DrizzleBaseRepository<
 
     const finalWhereClause = where || whereClause;
 
-    const query = this.db
+    const query = await this.db
       .select()
       .from(this.table)
       .where(finalWhereClause)
@@ -182,9 +177,7 @@ export abstract class DrizzleBaseRepository<
       .limit(limit + 1) // Get one extra item to determine if there's a next page
       .offset(offset);
 
-    const rawItems = (await query) as DatabaseResult<E>[];
-    const items = mapArrayNullToUndefined(rawItems);
-
+    const items = query as E[];
     const hasNextPage = items.length > limit;
     if (hasNextPage) {
       items.pop(); // Remove the extra item
@@ -193,8 +186,7 @@ export abstract class DrizzleBaseRepository<
     const [{ count }] = await this.db
       .select({ count: sql<number>`count(*)` })
       .from(this.table)
-      .where(whereClause);
-
+      .where(finalWhereClause);
     const hasPreviousPage = options.pagination.type === "offset"
       ? options.pagination.page > 1
       : Boolean(options.pagination.cursor);
@@ -218,7 +210,7 @@ export abstract class DrizzleBaseRepository<
       .from(this.table)
       .where(inArray(this.table.id, ids));
 
-    return mapArrayNullToUndefined<E>(query as DatabaseResult<E>[]);
+    return query as E[];
   }
 
   async findOne(filter: FilterConfig<TFilterable>): Promise<E | null> {
@@ -233,7 +225,7 @@ export abstract class DrizzleBaseRepository<
 
     if (!item) return null;
 
-    return mapNullToUndefined<E>(item as DatabaseResult<E>);
+    return item as E;
   }
 
   abstract save(entity: E): Promise<E>;

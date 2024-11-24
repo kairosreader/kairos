@@ -8,25 +8,25 @@ import type {
 import { DrizzleUserScopedRepository } from "./user-scoped.repository.ts";
 import { collectionItems, collections } from "../schema/collection.ts";
 import { items } from "../schema/item.ts";
+import { readingProgress } from "../schema/reading.ts";
 import type { Database } from "../../connection.ts";
-import {
-  type DatabaseResult,
-  mapArrayNullToUndefined,
-  mapNullToUndefined,
-} from "../../utils.ts";
 import type { ItemContent } from "@kairos/shared/types/common";
+import { ReadingProgressUtils } from "../utils/reading-progress.utils.ts";
 
 export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
   Collection,
   typeof collections._.config,
   typeof collections
 > implements CollectionRepository {
+  private readonly progressUtils: ReadingProgressUtils;
+
   constructor(db: Database) {
     super(db, collections);
+    this.progressUtils = new ReadingProgressUtils(db);
   }
 
-  async findByItem(itemId: string): Promise<Collection[]> {
-    const result = await this.db
+  findByItem(itemId: string): Promise<Collection[]> {
+    return this.db
       .select(collections._.columns)
       .from(collections)
       .innerJoin(
@@ -34,32 +34,20 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
         eq(collections.id, collectionItems.collectionId),
       )
       .where(eq(collectionItems.itemId, itemId));
-
-    return mapArrayNullToUndefined<Collection>(
-      result as DatabaseResult<Collection[]>,
-    );
   }
 
-  async findDefault(userId: string): Promise<Collection | null> {
-    const result = await this.findOne({
+  findDefault(userId: string): Promise<Collection | null> {
+    return this.findOne({
       userId: { eq: userId },
       isDefault: { eq: true },
     });
-
-    if (!result) return null;
-
-    return mapNullToUndefined<Collection>(result);
   }
 
-  async findArchive(userId: string): Promise<Collection | null> {
-    const result = await this.findOne({
+  findArchive(userId: string): Promise<Collection | null> {
+    return this.findOne({
       userId: { eq: userId },
       isArchive: { eq: true },
     });
-
-    if (!result) return null;
-
-    return mapNullToUndefined<Collection>(result);
   }
 
   async addItem(params: AddToCollectionParams): Promise<void> {
@@ -99,15 +87,20 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
   }
 
   async getItems(collectionId: string): Promise<Item<ItemContent>[]> {
-    const result = await this.db
-      .select(items._.columns)
+    const results = await this.db
+      .select({
+        item: items,
+        progress: readingProgress,
+      })
       .from(items)
       .innerJoin(collectionItems, eq(items.id, collectionItems.itemId))
+      .leftJoin(readingProgress, this.progressUtils.buildProgressJoin().on)
       .where(eq(collectionItems.collectionId, collectionId));
 
-    return mapArrayNullToUndefined<Item<ItemContent>>(
-      result as DatabaseResult<Item<ItemContent>[]>,
-    );
+    return results.map(({ item, progress }) => ({
+      ...item,
+      progress: this.progressUtils.mapReadingProgressToProgress(progress),
+    }));
   }
 
   override async save(entity: Collection): Promise<Collection> {
@@ -116,18 +109,11 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
       .values(entity)
       .returning();
 
-    return mapNullToUndefined<Collection>(result as DatabaseResult<Collection>);
+    return result;
   }
 
-  override async saveMany(entities: Collection[]): Promise<Collection[]> {
-    const result = await this.db
-      .insert(collections)
-      .values(entities)
-      .returning();
-
-    return mapArrayNullToUndefined<Collection>(
-      result as DatabaseResult<Collection[]>,
-    );
+  override saveMany(entities: Collection[]): Promise<Collection[]> {
+    return this.db.insert(collections).values(entities).returning();
   }
 
   override async update(
@@ -140,21 +126,17 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
       .where(eq(collections.id, id))
       .returning();
 
-    return mapNullToUndefined<Collection>(result as DatabaseResult<Collection>);
+    return result;
   }
 
-  async updateMany(
+  updateMany(
     ids: string[],
     updates: Partial<Collection>,
   ): Promise<Collection[]> {
-    const result = await this.db
+    return this.db
       .update(collections)
       .set({ ...updates, updatedAt: new Date() })
       .where(inArray(collections.id, ids))
       .returning();
-
-    return mapArrayNullToUndefined<Collection>(
-      result as DatabaseResult<Collection[]>,
-    );
   }
 }

@@ -7,9 +7,9 @@ import { dateSchema } from "../../common/schema/date.schema.ts";
 export const ArticleContentSchema = z
   .object({
     url: urlSchema,
-    content: z.string(),
-    author: z.string().optional(),
-    publishedAt: dateSchema.optional(),
+    content: z.string().nullish().transform((val) => val || ""),
+    author: z.string().nullish().transform((val) => val || null),
+    publishedAt: dateSchema.nullish().transform((val) => val || null),
   })
   .openapi("ArticleContent");
 

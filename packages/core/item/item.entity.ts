@@ -15,9 +15,8 @@ export interface Item<T = unknown> extends BaseItem {
   type: ItemType;
   status: ItemStatus;
   userId: string;
-  collectionId?: string;
   content: T;
-  progress?: ItemProgress;
+  progress: ItemProgress | null;
 }
 
 export type Article = Item<ArticleContent>;

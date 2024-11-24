@@ -14,5 +14,5 @@ export const CreateHighlightRequestSchema = z.object({
     end: z.number(),
     selectedText: z.string(),
   }),
-  note: z.string().optional(),
+  note: z.string().nullish().transform((val) => val || null),
 });

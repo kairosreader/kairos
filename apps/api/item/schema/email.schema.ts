@@ -14,7 +14,10 @@ export const EmailContentSchema = z
     to: z.array(z.string().email()),
     subject: z.string(),
     content: z.string(),
-    attachments: z.array(EmailAttachmentSchema).optional(),
+    attachments: z
+      .array(EmailAttachmentSchema)
+      .nullish()
+      .transform((val) => val || null),
   })
   .openapi("EmailContent");
 

@@ -12,11 +12,6 @@ import type {
 import { DrizzleUserScopedRepository } from "./user-scoped.repository.ts";
 import { tags } from "../schema/tag.ts";
 import type { Database } from "../../connection.ts";
-import {
-  type DatabaseResult,
-  mapArrayNullToUndefined,
-  mapNullToUndefined,
-} from "../../utils.ts";
 
 export class DrizzleTagRepository extends DrizzleUserScopedRepository<
   Tag,
@@ -41,11 +36,11 @@ export class DrizzleTagRepository extends DrizzleUserScopedRepository<
       )
       .limit(1);
 
-    return mapNullToUndefined<Tag>(result as DatabaseResult<Tag>) || null;
+    return result;
   }
 
-  async findByNames(params: FindTagsByNamesParams): Promise<Tag[]> {
-    const result = await this.db
+  findByNames(params: FindTagsByNamesParams): Promise<Tag[]> {
+    return this.db
       .select()
       .from(this.table)
       .where(
@@ -54,8 +49,6 @@ export class DrizzleTagRepository extends DrizzleUserScopedRepository<
           inArray(this.table.name, params.tagNames),
         ),
       );
-
-    return mapArrayNullToUndefined<Tag>(result as DatabaseResult<Tag[]>);
   }
 
   override async save(entity: Tag): Promise<Tag> {
@@ -64,16 +57,14 @@ export class DrizzleTagRepository extends DrizzleUserScopedRepository<
       .values(entity)
       .returning();
 
-    return mapNullToUndefined<Tag>(result as DatabaseResult<Tag>);
+    return result;
   }
 
-  override async saveMany(entities: Tag[]): Promise<Tag[]> {
-    const result = await this.db
+  override saveMany(entities: Tag[]): Promise<Tag[]> {
+    return this.db
       .insert(this.table)
       .values(entities)
       .returning();
-
-    return mapArrayNullToUndefined<Tag>(result as DatabaseResult<Tag[]>);
   }
 
   override async update(id: string, updates: Partial<Tag>): Promise<Tag> {
@@ -83,16 +74,14 @@ export class DrizzleTagRepository extends DrizzleUserScopedRepository<
       .where(eq(this.table.id, id))
       .returning();
 
-    return mapNullToUndefined<Tag>(result as DatabaseResult<Tag>);
+    return result;
   }
 
-  async updateMany(ids: string[], updates: Partial<Tag>): Promise<Tag[]> {
-    const result = await this.db
+  updateMany(ids: string[], updates: Partial<Tag>): Promise<Tag[]> {
+    return this.db
       .update(this.table)
       .set({ ...updates, updatedAt: new Date() })
       .where(inArray(this.table.id, ids))
       .returning();
-
-    return mapArrayNullToUndefined<Tag>(result as DatabaseResult<Tag[]>);
   }
 }

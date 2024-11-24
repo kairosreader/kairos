@@ -5,14 +5,17 @@ import { PdfContentSchema } from "../pdf.schema.ts";
 
 export const UpdateItemRequestSchema = z
   .object({
-    title: z.string().openapi({
+    title: z.string().optional().openapi({
       example: "Updated Title",
       description: "New title for the item",
     }),
-    excerpt: z.string().optional().openapi({
-      example: "Updated excerpt...",
-      description: "New excerpt for the item",
-    }),
+    excerpt: z
+      .string()
+      .optional()
+      .openapi({
+        example: "Updated excerpt...",
+        description: "New excerpt for the item",
+      }),
     content: z.union([
       ArticleContentSchema,
       EmailContentSchema,
@@ -22,14 +25,23 @@ export const UpdateItemRequestSchema = z
       example: ["tech", "programming"],
       description: "Tags for the item",
     }),
-    coverImage: z.string().url().optional().openapi({
-      example: "https://example.com/image.jpg",
-      description: "URL of the cover image",
-    }),
-    estimatedReadTime: z.number().int().min(0).optional().openapi({
-      example: 5,
-      description: "Estimated reading time in minutes",
-    }),
+    coverImage: z
+      .string()
+      .url()
+      .optional()
+      .openapi({
+        example: "https://example.com/image.jpg",
+        description: "URL of the cover image",
+      }),
+    estimatedReadTime: z
+      .number()
+      .int()
+      .min(0)
+      .optional()
+      .openapi({
+        example: 5,
+        description: "Estimated reading time in minutes",
+      }),
   })
   .openapi("UpdateItemRequest");
 

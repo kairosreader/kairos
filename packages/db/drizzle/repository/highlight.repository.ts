@@ -3,11 +3,6 @@ import { DrizzleUserScopedRepository } from "./user-scoped.repository.ts";
 import type { Database } from "../../connection.ts";
 import { highlights } from "../schema/highlight.ts";
 import type { Highlight, HighlightRepository } from "@kairos/core/highlight";
-import {
-  type DatabaseResult,
-  mapArrayNullToUndefined,
-  mapNullToUndefined,
-} from "../../utils.ts";
 import type { FilterOperator } from "@kairos/shared/types/common";
 
 export class DrizzleHighlightRepository extends DrizzleUserScopedRepository<
@@ -47,15 +42,11 @@ export class DrizzleHighlightRepository extends DrizzleUserScopedRepository<
     return super.buildFilterCondition(field, operator);
   }
 
-  async findByItem(itemId: string, userId: string): Promise<Highlight[]> {
-    const result = await this.db
+  findByItem(itemId: string, userId: string): Promise<Highlight[]> {
+    return this.db
       .select()
       .from(this.table)
       .where(and(eq(this.table.itemId, itemId), eq(this.table.userId, userId)));
-
-    return mapArrayNullToUndefined<Highlight>(
-      result as DatabaseResult<Highlight[]>,
-    );
   }
 
   override async save(entity: Highlight): Promise<Highlight> {
@@ -64,18 +55,11 @@ export class DrizzleHighlightRepository extends DrizzleUserScopedRepository<
       .values(entity)
       .returning();
 
-    return mapNullToUndefined<Highlight>(result as DatabaseResult<Highlight>);
+    return result;
   }
 
-  override async saveMany(entities: Highlight[]): Promise<Highlight[]> {
-    const result = await this.db
-      .insert(this.table)
-      .values(entities)
-      .returning();
-
-    return mapArrayNullToUndefined<Highlight>(
-      result as DatabaseResult<Highlight[]>,
-    );
+  override saveMany(entities: Highlight[]): Promise<Highlight[]> {
+    return this.db.insert(this.table).values(entities).returning();
   }
 
   override async update(
@@ -88,22 +72,18 @@ export class DrizzleHighlightRepository extends DrizzleUserScopedRepository<
       .where(eq(this.table.id, id))
       .returning();
 
-    return mapNullToUndefined<Highlight>(result as DatabaseResult<Highlight>);
+    return result;
   }
 
-  override async updateMany(
+  override updateMany(
     ids: string[],
     updates: Partial<Highlight>,
   ): Promise<Highlight[]> {
-    const result = await this.db
+    return this.db
       .update(this.table)
       .set({ ...updates, updatedAt: new Date() })
       .where(inArray(this.table.id, ids))
       .returning();
-
-    return mapArrayNullToUndefined<Highlight>(
-      result as DatabaseResult<Highlight[]>,
-    );
   }
 
   async deleteByItemId(itemId: string, userId: string): Promise<void> {

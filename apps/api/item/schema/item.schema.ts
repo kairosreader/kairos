@@ -9,10 +9,16 @@ export const baseItemFields = {
   id: idSchema,
   status: z.enum(enumValuesTuple(ITEM_STATUS)),
   title: z.string(),
-  excerpt: z.string().optional(),
-  coverImage: urlSchema.optional(),
+  excerpt: z
+    .string()
+    .nullish()
+    .transform((val) => val || null),
+  coverImage: urlSchema.nullish().transform((val) => val || null),
   tags: z.array(z.string()),
-  estimatedReadTime: z.number().optional(),
+  estimatedReadTime: z
+    .number()
+    .nullish()
+    .transform((val) => val || null),
   userId: userIdSchema,
   createdAt: dateSchema,
   updatedAt: dateSchema,

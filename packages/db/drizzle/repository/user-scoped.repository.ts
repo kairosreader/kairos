@@ -10,7 +10,6 @@ import type {
 import { DrizzleBaseRepository } from "./base.repository.ts";
 import type { ResourceIdentifier } from "@kairos/shared/types/params";
 import type { UserScopedRepository } from "@kairos/core";
-import { type DatabaseResult, mapNullToUndefined } from "../../utils.ts";
 
 export abstract class DrizzleUserScopedRepository<
   E extends BaseEntity,
@@ -20,9 +19,7 @@ export abstract class DrizzleUserScopedRepository<
   TFilterable extends string = string,
 > extends DrizzleBaseRepository<E, T, TTable, TSortable, TFilterable>
   implements UserScopedRepository<E, TSortable, TFilterable> {
-  async findById(params: ResourceIdentifier): Promise<E | null> {
-    const { id, userId } = params;
-
+  async findById({ id, userId }: ResourceIdentifier): Promise<E | null> {
     const [item] = await this.db
       .select()
       .from(this.table)
@@ -30,7 +27,7 @@ export abstract class DrizzleUserScopedRepository<
       .limit(1);
 
     if (!item) return null;
-    return mapNullToUndefined(item as DatabaseResult<E>);
+    return item as E;
   }
 
   findByUser(

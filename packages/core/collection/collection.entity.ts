@@ -2,11 +2,11 @@ import type { BaseEntity, UserScoped } from "@kairos/shared/types/common";
 
 export interface Collection extends BaseEntity, UserScoped {
   name: string;
-  description?: string;
+  description: string | null;
   isDefault: boolean;
   isArchive: boolean;
-  color?: string;
-  icon?: string;
+  color: string | null;
+  icon: string | null;
   itemCount: number;
 }
 

@@ -12,7 +12,7 @@ export const HighlightSchema = z
       end: z.number(),
       selectedText: z.string(),
     }),
-    note: z.string().optional(),
+    note: z.string().nullish().transform((val) => val || null),
     createdAt: z.string(),
     updatedAt: z.string(),
   })

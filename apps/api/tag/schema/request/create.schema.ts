@@ -7,7 +7,9 @@ export const CreateTagRequestSchema = z.object({
     example: "programming",
     description: "Name of the tag",
   }),
-  color: z.enum(enumValuesTuple(TAG_COLOR)).optional().openapi({
+  color: z.enum(enumValuesTuple(TAG_COLOR)).nullish().transform((val) =>
+    val || null
+  ).openapi({
     example: TAG_COLOR.BLUE,
     description: "Optional color for the tag",
   }),

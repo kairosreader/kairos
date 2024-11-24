@@ -9,20 +9,20 @@ import type {
 
 export interface CollectionData {
   name: string;
-  description?: string;
-  color?: string;
-  icon?: string;
-  isDefault?: boolean;
-  isArchive?: boolean;
+  description: string | null;
+  color: string | null;
+  icon: string | null;
+  isDefault: boolean | null;
+  isArchive: boolean | null;
 }
 
 export interface CreateCollectionParams extends CreateParams<CollectionData> {}
 
 export interface UpdateCollectionData {
-  name: string;
-  description: string;
-  color: string;
-  icon: string;
+  name?: string;
+  description?: string;
+  color?: string;
+  icon?: string;
 }
 
 export interface UpdateCollectionParams
@@ -53,5 +53,5 @@ export interface BulkItemArchiveOperation extends UserScopedParams {
 export interface ListCollectionItemsParams
   extends SortablePaginatedQuery, UserScopedParams {
   collectionId: string;
-  sortBy?: "addedAt" | "title";
+  sortBy: "addedAt" | "title" | null;
 }

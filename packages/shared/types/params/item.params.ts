@@ -9,14 +9,14 @@ import type {
 export interface CreateItemParams extends UserScopedParams {
   type: ItemType;
   content: ItemContent;
-  tags?: string[];
+  tags: string[] | null;
 }
 
 export interface UpdateItemData {
-  title: string;
+  title?: string;
   excerpt?: string;
-  content: ItemContent;
-  tags: string[];
+  content?: ItemContent;
+  tags?: string[];
   coverImage?: string;
   estimatedReadTime?: number;
 }

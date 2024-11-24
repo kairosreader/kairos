@@ -9,18 +9,18 @@ export interface BaseItem extends BaseEntity, UserScoped {
   type: ItemType;
   status: ItemStatus;
   title: string;
-  excerpt?: string;
-  coverImage?: string;
+  excerpt: string | null;
+  coverImage: string | null;
   tags: string[];
-  estimatedReadTime?: number;
+  estimatedReadTime: number | null;
   userId: string;
 }
 
 export interface ArticleContent {
   url: string;
   content: string;
-  author?: string;
-  publishedAt?: Date;
+  author: string | null;
+  publishedAt: Date | null;
 }
 
 export interface EmailContent {
@@ -28,20 +28,22 @@ export interface EmailContent {
   to: string[];
   subject: string;
   content: string;
-  attachments?: Array<{
-    name: string;
-    url: string;
-  }>;
+  attachments:
+    | Array<{
+      name: string;
+      url: string;
+    }>
+    | null;
 }
 
 export interface PdfContent {
   url: string;
   pageCount: number;
-  metadata?: {
-    author?: string;
-    createdAt?: Date;
-    title?: string;
-  };
+  metadata: {
+    author: string | null;
+    createdAt: Date | null;
+    title: string | null;
+  } | null;
 }
 
 export type ItemContent = ArticleContent | EmailContent | PdfContent;

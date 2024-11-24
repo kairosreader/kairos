@@ -3,7 +3,6 @@ import type { NonUserScopedRepository } from "@kairos/core";
 import type { PgTableWithColumns, TableConfig } from "drizzle-orm/pg-core";
 import type { BaseEntity, FilterConfig } from "@kairos/shared/types/common";
 import { DrizzleBaseRepository } from "./base.repository.ts";
-import { type DatabaseResult, mapNullToUndefined } from "../../utils.ts";
 
 export abstract class DrizzleNonUserScopedRepository<
   E extends BaseEntity,
@@ -20,7 +19,9 @@ export abstract class DrizzleNonUserScopedRepository<
       .where(eq(this.table.id, id))
       .limit(1);
 
-    return mapNullToUndefined<E>(item as DatabaseResult<E>) || null;
+    if (!item) return null;
+
+    return item as E;
   }
 
   async delete(id: string): Promise<void> {

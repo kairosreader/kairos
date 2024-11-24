@@ -9,7 +9,7 @@ export interface Highlight extends BaseEntity, UserScoped {
     end: number;
     selectedText: string;
   };
-  note?: string; // Optional note/comment on the highlight
+  note: string | null; // Optional note/comment on the highlight
 }
 
 export const HIGHLIGHT_FILTERABLE_FIELDS = ["color", "note", "text"] as const;

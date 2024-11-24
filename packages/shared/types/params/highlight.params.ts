@@ -13,16 +13,16 @@ export interface TextSelection {
 
 export interface HighlightData {
   itemId: string;
-  color?: HighlightColor;
+  color: HighlightColor;
   textSelection: TextSelection;
-  note?: string;
+  note: string | null;
 }
 
 export interface CreateHighlightParams extends CreateParams<HighlightData> {}
 
 export interface UpdateHighlightData {
-  color: HighlightColor;
-  note: string;
+  color?: HighlightColor;
+  note?: string;
 }
 
 export interface UpdateHighlightParams

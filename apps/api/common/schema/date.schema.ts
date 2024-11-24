@@ -12,4 +12,7 @@ export const dateSchema = z
 export const serializedDateSchema = dateSchema.transform((date) =>
   date.toISOString()
 );
-export const optionalSerializedDateSchema = serializedDateSchema.optional();
+export const optionalSerializedDateSchema = serializedDateSchema.nullish()
+  .transform(
+    (val) => val || null,
+  );
