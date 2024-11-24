@@ -1,9 +1,15 @@
 import { z } from "@hono/zod-openapi";
-import { ITEM_STATUS, ITEM_TYPE } from "@kairos/shared/constants";
+import { ITEM_STATUS, ITEM_TYPE, TAG_COLOR } from "@kairos/shared/constants";
 import { dateSchema } from "../../common/schema/date.schema.ts";
 import { idSchema, userIdSchema } from "../../common/schema/id.schema.ts";
 import { urlSchema } from "../../common/schema/url.schema.ts";
 import { enumValues, enumValuesTuple } from "@kairos/shared/utils";
+
+export const ItemTagSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  color: z.enum(enumValuesTuple(TAG_COLOR)).nullable(),
+});
 
 export const baseItemFields = {
   id: idSchema,
@@ -14,7 +20,10 @@ export const baseItemFields = {
     .nullish()
     .transform((val) => val || null),
   coverImage: urlSchema.nullish().transform((val) => val || null),
-  tags: z.array(z.string()),
+  tags: z
+    .array(ItemTagSchema)
+    .nullish()
+    .transform((val) => val || null),
   estimatedReadTime: z
     .number()
     .nullish()

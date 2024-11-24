@@ -19,11 +19,11 @@ export class SaveItemUseCase {
   ) {}
 
   async execute(params: CreateItemParams): Promise<Item<ItemContent>> {
-    // Verify tags exist for the user
-    if (params.tags) {
+    // Verify tags exist for the user if provided
+    if (params.tags?.length) {
       await this.tagService.verifyOwnershipMany(
         params.tags.map((tag) => ({
-          id: tag,
+          id: tag.id,
           userId: params.userId,
         })),
       );
@@ -39,6 +39,10 @@ export class SaveItemUseCase {
       userId: params.userId,
       createdAt: new Date(),
       updatedAt: new Date(),
+      progress: null,
+      excerpt: null,
+      coverImage: null,
+      estimatedReadTime: null,
     };
 
     const savedItem = await this.itemService.save(item);

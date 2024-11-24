@@ -1,9 +1,10 @@
 import { z } from "@hono/zod-openapi";
-import { ITEM_TYPE } from "@kairos/shared/constants";
+import { ITEM_TYPE, TAG_COLOR } from "@kairos/shared/constants";
 import { ArticleContentSchema } from "../article.schema.ts";
 import { EmailContentSchema } from "../email.schema.ts";
 import { PdfContentSchema } from "../pdf.schema.ts";
 import { enumValuesTuple } from "@kairos/shared/utils";
+import { ItemTagSchema } from "../item.schema.ts";
 
 export const CreateItemRequestSchema = z
   .object({
@@ -14,12 +15,18 @@ export const CreateItemRequestSchema = z
       PdfContentSchema,
     ]),
     tags: z
-      .array(z.string())
+      .array(ItemTagSchema)
       .nullish()
-      .transform((val) => val || null)
+      .transform((val) => val || [])
       .openapi({
-        example: ["b7a0d715-3960-4335-98f8-39808c5b3a14"],
-        description: "Optional tag ids for the item",
+        example: [
+          {
+            id: "b7a0d715-3960-4335-98f8-39808c5b3a14",
+            name: "Reading List",
+            color: TAG_COLOR.YELLOW,
+          },
+        ],
+        description: "Optional tags for the item",
       }),
   })
   .openapi({
@@ -28,7 +35,13 @@ export const CreateItemRequestSchema = z
       content: {
         url: "https://example.com/article",
       },
-      tags: ["b7a0d715-3960-4335-98f8-39808c5b3a14"],
+      tags: [
+        {
+          id: "b7a0d715-3960-4335-98f8-39808c5b3a14",
+          name: "Reading List",
+          color: TAG_COLOR.YELLOW,
+        },
+      ],
     },
   });
 

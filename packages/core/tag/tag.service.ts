@@ -1,4 +1,4 @@
-import type { ItemContent } from "@kairos/shared/types/common";
+import type { ItemContent, ItemTag } from "@kairos/shared/types/common";
 import type {
   BulkTagItemOperation,
   CreateManyTagsOperation,
@@ -6,6 +6,7 @@ import type {
   FindTagByNameParams,
   ResourceIdentifier,
   TagItemOperation,
+  UpdateTagParams,
 } from "@kairos/shared/types/params";
 import { generateId } from "@kairos/shared/utils";
 import { UserScopedService } from "../common/base.service.ts";
@@ -85,35 +86,33 @@ export class TagService extends UserScopedService<Tag> {
   async tagItem(params: TagItemOperation): Promise<void> {
     const { userId, itemId, tagInfos } = params;
 
-    // Check if item exists
-    await this.itemService.tryFindById({
+    // Verify item ownership
+    await this.itemService.verifyOwnership({
       id: itemId,
       userId,
     });
 
-    // Get or create the tag
+    // Get or create tags
     const tags = await this.getOrCreateMany({
       userId,
       tagInfos,
     });
 
-    const tagIds = tags.map((tag) => tag.id);
+    // Convert tags to ItemTag format and add to item
+    const itemTags: ItemTag[] = tags.map((tag) => ({
+      id: tag.id,
+      name: tag.name,
+      color: tag.color,
+    }));
 
-    // Update item tags
-    await this.itemService.update({
-      id: itemId,
-      userId,
-      updates: {
-        tags: tagIds,
-      },
-    });
+    await this.itemService.addTagsToItem(itemId, itemTags);
   }
 
   async untagItem(params: TagItemOperation): Promise<void> {
     const { userId, itemId, tagInfos } = params;
 
-    // Check if item exists
-    const item = await this.itemService.tryFindById({
+    // Verify item ownership
+    await this.itemService.verifyOwnership({
       id: itemId,
       userId,
     });
@@ -123,24 +122,19 @@ export class TagService extends UserScopedService<Tag> {
       userId,
       tagNames: tagInfos.map((tag) => tag.name),
     });
-    const tagIds = tags.map((tag) => tag.id);
 
-    // Remove tag from item
-    const updatedTags = item.tags.filter((tagId) => !tagIds.includes(tagId));
-    await this.itemService.update({
-      id: itemId,
-      userId,
-      updates: {
-        tags: updatedTags,
-      },
-    });
+    // Remove tags from item
+    const tagIds = tags.map((tag) => tag.id);
+    await this.itemService.removeTagsFromItems([itemId], tagIds);
   }
 
   async bulkTagItems(params: BulkTagItemOperation): Promise<void> {
     const { userId, itemIds, tagInfos } = params;
 
-    // Check if items exists
-    await this.itemService.tryFindByIds(itemIds);
+    // Verify all items exist and are owned by the user
+    await this.itemService.verifyOwnershipMany(
+      itemIds.map((id) => ({ id, userId })),
+    );
 
     // Get or create the tags
     const tags = await this.getOrCreateMany({
@@ -148,16 +142,15 @@ export class TagService extends UserScopedService<Tag> {
       tagInfos,
     });
 
-    const tagIds = tags.map((tag) => tag.id);
+    // Convert tags to ItemTag format
+    const itemTags: ItemTag[] = tags.map((tag) => ({
+      id: tag.id,
+      name: tag.name,
+      color: tag.color,
+    }));
 
-    // Update item tags
-    await this.itemService.updateMany({
-      userId,
-      ids: itemIds,
-      updates: {
-        tags: tagIds,
-      },
-    });
+    // Bulk update items with new tags
+    await this.itemService.bulkReplaceTags(itemIds, itemTags);
   }
 
   createMany(params: CreateManyTagsOperation): Promise<Tag[]> {
@@ -173,6 +166,24 @@ export class TagService extends UserScopedService<Tag> {
     }));
 
     return this.tagRepo.saveMany(tags);
+  }
+
+  override async update(params: UpdateTagParams): Promise<Tag> {
+    const { id, userId, updates } = params;
+
+    // Verify ownership
+    await this.verifyOwnership({
+      id,
+      userId,
+    });
+
+    // Update the tag
+    const updatedTag = await super.update(params);
+
+    // Update tag info in all items
+    await this.itemService.updateTagInfo(id, updates);
+
+    return updatedTag;
   }
 
   override async delete(params: ResourceIdentifier): Promise<void> {

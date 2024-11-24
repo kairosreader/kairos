@@ -1,5 +1,5 @@
 import type { ItemType } from "../../constants/item.constants.ts";
-import type { ItemContent } from "../common/item.types.ts";
+import type { ItemContent, ItemTag } from "../common/item.types.ts";
 import type {
   ResourceIdentifier,
   UpdateParams,
@@ -9,14 +9,14 @@ import type {
 export interface CreateItemParams extends UserScopedParams {
   type: ItemType;
   content: ItemContent;
-  tags: string[] | null;
+  tags: ItemTag[] | null;
 }
 
 export interface UpdateItemData {
   title?: string;
   excerpt?: string;
   content?: ItemContent;
-  tags?: string[];
+  tags?: ItemTag[];
   coverImage?: string;
   estimatedReadTime?: number;
 }

@@ -7,22 +7,16 @@ import type {
 } from "@kairos/shared/types/params";
 import { DrizzleUserScopedRepository } from "./user-scoped.repository.ts";
 import { collectionItems, collections } from "../schema/collection.ts";
-import { items } from "../schema/item.ts";
-import { readingProgress } from "../schema/reading.ts";
 import type { Database } from "../../connection.ts";
 import type { ItemContent } from "@kairos/shared/types/common";
-import { ReadingProgressUtils } from "../utils/reading-progress.utils.ts";
 
 export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
   Collection,
   typeof collections._.config,
   typeof collections
 > implements CollectionRepository {
-  private readonly progressUtils: ReadingProgressUtils;
-
   constructor(db: Database) {
     super(db, collections);
-    this.progressUtils = new ReadingProgressUtils(db);
   }
 
   findByItem(itemId: string): Promise<Collection[]> {
@@ -87,19 +81,22 @@ export class DrizzleCollectionRepository extends DrizzleUserScopedRepository<
   }
 
   async getItems(collectionId: string): Promise<Item<ItemContent>[]> {
-    const results = await this.db
-      .select({
-        item: items,
-        progress: readingProgress,
-      })
-      .from(items)
-      .innerJoin(collectionItems, eq(items.id, collectionItems.itemId))
-      .leftJoin(readingProgress, this.progressUtils.buildProgressJoin().on)
-      .where(eq(collectionItems.collectionId, collectionId));
+    const results = await this.db.query.items.findMany({
+      with: {
+        readingProgress: true,
+        itemTags: {
+          with: {
+            tag: true,
+          },
+        },
+      },
+      where: eq(collectionItems.collectionId, collectionId),
+    });
 
-    return results.map(({ item, progress }) => ({
-      ...item,
-      progress: this.progressUtils.mapReadingProgressToProgress(progress),
+    return results.map((result) => ({
+      ...result,
+      progress: result.readingProgress?.[0] ?? null,
+      tags: result.itemTags.map((it) => it.tag),
     }));
   }
 

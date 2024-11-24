@@ -10,6 +10,9 @@ import { users } from "./user.ts";
 import { enumValuesTuple } from "@kairos/shared/utils";
 import { ITEM_STATUS, ITEM_TYPE } from "@kairos/shared/constants";
 import type { ItemContent } from "@kairos/shared/types";
+import { relations } from "drizzle-orm";
+import { itemTags } from "./item-tag.ts";
+import { readingProgress } from "./reading.ts";
 
 export const items = pgTable("items", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -22,8 +25,14 @@ export const items = pgTable("items", {
   excerpt: text("excerpt"),
   coverImage: text("cover_image"),
   content: jsonb("content").$type<ItemContent>().notNull(),
-  tags: text("tags").array().notNull().default([]),
   estimatedReadTime: integer("estimated_read_time"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
+
+export const itemsRelations = relations(items, ({ many }) => ({
+  itemTags: many(itemTags),
+  // One reading progress per user, but since we always query with userId,
+  // it effectively becomes one-to-one in practice
+  readingProgress: many(readingProgress),
+}));

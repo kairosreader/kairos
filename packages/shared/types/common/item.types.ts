@@ -3,7 +3,14 @@ import type {
   ItemStatus,
   ItemType,
 } from "../../constants/item.constants.ts";
+import type { TagColor } from "../../constants/tag.constants.ts";
 import type { BaseEntity, UserScoped } from "./entity.types.ts";
+
+export interface ItemTag {
+  id: string;
+  name: string;
+  color: TagColor | null;
+}
 
 export interface BaseItem extends BaseEntity, UserScoped {
   type: ItemType;
@@ -11,7 +18,7 @@ export interface BaseItem extends BaseEntity, UserScoped {
   title: string;
   excerpt: string | null;
   coverImage: string | null;
-  tags: string[];
+  tags: ItemTag[];
   estimatedReadTime: number | null;
   userId: string;
 }

@@ -20,7 +20,6 @@ export class UpdateReadingProgressUseCase {
       lastReadAt: new Date(),
     };
 
-    // Use the repository to update reading progress
-    await this.itemService["itemRepo"].updateReadingProgress(progress);
+    await this.itemService.updateReadingProgress(params.id, progress);
   }
 }

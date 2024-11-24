@@ -1,4 +1,8 @@
-import type { ItemContent, MergeTagsOperation } from "@kairos/shared/types";
+import type {
+  ItemContent,
+  ItemTag,
+  MergeTagsOperation,
+} from "@kairos/shared/types";
 import {
   TagNotFoundError,
   UnauthorizedError,
@@ -15,17 +19,17 @@ export class MergeTagsUseCase {
   async execute(params: MergeTagsOperation): Promise<void> {
     // Check if source and target tags exist
     const [sourceTag, targetTag] = await Promise.all([
-      this.tagService.findByName({
+      this.tagService.findById({
+        id: params.sourceTagId,
         userId: params.userId,
-        tagName: params.sourceTagId,
       }),
-      this.tagService.findByName({
+      this.tagService.findById({
+        id: params.targetTagId,
         userId: params.userId,
-        tagName: params.targetTagId,
       }),
     ]);
 
-    // Check if source and target tags belong to the same user
+    // Check if source and target tags exist and belong to the user
     if (!sourceTag) {
       throw new TagNotFoundError(params.sourceTagId);
     }
@@ -42,40 +46,29 @@ export class MergeTagsUseCase {
     }
 
     // Get all items with source tag
-    const count = await this.itemService.count(params.userId, {
-      tags: {
-        in: [sourceTag.id],
-      },
-    });
-
-    const paginatedItems = await this.itemService.findByUser(params.userId, {
-      pagination: {
-        type: "offset",
-        page: 1,
-        limit: count,
-      },
-      filter: {
-        tags: {
-          in: [sourceTag.id],
-        },
-      },
-    });
-
-    // Replace source tag with target tag
-    await Promise.all(
-      paginatedItems.items.map((item) => {
-        const updatedTags = item.tags
-          .filter((id) => id !== sourceTag.name)
-          .concat(targetTag.name);
-
-        item.tags = [...new Set(updatedTags)]; // Remove duplicates
-        return this.itemService.save(item);
-      }),
+    const items = await this.itemService.findByUserAndTag(
+      params.userId,
+      sourceTag.id,
     );
+
+    if (items.length > 0) {
+      // Create ItemTag format for target tag
+      const targetItemTag: ItemTag = {
+        id: targetTag.id,
+        name: targetTag.name,
+        color: targetTag.color,
+      };
+
+      // Replace source tag with target tag for all items
+      await this.itemService.bulkReplaceTags(
+        items.map((item) => item.id),
+        [targetItemTag],
+      );
+    }
 
     // Delete the source tag
     await this.tagService.delete({
-      id: params.sourceTagId,
+      id: sourceTag.id,
       userId: params.userId,
     });
   }

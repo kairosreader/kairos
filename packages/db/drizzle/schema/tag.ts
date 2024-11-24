@@ -2,6 +2,8 @@ import { pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 import { enumValuesTuple } from "@kairos/shared/utils";
 import { TAG_COLOR } from "@kairos/shared/constants";
 import { users } from "./user.ts";
+import { relations } from "drizzle-orm";
+import { itemTags } from "./item-tag.ts";
 
 export const tags = pgTable(
   "tags",
@@ -20,3 +22,7 @@ export const tags = pgTable(
     unique("tag_name_user_idx").on(t.name, t.userId),
   ],
 );
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  itemTags: many(itemTags),
+}));
