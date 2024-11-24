@@ -25,9 +25,7 @@ export async function authMiddleware(c: Context<AppEnv>, next: Next) {
       credentials: "include",
     });
 
-    console.log("Kratos response status:", response.status);
     const responseText = await response.text();
-    console.log("Kratos response body:", responseText);
 
     if (!response.ok) {
       throw new UnauthorizedError(`Invalid session: ${responseText}`);
