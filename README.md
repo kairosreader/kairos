@@ -30,7 +30,6 @@ our goal of helping users read content when the time is right for them.
 - Tag-based organization
 - Search and filtering
 - Archive management
-- Reading statistics
 
 ## 🏗 Technical Architecture
 
@@ -41,7 +40,6 @@ Kairos is built as a modern monorepo using Deno, featuring:
 - **API Server**: RESTful API built with Hono
 - **Content Processor**: Async article processing worker
 - **Database**: PostgreSQL for reliable data storage
-- **Caching**: **(TBD)** for performance optimization
 - **Message Queue**: BullMQ for reliable content processing
 
 ### Frontend
@@ -63,7 +61,6 @@ Kairos is built as a modern monorepo using Deno, featuring:
 - **Runtime**: Deno
 - **API Framework**: Hono
 - **Database**: PostgreSQL
-- **Cache**: **(TBD)**
 - **Queue**: BullMQ
 - **Content Processing**: Mozilla Readability
 
@@ -71,7 +68,6 @@ Kairos is built as a modern monorepo using Deno, featuring:
 
 - **Web**: **(TBD)** framework
 - **Mobile**: React Native
-- **State Management**: Built-in React hooks
 - **Styling**: **(TBD)**
 
 ### Infrastructure
@@ -79,7 +75,6 @@ Kairos is built as a modern monorepo using Deno, featuring:
 - **Containerization**: Docker
 - **Orchestration**: Docker Compose
 - **CI/CD**: GitHub Actions
-- **Monitoring**: Built-in health checks **(TBD)**
 
 ## 🚀 Getting Started
 
@@ -103,7 +98,7 @@ docker-compose up -d
 deno install --allow-scripts
 
 # Start development
-deno task dev
+deno task docker:build
 ```
 
 ## 📦 Deployment
