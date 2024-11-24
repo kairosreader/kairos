@@ -160,7 +160,7 @@ export const tagItemRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Tags applied to item successfully",
     },
     ...standardErrorResponses,
@@ -184,7 +184,7 @@ export const bulkTagRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Tags applied to items successfully",
     },
     ...standardErrorResponses,
@@ -208,7 +208,7 @@ export const mergeTagsRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Tags merged successfully",
     },
     ...standardErrorResponses,

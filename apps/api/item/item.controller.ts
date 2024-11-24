@@ -106,7 +106,7 @@ export class ItemController extends BaseController {
           progress,
           lastPosition,
         });
-        return c.json(null);
+        return new Response(null, { status: 204 });
       })
       .openapi(listItemsRoute, async (c) => {
         const { id: userId } = c.get("user");
@@ -119,13 +119,13 @@ export class ItemController extends BaseController {
         const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         await this.deleteUseCase.execute({ id, userId });
-        return c.json(null, 204);
+        return new Response(null, { status: 204 });
       })
       .openapi(bulkDeleteItemsRoute, async (c) => {
         const { id: userId } = c.get("user");
         const { ids } = c.req.valid("json");
         await this.bulkDeleteUseCase.execute({ ids, userId });
-        return c.json(null, 204);
+        return new Response(null, { status: 204 });
       });
 
     return this.router;

@@ -100,19 +100,19 @@ export class TagController extends BaseController {
         const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         await this.deleteUseCase.execute({ id, userId });
-        return c.json(null, 204);
+        return new Response(null, { status: 204 });
       })
       .openapi(tagItemRoute, async (c) => {
         const { id: userId } = c.get("user");
         const { itemId, tagInfos } = c.req.valid("json");
         await this.tagItemUseCase.execute({ userId, itemId, tagInfos });
-        return c.json(null, 200);
+        return new Response(null, { status: 204 });
       })
       .openapi(bulkTagRoute, async (c) => {
         const { id: userId } = c.get("user");
         const { itemIds, tagInfos } = c.req.valid("json");
         await this.bulkTagUseCase.execute({ userId, itemIds, tagInfos });
-        return c.json(null, 200);
+        return new Response(null, { status: 204 });
       })
       .openapi(mergeTagsRoute, async (c) => {
         const { id: userId } = c.get("user");
@@ -122,7 +122,7 @@ export class TagController extends BaseController {
           sourceTagId,
           targetTagId,
         });
-        return c.json(null, 200);
+        return new Response(null, { status: 204 });
       });
 
     return this.router;

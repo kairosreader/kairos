@@ -25,7 +25,7 @@ export class UserController extends BaseController {
       .openapi(deleteUserRoute, async (c) => {
         const { id: userId } = c.get("user");
         await this.deleteUserUseCase.execute(userId);
-        return c.json(null, 204);
+        return new Response(null, { status: 204 });
       });
 
     return this.router;

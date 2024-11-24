@@ -111,14 +111,14 @@ export class CollectionController extends BaseController {
         const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         await this.deleteUseCase.execute({ id, userId });
-        return c.json(null, 204);
+        return new Response(null, { status: 204 });
       })
       .openapi(addToCollectionRoute, async (c) => {
         const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
         const { itemInfo } = c.req.valid("json");
         await this.addToCollectionUseCase.execute({ id, userId, itemInfo });
-        return c.json(null, 200);
+        return new Response(null, { status: 204 });
       })
       .openapi(getItemsInCollectionRoute, async (c) => {
         const { id: userId } = c.get("user");
@@ -135,7 +135,7 @@ export class CollectionController extends BaseController {
           userId,
           itemInfo,
         });
-        return c.json(null, 200);
+        return new Response(null, { status: 204 });
       })
       .openapi(moveItemRoute, async (c) => {
         const { id: userId } = c.get("user");
@@ -146,19 +146,19 @@ export class CollectionController extends BaseController {
           toCollectionId: data.toCollectionId,
           removeFromOtherCollections: data.removeFromOtherCollections,
         });
-        return c.json(null, 200);
+        return new Response(null, { status: 204 });
       })
       .openapi(archiveItemRoute, async (c) => {
         const { id: userId } = c.get("user");
         const { itemInfo } = c.req.valid("json");
         await this.archiveItemUseCase.execute({ userId, itemInfo });
-        return c.json(null, 200);
+        return new Response(null, { status: 204 });
       })
       .openapi(bulkArchiveRoute, async (c) => {
         const { id: userId } = c.get("user");
         const { itemInfos } = c.req.valid("json");
         await this.bulkArchiveUseCase.execute({ userId, itemInfos });
-        return c.json(null, 204);
+        return new Response(null, { status: 204 });
       });
 
     return this.router;

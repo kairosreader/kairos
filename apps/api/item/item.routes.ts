@@ -114,7 +114,7 @@ export const updateReadingProgressRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Reading progress updated successfully",
     },
     ...standardErrorResponses,

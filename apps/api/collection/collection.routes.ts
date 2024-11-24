@@ -162,7 +162,7 @@ export const addToCollectionRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Item added to collection successfully",
     },
     ...standardErrorResponses,
@@ -181,7 +181,7 @@ export const getItemsInCollectionRoute = createRoute({
     params: CollectionParamsSchema,
   },
   responses: {
-    200: {
+    204: {
       description: "Items in collection retrieved successfully",
     },
     ...standardErrorResponses,
@@ -207,7 +207,7 @@ export const removeFromCollectionRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Item removed from collection successfully",
     },
     ...standardErrorResponses,
@@ -232,7 +232,7 @@ export const moveItemRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Item moved successfully",
     },
     ...standardErrorResponses,
@@ -257,7 +257,7 @@ export const archiveItemRoute = createRoute({
     },
   },
   responses: {
-    200: {
+    204: {
       description: "Item archived successfully",
     },
     ...standardErrorResponses,
