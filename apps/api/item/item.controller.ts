@@ -21,10 +21,6 @@ import {
   ItemListResponseSchema,
   ItemResponseSchema,
 } from "./schema/response/response.schema.ts";
-import {
-  ItemNotFoundError,
-  UnauthorizedError,
-} from "@kairos/shared/types/errors";
 
 export class ItemController extends BaseController {
   constructor(
@@ -75,24 +71,10 @@ export class ItemController extends BaseController {
         return c.json(validatedItem);
       })
       .openapi(getItemRoute, async (c) => {
-        const { id: userId } = c.get("user");
         const { id } = c.req.valid("param");
+        const { id: userId } = c.get("user");
 
-        const item = await this.getItemUseCase.execute({
-          id: id,
-          userId: userId,
-        });
-
-        if (!item) {
-          throw new ItemNotFoundError(id);
-        }
-
-        if (item.userId !== userId) {
-          throw new UnauthorizedError(
-            "You don't have permission to access this item",
-          );
-        }
-
+        const item = await this.getItemUseCase.execute({ id, userId });
         const validatedItem = ItemResponseSchema.parse(item);
         return c.json(validatedItem);
       })
