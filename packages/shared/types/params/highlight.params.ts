@@ -1,9 +1,5 @@
 import type { HighlightColor } from "../../constants/highlight.constants.ts";
-import type {
-  CreateParams,
-  UpdateParams,
-  UserScopedParams,
-} from "./base.params.ts";
+import type { CreateParams, UpdateParams } from "./base.params.ts";
 
 export interface TextSelection {
   start: number;
@@ -27,7 +23,3 @@ export interface UpdateHighlightData {
 
 export interface UpdateHighlightParams
   extends UpdateParams<UpdateHighlightData> {}
-
-export interface BulkDeleteHighlightsOperation extends UserScopedParams {
-  highlightIds: string[];
-}
