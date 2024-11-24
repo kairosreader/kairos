@@ -31,50 +31,23 @@ our goal of helping users read content when the time is right for them.
 - Search and filtering
 - Archive management
 
-## 🏗 Technical Architecture
-
-Kairos is built as a modern monorepo using Deno, featuring:
+## 🏗 Architecture & Tech Stack
 
 ### Backend
-
-- **API Server**: RESTful API built with Hono
-- **Content Processor**: Async article processing worker
-- **Database**: PostgreSQL for reliable data storage
-- **Message Queue**: BullMQ for reliable content processing
-
-### Frontend
-
-- **Web Client**: Built with **(TBD)** framework
-- **Mobile App**: Cross-platform app using React Native
-- **Offline Support**: Local storage and sync capabilities
-
-### Infrastructure
-
-- Containerized with Docker
-- Easy deployment with Docker Compose
-- Scalable microservices architecture
-
-## 🔧 Technical Stack
-
-### Backend
-
-- **Runtime**: Deno
-- **API Framework**: Hono
-- **Database**: PostgreSQL
-- **Queue**: BullMQ
-- **Content Processing**: Mozilla Readability
+- Deno + Hono for REST API
+- PostgreSQL database
+- BullMQ for job processing
+- Mozilla Readability for content extraction
 
 ### Frontend
-
-- **Web**: **(TBD)** framework
-- **Mobile**: React Native
-- **Styling**: **(TBD)**
+- Web client (**TBD**)
+- React Native mobile app
+- Offline-first with local storage
 
 ### Infrastructure
-
-- **Containerization**: Docker
-- **Orchestration**: Docker Compose
-- **CI/CD**: GitHub Actions
+- Docker containers
+- Docker Compose orchestration
+- GitHub Actions CI/CD
 
 ## 🚀 Getting Started
 
@@ -89,10 +62,10 @@ Kairos is built as a modern monorepo using Deno, featuring:
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/kairos.git
+git clone https://github.com/kairosreader/kairos.git
 
-# Start infrastructure
-docker-compose up -d
+# Set up environment variables
+cp .env.example .env
 
 # Install dependencies
 deno install --allow-scripts
@@ -101,23 +74,40 @@ deno install --allow-scripts
 deno task docker:build
 ```
 
+### Local Development Services
+
+| Service | URL |
+|---------|-----|
+| Authentication UI | https://localhost:4455/ |
+| SMTP Dashboard | http://localhost:4436/ |
+| API Documentation | https://localhost:8000/swagger |
+| Database Dashboard | https://local.drizzle.studio/ |
+| Auth Admin UI | http://localhost:8080/identities |
+
+### API Testing Guide
+
+To authenticate API requests:
+
+1. Sign in at https://localhost:4455/
+2. Open browser developer tools
+3. Go to the Application tab
+4. Select "Cookies"
+5. Copy the value of `ory_kratos_session`
+6. Go to the API documentation at https://localhost:8000/swagger
+7. Authorize with the copied session token
+
 ## 📦 Deployment
 
-Kairos can be deployed in several ways:
+Deploy with a single command using Docker Compose:
+```bash
+docker compose up -d
+```
 
-1. **Docker Compose** (Recommended for small deployments)
-   - Single command setup
-   - Includes all necessary services
-   - Automatic service discovery
-
-2. **Manual** (For custom setups)
-   - Flexible configuration
-   - Custom service integration
-   - Fine-grained control
+This will start all necessary services and set up the entire application stack.
 
 ## 🤝 Contributing
 
-Kairos is open source and welcomes contributions. Here's how you can help:
+Kairos is open to contributions. Here's how you can help:
 
 1. **Code Contributions**
    - Fork the repository
