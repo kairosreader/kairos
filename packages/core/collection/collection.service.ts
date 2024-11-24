@@ -84,6 +84,9 @@ export class CollectionService extends UserScopedService<Collection> {
           name: "Default Collection",
           description: "Your default collection",
           isDefault: true,
+          isArchive: false,
+          color: "#ffffff",
+          icon: "📚",
         },
       });
     }
@@ -100,6 +103,9 @@ export class CollectionService extends UserScopedService<Collection> {
           name: "Archive",
           description: "Your archived items",
           isArchive: true,
+          isDefault: false,
+          color: "#ffffff",
+          icon: "📦",
         },
       });
     }
