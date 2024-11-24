@@ -59,7 +59,12 @@ export class CollectionController extends BaseController {
 
         const collection = await this.createUseCase.execute({
           userId,
-          data,
+          data: {
+            ...data,
+            // Endpoint does not allow creation of special collections
+            isDefault: false,
+            isArchive: false,
+          },
         });
 
         const validatedCollection = CollectionResponseSchema.parse(collection);
