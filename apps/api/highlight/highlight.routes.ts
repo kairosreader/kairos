@@ -10,6 +10,7 @@ import {
 import { CreateHighlightRequestSchema } from "./schema/request/create.schema.ts";
 import { UpdateHighlightRequestSchema } from "./schema/request/update.schema.ts";
 import { HighlightQuerySchema } from "./schema/request/list.schema.ts";
+import { BulkDeleteRequestSchema } from "../common/schema/request/bulk-delete.schema.ts";
 
 export const createHighlightRoute = createRoute({
   method: "post",
@@ -106,6 +107,30 @@ export const deleteHighlightRoute = createRoute({
   responses: {
     204: {
       description: "Highlight deleted successfully",
+    },
+    ...standardErrorResponses,
+  },
+});
+
+export const bulkDeleteHighlightsRoute = createRoute({
+  method: "delete",
+  path: "/highlights",
+  tags: ["Highlights"],
+  security: [SessionSecurity],
+  middleware: [authMiddleware],
+  summary: "Bulk delete highlights",
+  request: {
+    body: {
+      content: {
+        "application/json": {
+          schema: BulkDeleteRequestSchema,
+        },
+      },
+    },
+  },
+  responses: {
+    204: {
+      description: "Highlights deleted successfully",
     },
     ...standardErrorResponses,
   },

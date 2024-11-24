@@ -8,6 +8,7 @@ import type {
   UpdateHighlightUseCase,
 } from "@kairos/core/highlight/usecases";
 import {
+  bulkDeleteHighlightsRoute,
   createHighlightRoute,
   deleteHighlightRoute,
   getHighlightRoute,
@@ -57,6 +58,12 @@ export class HighlightController extends BaseController {
         const id = c.req.param("id");
         const { id: userId } = c.get("user");
         await this.deleteUseCase.execute({ userId, id });
+        return new Response(null, { status: 204 });
+      })
+      .openapi(bulkDeleteHighlightsRoute, async (c) => {
+        const { ids } = c.req.valid("json");
+        const { id: userId } = c.get("user");
+        await this.bulkDeleteUseCase.execute({ ids, userId });
         return new Response(null, { status: 204 });
       })
       .openapi(listHighlightsRoute, async (c) => {
