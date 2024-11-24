@@ -8,6 +8,7 @@ import {
   InternalAPISecurity,
   SessionSecurity,
 } from "../common/schema/auth.schema.ts";
+import { authMiddleware } from "../middleware/auth.middleware.ts";
 
 export const createUserRoute = createRoute({
   method: "post",
@@ -44,7 +45,7 @@ export const deleteUserRoute = createRoute({
   path: "/user",
   tags: ["User"],
   security: [SessionSecurity],
-  middleware: [],
+  middleware: [authMiddleware],
   summary: "Delete the currently authenticated user",
   responses: {
     204: {
