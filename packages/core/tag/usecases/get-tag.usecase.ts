@@ -6,7 +6,7 @@ export class GetTagUseCase {
   constructor(private tagService: TagService) {}
 
   async execute(params: GetParams): Promise<Tag> {
-    const tag = await this.tagService.tryFindById(params.id);
+    const tag = await this.tagService.tryFindById(params);
 
     // Verify ownership
     await this.tagService.verifyOwnership(params);

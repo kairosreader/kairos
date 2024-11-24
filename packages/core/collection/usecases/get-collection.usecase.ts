@@ -6,7 +6,7 @@ export class GetCollectionUseCase {
   constructor(private collectionService: CollectionService) {}
 
   async execute(params: GetParams): Promise<Collection> {
-    const collection = this.collectionService.tryFindById(params.id);
+    const collection = this.collectionService.tryFindById(params);
 
     // Verify ownership
     await this.collectionService.verifyOwnership(params);

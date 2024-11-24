@@ -6,7 +6,7 @@ export class GetHighlightUseCase {
   constructor(private highlightService: HighlightService) {}
 
   async execute(params: GetParams): Promise<Highlight> {
-    const highlight = await this.highlightService.tryFindById(params.id);
+    const highlight = await this.highlightService.tryFindById(params);
 
     // Verify ownership
     await this.highlightService.verifyOwnership(params);

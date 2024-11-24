@@ -6,7 +6,7 @@ export class GetItemUseCase {
   constructor(private itemService: ItemService<ItemContent>) {}
 
   async execute(params: GetParams): Promise<Item<ItemContent>> {
-    const item = await this.itemService.tryFindById(params.id);
+    const item = await this.itemService.tryFindById(params);
 
     // Verify ownership
     await this.itemService.verifyOwnership(params);
