@@ -82,7 +82,7 @@ services:
   auth-admin-ui:
     image: ghcr.io/dfoxg/kratos-admin-ui:v2.5.0
     ports:
-      - '${AUTH_ADMIN_UI_PORT:-9090}:8080'
+      - '${AUTH_ADMIN_UI_PORT:-8080}:8080'
     restart: unless-stopped
     environment:
       - KRATOS_ADMIN_URL=http://auth:4434
