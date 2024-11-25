@@ -2,7 +2,7 @@ import type { Context, Next } from "@hono/hono";
 import { UnauthorizedError } from "@kairos/shared/types/errors";
 import type { AppEnv } from "../common/controller/controller.types.ts";
 
-const AUTH_PUBLIC_URL = Deno.env.get("AUTH_PUBLIC_URL")!;
+const AUTH_SERVER_URL = Deno.env.get("AUTH_SERVER_URL")!;
 
 export async function authMiddleware(c: Context<AppEnv>, next: Next) {
   const cookies = c.req.header("cookie");
@@ -17,7 +17,7 @@ export async function authMiddleware(c: Context<AppEnv>, next: Next) {
   }
 
   try {
-    const response = await fetch(`${AUTH_PUBLIC_URL}/sessions/whoami`, {
+    const response = await fetch(`${AUTH_SERVER_URL}/sessions/whoami`, {
       method: "GET",
       headers: {
         Cookie: `ory_kratos_session=${sessionToken}`,

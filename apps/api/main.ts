@@ -23,20 +23,12 @@ const tagController = createTagController(container);
 const highlightController = createHighlightController(container);
 const userController = createUserController(container);
 
-const app = new OpenAPIHono<AppEnv>();
-
-// Swagger UI
-app.get("/swagger", swaggerUI({ url: "/doc" }));
-
-// Register routes
-app.route("/api", itemController.register());
-app.route("/api", collectionController.register());
-app.route("/api", tagController.register());
-app.route("/api", highlightController.register());
-app.route("/api", userController.register());
+const app = new OpenAPIHono<AppEnv>({
+  strict: false,
+});
 
 // OpenAPI documentation
-app.doc("/doc", {
+app.doc("/api/doc", {
   openapi: "3.0.0",
   info: {
     title: "Kairos",
@@ -45,10 +37,26 @@ app.doc("/doc", {
   },
   servers: [
     {
-      url: `http://localhost:${Deno.env.get("PORT")}`,
+      url: `/`,
       description: "Local development server",
     },
   ],
 });
 
-Deno.serve(app.fetch);
+// Swagger UI
+app.get("/api/swagger", swaggerUI({ url: "/api/doc" }));
+
+// Register routes
+app.route("/api", itemController.register());
+app.route("/api", collectionController.register());
+app.route("/api", tagController.register());
+app.route("/api", highlightController.register());
+app.route("/api", userController.register());
+
+// Add a catch-all handler with logging
+app.all("*", (c) => {
+  console.log("API 404:", c.req.url);
+  return c.json({ error: "Not Found", path: c.req.url }, 404);
+});
+
+Deno.serve({ port: 3000 }, app.fetch);

@@ -4,11 +4,11 @@ dsn: ${DSN}
 
 serve:
   public:
-    base_url: ${AUTH_PUBLIC_URL}
+    base_url: ${APP_URL}/auth
     cors:
       enabled: true
       allowed_origins:
-        - ${AUTH_UI_URL}
+        - ${APP_URL}
       allowed_methods:
         - POST
         - GET
@@ -19,6 +19,7 @@ serve:
         - Authorization
         - Cookie
         - Content-Type
+        - X-Session-Token
       exposed_headers:
         - Content-Type
         - Set-Cookie
@@ -34,11 +35,10 @@ identity:
       url: file:///etc/config/kratos/identity.schema.json
 
 selfservice:
-  default_browser_return_url: ${AUTH_UI_URL}/welcome
+  default_browser_return_url: ${APP_URL}/welcome
   allowed_return_urls:
-    - ${AUTH_UI_URL}
-    - ${AUTH_UI_URL}/**
-
+    - ${APP_URL}
+    - ${APP_URL}/**
   methods:
     password:
       enabled: true

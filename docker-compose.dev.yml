@@ -4,8 +4,6 @@ services:
   api:
     build:
       target: development
-    ports:
-      - "${PORT}:${PORT}"
     volumes:
       - .:/app:delegated
       - deno-cache:/deno-dir/deps
@@ -36,6 +34,7 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     command: >
       sh -c "
+        npm i drizzle-kit drizzle-orm
         echo '============================================================' &&
         echo '🚀 ACCESS DRIZZLE STUDIO HERE:' &&
         echo '⭐ https://local.drizzle.studio?port=4983' &&
@@ -58,24 +57,36 @@ services:
 
   auth-selfservice-ui-node:
     image: oryd/kratos-selfservice-ui-node:v1.3.1
-    ports:
-      - "${AUTH_UI_PORT}:3000"
     environment:
-      - KRATOS_PUBLIC_URL=http://auth:${AUTH_PUBLIC_PORT}/
-      - KRATOS_BROWSER_URL=${AUTH_PUBLIC_URL}
+      - KRATOS_PUBLIC_URL=http://auth:4433/
+      - KRATOS_BROWSER_URL=${APP_URL}/auth
       - COOKIE_SECRET=changeme
       - CSRF_COOKIE_NAME=ory_csrf_ui
       - CSRF_COOKIE_SECRET=changeme
-      - SECURITY_MODE=
+      - PORT=3000
+      - SECURITY_MODE=standalone
+      - BASE_URL=/
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth-ui.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.auth-ui.priority=1"
+      - "traefik.http.routers.auth-ui.entrypoints=web"
+      - "traefik.http.services.auth-ui.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.auth-ui-headers.headers.customresponseheaders.Content-Type=text/css; charset=utf-8"
+      - "traefik.http.routers.auth-ui-static.rule=PathPrefix(`/`) && Path(`/auth-layout.css`)"
+      - "traefik.http.routers.auth-ui-static.priority=100"
+      - "traefik.http.routers.auth-ui-static.middlewares=auth-ui-headers"
+      - "traefik.http.middlewares.auth-ui-stripprefix.stripprefix.prefixes=/ui"
+      - "traefik.http.routers.auth-ui.middlewares=auth-ui-stripprefix@docker"
 
   auth-admin-ui:
     image: ghcr.io/dfoxg/kratos-admin-ui:v2.5.0
     ports:
-      - '${AUTH_ADMIN_UI_PORT:-8080}:8080'
+      - '${AUTH_ADMIN_UI_PORT:-9090}:8080'
     restart: unless-stopped
     environment:
-      - KRATOS_ADMIN_URL=${AUTH_ADMIN_URL}
-      - KRATOS_PUBLIC_URL=${AUTH_PUBLIC_URL}
+      - KRATOS_ADMIN_URL=http://auth:4434
+      - KRATOS_PUBLIC_URL=${APP_URL}/auth
 
   dragonfly:
     ports:
