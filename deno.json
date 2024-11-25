@@ -36,7 +36,6 @@
   "nodeModulesDir": "auto",
   "fmt": {
     "include": ["apps/", "packages/"],
-    "exclude": ["**/*.json"],
     "useTabs": false,
     "lineWidth": 80,
     "indentWidth": 2,
