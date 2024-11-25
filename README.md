@@ -62,7 +62,7 @@ our goal of helping users read content when the time is right for them.
 
 ```bash
 # Clone the repository
-git clone https://github.com/kairosreader/kairos.git
+git clone https://github.com/kairosreader/kairos.git && cd kairos
 
 # Set up environment variables
 cp .env.example .env
@@ -78,9 +78,9 @@ deno task docker:build
 
 | Service | URL |
 |---------|-----|
-| Authentication UI | https://localhost:4455/ |
+| Web App | https://localhost/ |
 | SMTP Dashboard | http://localhost:4436/ |
-| API Documentation | https://localhost:8000/swagger |
+| API Documentation | https://localhost/api/swagger |
 | Database Dashboard | https://local.drizzle.studio/ |
 | Auth Admin UI | http://localhost:8080/identities |
 
@@ -88,13 +88,14 @@ deno task docker:build
 
 To authenticate API requests:
 
-1. Sign in at https://localhost:4455/
-2. Open browser developer tools
-3. Go to the Application tab
-4. Select "Cookies"
-5. Copy the value of `ory_kratos_session`
-6. Go to the API documentation at https://localhost:8000/swagger
-7. Authorize with the copied session token
+1. Sign up at http://localhost
+2. Verify your email on http://localhost:4436
+3. Open browser developer tools
+4. Go to the Application tab
+5. Select "Cookies"
+6. Copy the value of `ory_kratos_session`
+7. Go to the API documentation at http://localhost:8000/swagger
+8. Authorize with the copied session token
 
 ## 📦 Deployment
 
