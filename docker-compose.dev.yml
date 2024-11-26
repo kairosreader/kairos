@@ -34,7 +34,6 @@ services:
       - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     command: >
       sh -c "
-        npm i drizzle-kit drizzle-orm
         echo '============================================================' &&
         echo '🚀 ACCESS DRIZZLE STUDIO HERE:' &&
         echo '⭐ https://local.drizzle.studio?port=4983' &&
