@@ -53,6 +53,11 @@ app.route("/api", tagController.register());
 app.route("/api", highlightController.register());
 app.route("/api", userController.register());
 
+// Ping route
+app.get("/api/ping", (c) => {
+  return c.json({ message: "pong" });
+});
+
 // Add a catch-all handler with logging
 app.all("*", (c) => {
   console.log("API 404:", c.req.url);
