@@ -123,6 +123,12 @@ services:
     depends_on:
       - api
       - auth
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.client.rule=PathPrefix(`/`)"
+      - "traefik.http.routers.client.priority=1"
+      - "traefik.http.routers.client.entrypoints=web"
+      - "traefik.http.services.client.loadbalancer.server.port=8081"
 
   traefik:
     image: traefik:v2.10

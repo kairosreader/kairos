@@ -58,30 +58,6 @@ services:
     environment:
       - LOG_LEVEL=trace
 
-  auth-selfservice-ui-node:
-    image: oryd/kratos-selfservice-ui-node:v1.3.1
-    environment:
-      - KRATOS_PUBLIC_URL=http://auth:4433/
-      - KRATOS_BROWSER_URL=${APP_URL}/auth
-      - COOKIE_SECRET=changeme
-      - CSRF_COOKIE_NAME=ory_csrf_ui
-      - CSRF_COOKIE_SECRET=changeme
-      - PORT=3000
-      - SECURITY_MODE=standalone
-      - BASE_URL=/
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth-ui.rule=PathPrefix(`/`)"
-      - "traefik.http.routers.auth-ui.priority=1"
-      - "traefik.http.routers.auth-ui.entrypoints=web"
-      - "traefik.http.services.auth-ui.loadbalancer.server.port=3000"
-      - "traefik.http.middlewares.auth-ui-headers.headers.customresponseheaders.Content-Type=text/css; charset=utf-8"
-      - "traefik.http.routers.auth-ui-static.rule=PathPrefix(`/`) && Path(`/auth-layout.css`)"
-      - "traefik.http.routers.auth-ui-static.priority=100"
-      - "traefik.http.routers.auth-ui-static.middlewares=auth-ui-headers"
-      - "traefik.http.middlewares.auth-ui-stripprefix.stripprefix.prefixes=/ui"
-      - "traefik.http.routers.auth-ui.middlewares=auth-ui-stripprefix@docker"
-
   auth-admin-ui:
     image: ghcr.io/dfoxg/kratos-admin-ui:v2.5.0
     ports:
