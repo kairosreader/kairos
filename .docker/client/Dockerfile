@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:20-alpine as base
 
 WORKDIR /app
 
@@ -12,11 +12,10 @@ COPY apps/client/global.css ./
 # Install app dependencies
 RUN npm install
 
-# Copy the entire client directory
+FROM base as development
+CMD ["npm", "start", "--web"]
+
+FROM base as production
+# Copy the entire client directory for production
 COPY apps/client/ .
-
-# Expose port
-EXPOSE 8081
-
-# Start the app
-CMD ["npm", "start", "--", "--web"]
+CMD ["npm", "start", "--web"]

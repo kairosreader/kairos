@@ -24,8 +24,13 @@ services:
     command: ["deno", "task", "start:processor:dev"]
 
   client:
+    build:
+      target: development
     environment:
       - NODE_ENV=development
+    volumes:
+      - ./apps/client:/app
+      - client-node-modules:/app/node_modules
 
   drizzle-studio:
     image: node:18-slim
@@ -70,3 +75,7 @@ services:
   dragonfly:
     ports:
       - "6379:6379"
+
+volumes:
+  deno-cache:
+  client-node-modules:

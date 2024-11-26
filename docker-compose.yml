@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: .docker/api/Dockerfile
+      target: production
     environment:
       - DENO_ENV=${DENO_ENV}
       - LOG_LEVEL=${LOG_LEVEL}
@@ -35,6 +36,7 @@ services:
     build:
       context: .
       dockerfile: .docker/processor/Dockerfile
+      target: production
     environment:
       - DENO_ENV=${DENO_ENV}
       - LOG_LEVEL=${LOG_LEVEL}
@@ -118,8 +120,7 @@ services:
     build:
       context: .
       dockerfile: .docker/client/Dockerfile
-    ports:
-      - "8081:8081"
+      target: production
     depends_on:
       - api
       - auth
