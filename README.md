@@ -55,7 +55,7 @@ our goal of helping users read content when the time is right for them.
 
 - Deno 2 or higher
 - Docker and Docker Compose
-- Node.js 18+ (for mobile development)
+- Node.js 20+ (for mobile development)
 - PostgreSQL 15
 
 ### Quick Start
@@ -132,5 +132,3 @@ Kairos is open to contributions. Here's how you can help:
 Kairos is released under the GNU Affero General Public License v3.0 (AGPL-3.0). This means you must preserve the copyleft and open source nature of the project. Any modifications or derivative works must also be licensed under AGPL-3.0, and if you run a modified version of Kairos on a server, you must make the source code available to users.
 
 ---
-
-Built with ❤️ using **Deno**
