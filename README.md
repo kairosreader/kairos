@@ -94,7 +94,7 @@ To authenticate API requests:
 4. Go to the Application tab
 5. Select "Cookies"
 6. Copy the value of `ory_kratos_session`
-7. Go to the API documentation at http://localhost:8000/swagger
+7. Go to the API documentation at http://localhost/api/swagger
 8. Authorize with the copied session token
 
 ## 📦 Deployment
