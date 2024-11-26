@@ -23,6 +23,10 @@ services:
       - LOG_LEVEL=debug
     command: ["deno", "task", "start:processor:dev"]
 
+  client:
+    environment:
+      - NODE_ENV=development
+
   drizzle-studio:
     image: node:18-slim
     ports:

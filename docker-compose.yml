@@ -114,6 +114,16 @@ services:
       - "4436:4436"
       - "4437:4437"
 
+  client:
+    build:
+      context: .
+      dockerfile: .docker/client/Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - api
+      - auth
+
   traefik:
     image: traefik:v2.10
     command:
