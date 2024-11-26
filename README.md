@@ -129,8 +129,7 @@ Kairos is open to contributions. Here's how you can help:
 
 ---
 
-Kairos is released under the MIT License. Feel free to use, modify, and
-distribute as needed.
+Kairos is released under the GNU Affero General Public License v3.0 (AGPL-3.0). This means you must preserve the copyleft and open source nature of the project. Any modifications or derivative works must also be licensed under AGPL-3.0, and if you run a modified version of Kairos on a server, you must make the source code available to users.
 
 ---
 
