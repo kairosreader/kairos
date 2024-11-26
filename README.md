@@ -78,9 +78,9 @@ deno task docker:build
 
 | Service | URL |
 |---------|-----|
-| Web App | https://localhost/ |
+| Web App | http://localhost/ |
 | SMTP Dashboard | http://localhost:4436/ |
-| API Documentation | https://localhost/api/swagger |
+| API Documentation | http://localhost/api/swagger |
 | Database Dashboard | https://local.drizzle.studio/ |
 | Auth Admin UI | http://localhost:8080/identities |
 
