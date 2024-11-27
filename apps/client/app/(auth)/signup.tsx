@@ -21,6 +21,7 @@ import {
   validateConfirmPassword,
   validateFullName,
 } from "~/lib/validations";
+import { authService } from "~/lib/auth";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -30,6 +31,7 @@ export default function SignupScreen() {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [flowId, setFlowId] = useState<string | null>(null);
 
   // Validation states
   const [emailError, setEmailError] = useState("");
@@ -37,6 +39,21 @@ export default function SignupScreen() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [fullNameError, setFullNameError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Initialize registration flow when component mounts
+  React.useEffect(() => {
+    initializeRegistrationFlow();
+  }, []);
+
+  const initializeRegistrationFlow = async () => {
+    try {
+      const flow = await authService.initializeRegistrationFlow();
+      setFlowId(flow.id);
+    } catch (error: any) {
+      setErrorMessage(error.message || "Failed to initialize registration");
+      setIsAlertOpen(true);
+    }
+  };
 
   const validateForm = useCallback(() => {
     const emailValidation = validateEmail(email);
@@ -61,7 +78,7 @@ export default function SignupScreen() {
   }, [email, password, confirmPassword, fullName]);
 
   const handleSignup = async () => {
-    if (isSubmitting) return;
+    if (isSubmitting || !flowId) return;
     setIsSubmitting(true);
 
     try {
@@ -77,12 +94,24 @@ export default function SignupScreen() {
         return;
       }
 
-      // TODO: Implement signup logic
-      router.replace("/");
-    } catch (error) {
-      setErrorMessage("Error creating account");
+      await authService.submitRegistrationFlow(flowId, {
+        traits: {
+          email: email,
+          name: fullName,
+        },
+        password: password,
+        method: "password",
+      });
+      // Don't set isSubmitting to false here, let the redirection happen first
+    } catch (error: any) {
+      // If the flow expired, initialize a new one
+      if (error.message?.includes('flow expired')) {
+        await initializeRegistrationFlow();
+        setErrorMessage("Your session expired. Please try again.");
+      } else {
+        setErrorMessage(error.message || "Error creating account");
+      }
       setIsAlertOpen(true);
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -214,7 +243,7 @@ export default function SignupScreen() {
 
           <Button
             onPress={handleSignup}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !flowId}
             variant="default"
             size="lg"
           >

@@ -1,3 +1,8 @@
+export const STORAGE_KEYS = {
+  SERVER_URL: '@kairos/server_url',
+  SESSION_TOKEN: '@kairos/session_token',
+} as const;
+
 export const NAV_THEME = {
   light: {
     background: 'hsl(0 0% 100%)', // background

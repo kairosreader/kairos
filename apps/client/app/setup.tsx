@@ -6,8 +6,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Input } from "~/components/ui/input";
 import { Card, CardHeader, CardContent } from "~/components/ui/card";
 import { toast } from "sonner-native";
+import { STORAGE_KEYS } from "~/lib/constants";
 
-const SERVER_URL_KEY = "@kairos/server_url";
+const SERVER_URL_KEY = STORAGE_KEYS.SERVER_URL;
 
 export default function ServerUrlScreen() {
   const [serverUrl, setServerUrl] = useState("");
@@ -117,31 +118,6 @@ function WebErrorScreen() {
   );
 }
 
-function ConnectButton({
-  isLoading,
-  onPress,
-}: {
-  isLoading: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable
-      className={`bg-primary p-4 rounded-lg ${
-        isLoading ? "opacity-50" : "active:opacity-80"
-      }`}
-      onPress={onPress}
-      disabled={isLoading}
-    >
-      <View className="flex-row justify-center items-center">
-        {isLoading ? <ActivityIndicator color="#fff" className="mr-2" /> : null}
-        <Text className="text-primary-foreground text-center font-semibold">
-          {isLoading ? "Connecting..." : "Connect"}
-        </Text>
-      </View>
-    </Pressable>
-  );
-}
-
 function ServerUrlForm({
   serverUrl,
   onChangeUrl,
@@ -183,5 +159,30 @@ function ServerUrlForm({
         </CardContent>
       </View>
     </Card>
+  );
+}
+
+function ConnectButton({
+  isLoading,
+  onPress,
+}: {
+  isLoading: boolean;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      className={`bg-primary p-4 rounded-lg ${
+        isLoading ? "opacity-50" : "active:opacity-80"
+      }`}
+      onPress={onPress}
+      disabled={isLoading}
+    >
+      <View className="flex-row justify-center items-center">
+        {isLoading ? <ActivityIndicator color="#fff" className="mr-2" /> : null}
+        <Text className="text-primary-foreground text-center font-semibold">
+          {isLoading ? "Connecting..." : "Connect"}
+        </Text>
+      </View>
+    </Pressable>
   );
 }

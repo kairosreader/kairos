@@ -16,6 +16,7 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Checkbox } from "~/components/ui/checkbox";
 import { validateEmail, validatePassword } from "~/lib/validations";
+import { authService } from "~/lib/auth";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -23,11 +24,27 @@ export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [flowId, setFlowId] = useState<string | null>(null);
   
   // Validation states
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Initialize login flow when component mounts
+  React.useEffect(() => {
+    initializeLoginFlow();
+  }, []);
+
+  const initializeLoginFlow = async () => {
+    try {
+      const flow = await authService.initializeLoginFlow();
+      setFlowId(flow.id);
+    } catch (error: any) {
+      setErrorMessage(error.message || "Failed to initialize login");
+      setIsAlertOpen(true);
+    }
+  };
 
   const validateForm = useCallback(() => {
     const emailValidation = validateEmail(email);
@@ -40,7 +57,7 @@ export default function LoginScreen() {
   }, [email, password]);
 
   const handleLogin = async () => {
-    if (isSubmitting) return;
+    if (isSubmitting || !flowId) return;
     setIsSubmitting(true);
 
     try {
@@ -49,10 +66,21 @@ export default function LoginScreen() {
         return;
       }
 
-      // TODO: Implement auth logic
-      router.replace("/");
-    } catch (error) {
-      setErrorMessage("Invalid email or password");
+      await authService.submitLoginFlow(flowId, {
+        identifier: email,
+        password: password,
+        method: "password",
+      });
+
+      // The auth service will handle the redirect to home
+    } catch (error: any) {
+      // If the flow expired, initialize a new one
+      if (error.message?.includes('flow expired')) {
+        await initializeLoginFlow();
+        setErrorMessage("Your session expired. Please try again.");
+      } else {
+        setErrorMessage(error.message || "Invalid email or password");
+      }
       setIsAlertOpen(true);
     } finally {
       setIsSubmitting(false);
@@ -131,7 +159,7 @@ export default function LoginScreen() {
 
           <Button
             onPress={handleLogin}
-            disabled={isSubmitting}
+            disabled={isSubmitting || !flowId}
             variant="default"
             size="lg"
           >

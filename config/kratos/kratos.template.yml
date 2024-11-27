@@ -35,61 +35,60 @@ identity:
       url: file:///etc/config/kratos/identity.schema.json
 
 selfservice:
-  default_browser_return_url: ${APP_URL}/welcome
+  default_browser_return_url: ${APP_URL}/
   allowed_return_urls:
     - ${APP_URL}
     - ${APP_URL}/**
   methods:
     password:
       enabled: true
-    totp:
-      enabled: true
-      config:
-        issuer: Kairos
-    lookup_secret:
-      enabled: true
     link:
-      enabled: true
+      enabled: false
     code:
       enabled: true
-
+      config:
+        lifespan: 15m
   flows:
     error:
-      ui_url: ${AUTH_UI_URL}/error
+      ui_url: ${APP_URL}/error
 
     settings:
-      ui_url: ${AUTH_UI_URL}/settings
+      ui_url: ${APP_URL}/settings
       privileged_session_max_age: 15m
       required_aal: highest_available
 
     recovery:
       enabled: true
-      ui_url: ${AUTH_UI_URL}/recovery
+      ui_url: ${APP_URL}/recovery
       use: code
 
     verification:
       enabled: true
-      ui_url: ${AUTH_UI_URL}/verification
+      ui_url: ${APP_URL}/verify
       use: code
       after:
-        default_browser_return_url: ${AUTH_UI_URL}/welcome
+        default_browser_return_url: ${APP_URL}/login
 
     logout:
       after:
-        default_browser_return_url: ${AUTH_UI_URL}/login
+        default_browser_return_url: ${APP_URL}/login
 
     login:
-      ui_url: ${AUTH_UI_URL}/login
+      ui_url: ${APP_URL}/login
       lifespan: 10m
+      after:
+        default_browser_return_url: ${APP_URL}/
+        password:
+          default_browser_return_url: ${APP_URL}/
 
     registration:
+      ui_url: ${APP_URL}/signup
       lifespan: 10m
-      ui_url: ${AUTH_UI_URL}/registration
       after:
+        default_browser_return_url: ${APP_URL}/verify
         password:
+          default_browser_return_url: ${APP_URL}/verify
           hooks:
-            - hook: session
-            - hook: show_verification_ui
             - hook: web_hook
               config:
                 url: ${API_URL}/api/internal/user
