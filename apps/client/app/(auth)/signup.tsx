@@ -94,24 +94,18 @@ export default function SignupScreen() {
         return;
       }
 
-      await authService.submitRegistrationFlow(flowId, {
-        traits: {
-          email: email,
-          name: fullName,
-        },
-        password: password,
-        method: "password",
-      });
-      // Don't set isSubmitting to false here, let the redirection happen first
+      await authService.signup(flowId, email, password, fullName);
+      // The auth service will handle the redirect to home
     } catch (error: any) {
       // If the flow expired, initialize a new one
       if (error.message?.includes('flow expired')) {
         await initializeRegistrationFlow();
         setErrorMessage("Your session expired. Please try again.");
       } else {
-        setErrorMessage(error.message || "Error creating account");
+        setErrorMessage(error.message || "Registration failed");
       }
       setIsAlertOpen(true);
+    } finally {
       setIsSubmitting(false);
     }
   };

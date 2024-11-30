@@ -56,7 +56,7 @@ export default function VerifyScreen() {
         return;
       }
 
-      await authService.submitVerificationFlow(flow as string, {
+      await authService.verifyEmail(flow as string, {
         method: "code",
         code: verificationCode,
       });

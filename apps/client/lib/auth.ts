@@ -21,6 +21,7 @@ interface FlowResponse {
 class AuthService {
   private sessionToken: string | null = null;
 
+  // ===== Core Utilities =====
   private async getKratosUrl(): Promise<string> {
     if (Platform.OS === "web") {
       return `${window.location.origin}/auth`;
@@ -63,13 +64,37 @@ class AuthService {
   }
 
   private extractCsrfToken(flow: FlowResponse): string | null {
-    // Find the csrf_token input node
     const csrfNode = flow.ui.nodes.find(
       (node) => node.attributes?.name === "csrf_token",
     );
     return csrfNode?.attributes?.value || null;
   }
 
+  private extractErrorMessage(data: any): string {
+    if (data.ui?.nodes) {
+      for (const node of data.ui.nodes) {
+        if (node.messages?.length > 0) {
+          const message = node.messages[0].text;
+          if (message.includes("because:")) {
+            return message.split("because:")[1].trim();
+          }
+          return message;
+        }
+      }
+    }
+
+    if (data.error?.message) {
+      const message = data.error.message;
+      if (message.includes("because:")) {
+        return message.split("because:")[1].trim();
+      }
+      return message;
+    }
+
+    return "";
+  }
+
+  // ===== Flow Initialization =====
   async initializeLoginFlow(): Promise<FlowResponse> {
     try {
       const endpoint = await this.getFlowEndpoint("login");
@@ -112,172 +137,43 @@ class AuthService {
     }
   }
 
-  async verifyEmail(code: string): Promise<any> {
-    const flow = await this.initializeVerificationFlow();
-    return this.submitVerificationFlow(flow.id, {
-      method: "code",
-      code,
-    });
-  }
-
-  async submitLoginFlow(
-    flowId: string,
-    values: Record<string, any>,
-  ): Promise<any> {
-    const response = await this.submitFlow("login", flowId, values);
-    return this.handleAuthResponse(response);
-  }
-
-  async submitRegistrationFlow(
-    flowId: string,
-    values: Record<string, any>,
-  ): Promise<any> {
-    const response = await this.submitFlow("registration", flowId, values);
-    return this.handleAuthResponse(response);
-  }
-
-  async submitVerificationFlow(
-    flowId: string,
-    values: Record<string, any>,
-  ): Promise<any> {
-    const response = await this.submitFlow("verification", flowId, values);
-    const data = await response.json();
-    console.log('Verification response:', data);
-
-    if (response.ok) {
-      // After successful verification, initialize login flow
-      const loginFlow = await this.initializeLoginFlow();
-      console.log('Initialized login flow:', loginFlow);
-      
-      // Redirect to login
-      if (Platform.OS === "web") {
-        window.location.href = loginFlow.ui.action;
-      } else {
-        router.replace("/(auth)/login");
-      }
-      return null;
-    }
-
-    return this.handleAuthResponse(response);
-  }
-
-  private async handleAuthResponse(response: Response): Promise<any> {
-    const data = await response.json();
-    console.log('Auth response data:', data);
-
-    // Extract session token from header
-    const sessionToken = response.headers.get('X-Session-Token');
-    console.log('Session token from header:', sessionToken);
-
-    // Handle session data if present
-    if (data.session || sessionToken) {
-      if (Platform.OS !== "web") {
-        // For mobile, store the session token
-        if (sessionToken) {
-          this.sessionToken = sessionToken;
-          await AsyncStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, sessionToken);
-          console.log('Stored session token:', sessionToken);
-        } else if (data.session?.token) {
-          this.sessionToken = data.session.token;
-          await AsyncStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, data.session.token);
-          console.log('Stored session token from data:', data.session.token);
-        }
-      }
-      // For web, the cookie is automatically handled by the browser
-    }
-
-    // Handle redirection from continue_with array
-    if (data.continue_with?.length > 0) {
-      // Find redirect action and verification flow
-      const redirectAction = data.continue_with.find(
-        (action: any) => action.action === "redirect_browser_to"
-      );
-      const verificationAction = data.continue_with.find(
-        (action: any) => action.action === "show_verification_ui"
-      );
-
-      if (redirectAction) {
-        const redirectPath = redirectAction.redirect_browser_to;
-        console.log('Redirecting to:', redirectPath);
-        
-        // If we have a verification flow, append its ID
-        const flowId = verificationAction?.flow?.id;
-        const queryParams = flowId ? `?flow=${flowId}` : '';
-        
-        if (Platform.OS === "web") {
-          window.location.href = redirectPath + queryParams;
-        } else {
-          // For mobile, handle the path directly since it's already relative
-          const path = redirectPath.replace(/^\//, ""); // Remove leading slash if present
-          console.log('Mapped path:', path);
-          
-          // Map Kratos paths to app paths
-          const pathMap: Record<string, string> = {
-            "verify": "/(auth)/verify",
-            "login": "/(auth)/login",
-            "": "/",
-          };
-
-          const mappedPath = pathMap[path] || "/";
-          const finalPath = flowId ? `${mappedPath}?flow=${flowId}` : mappedPath;
-          console.log('Final mapped path:', finalPath);
-          router.replace(finalPath as any);
-        }
-        return null;
-      }
-    }
-
-    return data;
-  }
-
-  async getSession(): Promise<any> {
+  async initializeRecoveryFlow(): Promise<FlowResponse> {
     try {
-      const kratosUrl = await this.getKratosUrl();
-
-      // Try to get session token from storage for mobile
-      if (Platform.OS !== "web" && !this.sessionToken) {
-        this.sessionToken = await AsyncStorage.getItem(STORAGE_KEYS.SESSION_TOKEN);
-      }
-
-      const headers: Record<string, string> = {
-        Accept: "application/json",
-      };
-
-      // Add session token for mobile if available
-      if (Platform.OS !== "web" && this.sessionToken) {
-        headers["X-Session-Token"] = this.sessionToken;
-      }
-
-      const response = await fetch(
-        `${kratosUrl}/sessions/whoami`,
-        {
-          method: "GET",
-          credentials: Platform.OS === "web" ? "include" : "omit",
-          headers,
-        },
-      );
+      const endpoint = await this.getFlowEndpoint("recovery");
+      const response = await fetch(endpoint, this.getFetchOptions());
 
       if (!response.ok) {
-        if (response.status === 401) {
-          // Clear invalid session
-          if (Platform.OS !== "web") {
-            this.sessionToken = null;
-            await AsyncStorage.removeItem(STORAGE_KEYS.SESSION_TOKEN);
-          }
-          throw new Error("No active session");
-        }
-        throw new Error(`Session check failed: ${response.status}`);
+        throw new Error("Failed to initialize recovery flow");
       }
 
-      const data = await response.json();
-      console.log('Session data:', data);
-      return data;
+      return response.json();
     } catch (error) {
-      console.error("Error getting session:", error);
+      console.error("Error initializing recovery flow:", error);
       throw error;
     }
   }
 
+  async initializeSettingsFlow(): Promise<any> {
+    const response = await fetch(
+      `${await this.getKratosUrl()}/self-service/settings/flows`,
+      {
+        credentials: "include",
+      },
+    );
+    return this.handleAuthResponse(response);
+  }
+
+  async getSettingsFlow(flowId: string): Promise<any> {
+    const response = await fetch(
+      `${await this.getKratosUrl()}/self-service/settings/flows?id=${flowId}`,
+      {
+        credentials: "include",
+      },
+    );
+    return this.handleAuthResponse(response);
+  }
+
+  // ===== Flow Submission =====
   private async submitFlow(
     flowType: string,
     flowId: string,
@@ -291,13 +187,15 @@ class AuthService {
       );
 
       if (!flowResponse.ok) {
-        throw new Error(`Failed to get ${flowType} flow`);
+        const errorData = await flowResponse.json();
+        throw new Error(
+          errorData.error?.message || `Failed to get ${flowType} flow`,
+        );
       }
 
       const flow: FlowResponse = await flowResponse.json();
       const csrfToken = this.extractCsrfToken(flow);
 
-      // Submit using the action URL from the flow
       const response = await fetch(
         flow.ui.action,
         this.getFetchOptions({
@@ -309,19 +207,187 @@ class AuthService {
         }),
       );
 
-      if (response.status === 422) {
-        // Validation error
-        return response;
-      }
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || `${flowType} failed`);
-      }
-
       return response;
     } catch (error) {
       console.error(`Error submitting ${flowType} flow:`, error);
+      throw error;
+    }
+  }
+
+  private async handleAuthResponse(
+    response: Response,
+    flowType: string = "auth",
+  ): Promise<any> {
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorMessage = this.extractErrorMessage(data);
+      throw new Error(errorMessage || `${flowType} failed`);
+    }
+
+    const sessionToken = response.headers.get("X-Session-Token");
+
+    if (data.session || sessionToken) {
+      if (Platform.OS !== "web") {
+        if (sessionToken) {
+          this.sessionToken = sessionToken;
+          await AsyncStorage.setItem(STORAGE_KEYS.SESSION_TOKEN, sessionToken);
+        } else if (data.session?.token) {
+          this.sessionToken = data.session.token;
+          await AsyncStorage.setItem(
+            STORAGE_KEYS.SESSION_TOKEN,
+            data.session.token,
+          );
+        }
+      }
+    }
+
+    if (data.continue_with?.length > 0) {
+      const redirectAction = data.continue_with.find(
+        (action: any) => action.action === "redirect_browser_to",
+      );
+      const verificationAction = data.continue_with.find(
+        (action: any) => action.action === "show_verification_ui",
+      );
+
+      if (redirectAction) {
+        const redirectPath = redirectAction.redirect_browser_to;
+
+        const flowId = verificationAction?.flow?.id;
+        const queryParams = flowId ? `?flow=${flowId}` : "";
+
+        if (Platform.OS === "web") {
+          window.location.href = redirectPath + queryParams;
+        } else {
+          const path = redirectPath.replace(/^\//, "");
+          const pathMap: Record<string, string> = {
+            verify: "/(auth)/verify",
+            login: "/(auth)/login",
+            "": "/",
+          };
+
+          const mappedPath = pathMap[path] || "/";
+          const finalPath = flowId
+            ? `${mappedPath}?flow=${flowId}`
+            : mappedPath;
+          router.replace(finalPath as any);
+        }
+        return null;
+      }
+    }
+
+    return data;
+  }
+
+  // ===== Authentication Methods =====
+  async login(flowId: string, email: string, password: string): Promise<any> {
+    const response = await this.submitFlow("login", flowId, {
+      method: "password",
+      password,
+      identifier: email,
+    });
+
+    return this.handleAuthResponse(response, "login");
+  }
+
+  async signup(
+    flowId: string,
+    email: string,
+    password: string,
+    name: string,
+  ): Promise<any> {
+    const response = await this.submitFlow("registration", flowId, {
+      method: "password",
+      password,
+      traits: {
+        email,
+        name,
+      },
+    });
+
+    return this.handleAuthResponse(response, "registration");
+  }
+
+  async resetPassword(flowId: string, password: string): Promise<any> {
+    const response = await this.submitFlow("settings", flowId, {
+      method: "password",
+      password,
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+      const errorMessage = this.extractErrorMessage(data);
+      throw new Error(errorMessage || "Failed to update password");
+    }
+    return data;
+  }
+
+  async verifyEmail(flowId: string, values: Record<string, any>): Promise<any> {
+    const response = await this.submitFlow("verification", flowId, values);
+
+    if (response.ok) {
+      const loginFlow = await this.initializeLoginFlow();
+      console.log("Initialized login flow:", loginFlow);
+
+      if (Platform.OS === "web") {
+        window.location.href = loginFlow.ui.action;
+      } else {
+        router.replace("/(auth)/login");
+      }
+      return null;
+    }
+
+    return this.handleAuthResponse(response);
+  }
+
+  async requestPasswordReset(
+    flowId: string,
+    values: Record<string, any>,
+  ): Promise<any> {
+    const response = await this.submitFlow("recovery", flowId, values);
+    return this.handleAuthResponse(response);
+  }
+
+  // ===== Session Management =====
+  async getSession(): Promise<any> {
+    try {
+      const kratosUrl = await this.getKratosUrl();
+
+      if (Platform.OS !== "web" && !this.sessionToken) {
+        this.sessionToken = await AsyncStorage.getItem(
+          STORAGE_KEYS.SESSION_TOKEN,
+        );
+      }
+
+      const headers: Record<string, string> = {
+        Accept: "application/json",
+      };
+
+      if (Platform.OS !== "web" && this.sessionToken) {
+        headers["X-Session-Token"] = this.sessionToken;
+      }
+
+      const response = await fetch(`${kratosUrl}/sessions/whoami`, {
+        method: "GET",
+        credentials: Platform.OS === "web" ? "include" : "omit",
+        headers,
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          if (Platform.OS !== "web") {
+            this.sessionToken = null;
+            await AsyncStorage.removeItem(STORAGE_KEYS.SESSION_TOKEN);
+          }
+          throw new Error("No active session");
+        }
+        throw new Error(`Session check failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error getting session:", error);
       throw error;
     }
   }
@@ -331,7 +397,6 @@ class AuthService {
       const kratosUrl = await this.getKratosUrl();
 
       if (Platform.OS === "web") {
-        // Browser flow uses /browser endpoint and handles redirects
         const response = await fetch(
           `${kratosUrl}/self-service/logout/browser`,
           this.getFetchOptions(),
@@ -342,10 +407,8 @@ class AuthService {
         }
 
         const data = await response.json();
-        // For web, follow the logout URL
         window.location.href = data.logout_url;
       } else {
-        // API flow uses /api endpoint
         const response = await fetch(
           `${kratosUrl}/self-service/logout/api`,
           this.getFetchOptions(),
@@ -357,7 +420,6 @@ class AuthService {
 
         const data = await response.json();
 
-        // For API flow, we need to make a second request with the logout token
         const logoutResponse = await fetch(
           `${kratosUrl}/self-service/logout`,
           this.getFetchOptions({
@@ -370,7 +432,6 @@ class AuthService {
           throw new Error("Logout failed");
         }
 
-        // After successful logout, redirect to login
         router.replace("/login");
       }
     } catch (error) {

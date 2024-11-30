@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, KeyboardAvoidingView, Platform } from "react-native";
 import { router } from "expo-router";
 import { Button } from "~/components/ui/button";
@@ -15,12 +15,14 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 import { validateEmail } from "~/lib/validations";
+import { authService } from "~/lib/auth";
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [flowId, setFlowId] = useState<string | null>(null);
 
   const validateForm = () => {
     let isValid = true;
@@ -34,18 +36,41 @@ export default function ForgotPasswordScreen() {
     return isValid;
   };
 
+  React.useEffect(() => {
+    initializeRecoveryFlow();
+  }, []);
+
+  const initializeRecoveryFlow = async () => {
+    try {
+      const flow = await authService.initializeRecoveryFlow();
+      setFlowId(flow.id);
+    } catch (error: any) {
+      setEmailError("Failed to initialize recovery flow. Please try again.");
+    }
+  };
+
   const handleResetPassword = async () => {
-    if (!validateForm() || isSubmitting) {
+    if (!validateForm() || isSubmitting || !flowId) {
       return;
     }
 
     setIsSubmitting(true);
     try {
-      // TODO: Implement password reset logic
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
+      await authService.requestPasswordReset(flowId, {
+        email,
+        method: "link",
+      });
       setIsAlertOpen(true);
-    } catch (error) {
-      setEmailError("Failed to send reset link. Please try again.");
+    } catch (error: any) {
+      // If the flow expired, initialize a new one
+      if (error.message?.includes("flow expired")) {
+        await initializeRecoveryFlow();
+        setEmailError("Your session expired. Please try again.");
+      } else {
+        setEmailError(
+          error.message || "Failed to send reset link. Please try again.",
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -89,7 +114,9 @@ export default function ForgotPasswordScreen() {
               }}
             />
             {emailError ? (
-              <Text className="text-sm text-destructive mt-1">{emailError}</Text>
+              <Text className="text-sm text-destructive mt-1">
+                {emailError}
+              </Text>
             ) : null}
           </View>
 
@@ -104,14 +131,8 @@ export default function ForgotPasswordScreen() {
             </Text>
           </Button>
 
-          <Button
-            onPress={() => router.back()}
-            variant="ghost"
-            size="default"
-          >
-            <Text className="text-muted-foreground">
-              Back to Login
-            </Text>
+          <Button onPress={() => router.back()} variant="ghost" size="default">
+            <Text className="text-muted-foreground">Back to Login</Text>
           </Button>
         </View>
       </Card>

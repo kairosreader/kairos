@@ -43,7 +43,7 @@ selfservice:
     password:
       enabled: true
     link:
-      enabled: false
+      enabled: true
     code:
       enabled: true
       config:
@@ -60,7 +60,7 @@ selfservice:
     recovery:
       enabled: true
       ui_url: ${APP_URL}/recovery
-      use: code
+      use: link
 
     verification:
       enabled: true

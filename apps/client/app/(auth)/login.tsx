@@ -25,7 +25,7 @@ export default function LoginScreen() {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [flowId, setFlowId] = useState<string | null>(null);
-  
+
   // Validation states
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -66,16 +66,10 @@ export default function LoginScreen() {
         return;
       }
 
-      await authService.submitLoginFlow(flowId, {
-        identifier: email,
-        password: password,
-        method: "password",
-      });
-
-      // The auth service will handle the redirect to home
+      await authService.login(flowId, email, password);
     } catch (error: any) {
       // If the flow expired, initialize a new one
-      if (error.message?.includes('flow expired')) {
+      if (error.message?.includes("flow expired")) {
         await initializeLoginFlow();
         setErrorMessage("Your session expired. Please try again.");
       } else {
@@ -128,7 +122,9 @@ export default function LoginScreen() {
               }`}
             />
             {emailError ? (
-              <Text className="text-sm text-destructive mt-1">{emailError}</Text>
+              <Text className="text-sm text-destructive mt-1">
+                {emailError}
+              </Text>
             ) : null}
           </View>
 
@@ -144,7 +140,9 @@ export default function LoginScreen() {
               }`}
             />
             {passwordError ? (
-              <Text className="text-sm text-destructive mt-1">{passwordError}</Text>
+              <Text className="text-sm text-destructive mt-1">
+                {passwordError}
+              </Text>
             ) : null}
           </View>
 
@@ -174,9 +172,7 @@ export default function LoginScreen() {
             size="sm"
             className="w-full"
           >
-            <Text className="text-primary">
-              Forgot password?
-            </Text>
+            <Text className="text-primary">Forgot password?</Text>
           </Button>
 
           <View className="flex-row justify-center items-center mt-4">
@@ -189,9 +185,7 @@ export default function LoginScreen() {
               size="sm"
               className="px-0"
             >
-              <Text className="text-primary font-semibold">
-                Sign up
-              </Text>
+              <Text className="text-primary font-semibold">Sign up</Text>
             </Button>
           </View>
         </View>
