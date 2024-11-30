@@ -3,6 +3,7 @@ import { View, Pressable } from 'react-native';
 import { Text } from '~/components/ui/text';
 import { Card, CardHeader, CardContent } from '~/components/ui/card';
 import { authService } from '~/lib/auth';
+import { SessionInfo } from '~/components/session-info';
 
 export default function HomePage() {
   const [session, setSession] = React.useState<any>(null);
@@ -43,13 +44,14 @@ export default function HomePage() {
               <Text className="text-center text-muted-foreground">
                 Logged in as: {session.identity?.traits?.email}
               </Text>
+              <SessionInfo session={session} />
             </View>
           )}
           <Pressable
             className="bg-primary p-4 rounded-lg active:opacity-80"
             onPress={handleLogout}
           >
-            <Text className="text-primary-foreground text-center font-semibold">
+            <Text className="text-center font-semibold text-primary-foreground">
               Logout
             </Text>
           </Pressable>
