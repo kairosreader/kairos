@@ -42,7 +42,7 @@ export default function ForgotPasswordScreen() {
 
   const initializeRecoveryFlow = async () => {
     try {
-      const flow = await authService.initializeRecoveryFlow();
+      const flow = await authService.initializeFlow("RECOVERY");
       setFlowId(flow.id);
     } catch (error: any) {
       setEmailError("Failed to initialize recovery flow. Please try again.");

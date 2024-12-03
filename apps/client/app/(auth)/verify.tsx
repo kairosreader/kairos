@@ -12,7 +12,7 @@ import {
   AlertDialogDescription,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogFooter
+  AlertDialogFooter,
 } from "~/components/ui/alert-dialog";
 import { authService } from "~/lib/auth";
 
@@ -24,26 +24,8 @@ export default function VerifyScreen() {
   const { flow, email, code } = useLocalSearchParams();
 
   useEffect(() => {
-    // Initialize verification flow if we don't have a flow ID
-    if (!flow) {
-      const initFlow = async () => {
-        try {
-          const response = await authService.initializeVerificationFlow();
-          // The response will be handled by the auth service
-        } catch (err) {
-          setError("Failed to initialize verification flow");
-          setShowError(true);
-        }
-      };
-      initFlow();
-    }
-  }, [flow]);
-
-  useEffect(() => {
-    if (code) {
-      setVerificationCode(code as string);
-    }
-  }, [code]);
+    if (code) setVerificationCode(code as string);
+  }, [flow, email]);
 
   const handleVerification = async () => {
     if (isLoading) return;
@@ -93,10 +75,7 @@ export default function VerifyScreen() {
             maxLength={6}
           />
 
-          <Button
-            className="w-full"
-            onPress={handleVerification}
-          >
+          <Button className="w-full" onPress={handleVerification}>
             <Text>{isLoading ? "Verifying..." : "Verify"}</Text>
           </Button>
 

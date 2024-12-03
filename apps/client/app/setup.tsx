@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { View, Pressable, ActivityIndicator, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Platform, Pressable, KeyboardAvoidingView } from "react-native";
 import { router } from "expo-router";
-import { Text } from "~/components/ui/text";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { Card, CardHeader, CardContent } from "~/components/ui/card";
-import { toast } from "sonner-native";
+import { Text } from "~/components/ui/text";
+import { Card } from "~/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { STORAGE_KEYS } from "~/lib/constants";
 
 const SERVER_URL_KEY = STORAGE_KEYS.SERVER_URL;
@@ -13,6 +22,9 @@ const SERVER_URL_KEY = STORAGE_KEYS.SERVER_URL;
 export default function ServerUrlScreen() {
   const [serverUrl, setServerUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [urlError, setUrlError] = useState("");
 
   useEffect(() => {
     if (Platform.OS === "web") {
@@ -29,17 +41,37 @@ export default function ServerUrlScreen() {
     }
   }, []);
 
-  const validateAndStoreUrl = async (url: string) => {
-    setIsLoading(true);
-
+  const validateUrl = (url: string) => {
+    if (!url) {
+      return "Please enter a server URL";
+    }
     try {
       // Remove trailing slash before parsing URL
+      const cleanUrl = url.replace(/\/+$/, "");
+      new URL(cleanUrl);
+      return "";
+    } catch (e) {
+      return "Please enter a valid URL";
+    }
+  };
+
+  const validateAndStoreUrl = async (url: string) => {
+    setIsLoading(true);
+    setUrlError("");
+
+    const validationError = validateUrl(url);
+    if (validationError) {
+      setUrlError(validationError);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
       const cleanUrl = url.replace(/\/+$/, "");
       const parsedUrl = new URL(cleanUrl);
       const originWithoutPort = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
 
       try {
-        console.log(originWithoutPort);
         const response = await fetch(`${originWithoutPort}/api/ping`, {
           method: "GET",
           headers: {
@@ -54,135 +86,116 @@ export default function ServerUrlScreen() {
         await AsyncStorage.setItem(SERVER_URL_KEY, originWithoutPort);
         router.replace("/login");
       } catch (e) {
-        toast.error(
+        setErrorMessage(
           "Unable to connect to server. Please check the URL and try again.",
         );
+        setIsAlertOpen(true);
       }
     } catch (e) {
-      toast.error("Please enter a valid URL");
+      setUrlError("Please enter a valid URL");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleSubmit = () => {
-    if (!serverUrl) {
-      toast.error("Please enter a server URL");
-      return;
-    }
     validateAndStoreUrl(serverUrl);
   };
 
+  const handleUrlChange = (text: string) => {
+    setServerUrl(text);
+    if (urlError) {
+      setUrlError(validateUrl(text));
+    }
+  };
+
   if (Platform.OS === "web") {
-    // If the web platform got here, then the server must be broken.
-    return <WebErrorScreen />;
-  }
-
-  return (
-    <View className="flex-1 items-center justify-center p-4 bg-background">
-      <ServerUrlForm
-        serverUrl={serverUrl}
-        onChangeUrl={setServerUrl}
-        isLoading={isLoading}
-        onSubmit={handleSubmit}
-      />
-    </View>
-  );
-}
-
-function WebErrorScreen() {
-  return (
-    <View className="flex-1 items-center justify-center p-4 bg-background">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
+    return (
+      <View className="flex-1 items-center justify-center p-4 bg-background">
+        <Card className="w-full max-w-md p-6 bg-card rounded-xl shadow-lg">
           <Text className="text-2xl font-bold text-center text-card-foreground">
             Connection Error
           </Text>
-        </CardHeader>
-        <CardContent>
           <Text className="text-center text-muted-foreground mb-6">
             Unable to connect to the server. Please check if the server is
             running and try again.
           </Text>
-          <Pressable
-            className="bg-primary p-4 rounded-lg active:opacity-80"
+          <Button
             onPress={() => window.location.reload()}
+            variant="default"
+            size="lg"
           >
-            <Text className="text-primary-foreground text-center font-semibold">
+            <Text className="text-primary-foreground font-semibold">
               Retry Connection
             </Text>
-          </Pressable>
-        </CardContent>
-      </Card>
-    </View>
-  );
-}
+          </Button>
+        </Card>
+      </View>
+    );
+  }
 
-function ServerUrlForm({
-  serverUrl,
-  onChangeUrl,
-  isLoading,
-  onSubmit,
-}: {
-  serverUrl: string;
-  onChangeUrl: (text: string) => void;
-  isLoading: boolean;
-  onSubmit: () => void;
-}) {
   return (
-    <Card className="w-full max-w-sm">
-      <View className="h-full flex justify-between">
-        <View>
-          <CardHeader>
-            <Text className="text-2xl font-bold text-center text-card-foreground">
-              Kairos
-            </Text>
-          </CardHeader>
-          <CardContent className="h-24">
-            <Text className="text-sm font-medium text-foreground mb-2">
-              Server URL
-            </Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 justify-center items-center px-4 bg-background"
+    >
+      <Card className="w-full max-w-md p-6 bg-card rounded-xl shadow-lg">
+        <Text className="text-2xl font-bold text-center text-foreground mb-2">
+          Kairos
+        </Text>
+        <Text className="text-base text-muted-foreground text-center mb-6">
+          Connect to your server
+        </Text>
+
+        <View className="space-y-4">
+          <View>
             <Input
+              placeholder="Server URL"
               value={serverUrl}
-              onChangeText={onChangeUrl}
-              placeholder="https://your-server.com"
-              placeholderTextColor="#666"
+              onChangeText={handleUrlChange}
+              onBlur={() => setUrlError(validateUrl(serverUrl))}
               autoCapitalize="none"
               autoCorrect={false}
-              keyboardType="url"
-              editable={!isLoading}
+              className={`w-full px-4 py-2 bg-background border rounded-lg focus:border-ring mb-3 ${
+                urlError ? "border-destructive" : "border-input"
+              }`}
             />
-          </CardContent>
-        </View>
-        <CardContent className="pt-0">
-          <ConnectButton isLoading={isLoading} onPress={onSubmit} />
-        </CardContent>
-      </View>
-    </Card>
-  );
-}
+            {urlError ? (
+              <Text className="text-sm text-destructive mt-1">{urlError}</Text>
+            ) : null}
+          </View>
 
-function ConnectButton({
-  isLoading,
-  onPress,
-}: {
-  isLoading: boolean;
-  onPress: () => void;
-}) {
-  return (
-    <Pressable
-      className={`bg-primary p-4 rounded-lg ${
-        isLoading ? "opacity-50" : "active:opacity-80"
-      }`}
-      onPress={onPress}
-      disabled={isLoading}
-    >
-      <View className="flex-row justify-center items-center">
-        {isLoading ? <ActivityIndicator color="#fff" className="mr-2" /> : null}
-        <Text className="text-primary-foreground text-center font-semibold">
-          {isLoading ? "Connecting..." : "Connect"}
-        </Text>
-      </View>
-    </Pressable>
+          <Button
+            onPress={handleSubmit}
+            disabled={isLoading}
+            variant="default"
+            size="lg"
+          >
+            <Text className="text-primary-foreground font-semibold">
+              {isLoading ? "Connecting..." : "Connect"}
+            </Text>
+          </Button>
+        </View>
+      </Card>
+
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Error</AlertDialogTitle>
+            <AlertDialogDescription>{errorMessage}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction asChild>
+              <Pressable
+                className="bg-primary px-4 py-2 rounded-md"
+                onPress={() => setIsAlertOpen(false)}
+              >
+                <Text className="text-primary-foreground font-medium">OK</Text>
+              </Pressable>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </KeyboardAvoidingView>
   );
 }

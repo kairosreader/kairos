@@ -47,7 +47,7 @@ export default function SignupScreen() {
 
   const initializeRegistrationFlow = async () => {
     try {
-      const flow = await authService.initializeRegistrationFlow();
+      const flow = await authService.initializeFlow("REGISTRATION");
       setFlowId(flow.id);
     } catch (error: any) {
       setErrorMessage(error.message || "Failed to initialize registration");

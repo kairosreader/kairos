@@ -38,7 +38,7 @@ export default function LoginScreen() {
 
   const initializeLoginFlow = async () => {
     try {
-      const flow = await authService.initializeLoginFlow();
+      const flow = await authService.initializeFlow("LOGIN");
       setFlowId(flow.id);
     } catch (error: any) {
       setErrorMessage(error.message || "Failed to initialize login");
